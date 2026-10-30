@@ -1,0 +1,25 @@
+{
+  "name": "软件开发学习手册 · 广告工厂类比",
+  "short_name": "开发学习手册",
+  "description": "67课软件开发零基础课程，支持搜索、答题、复习与进度保存。",
+  "lang": "zh-CN",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f6fa",
+  "theme_color": "#142239",
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

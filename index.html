@@ -50,7 +50,7 @@ html.app-ready .preview-fallback{display:none!important}
 }
 .mobileClose{display:none}
 </style>
-<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="./manifest.webmanifest"><link rel="apple-touch-icon" href="./apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default">
 </head>
 <body>
 <div class="preview-fallback" id="previewFallback">
@@ -846,7 +846,9 @@ function init(){
 try {
  init();
  document.documentElement.classList.add('app-ready');
-
+ if('serviceWorker' in navigator && (location.protocol==='https:' || location.hostname==='localhost')){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+ }
 } catch(err) {
  console.error('学习手册初始化失败',err);
  // Leave native read-only content visible rather than showing dead buttons.
