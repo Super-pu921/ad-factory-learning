@@ -72,3 +72,9 @@ a,button,summary,[role="button"],.card.clickable,label[for]{touch-action:manipul
   .modal-mask,.drawer-wrap,.v8-sheet-backdrop{overscroll-behavior:contain}
   .modal-dialog{max-height:calc(100dvh - 32px);overflow-y:auto}
 }
+
+/* Touch devices can use a landscape viewport wider than the phone breakpoint. */
+@media (pointer:coarse){
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
+  select,textarea{font-size:16px!important;line-height:1.45}
+}
