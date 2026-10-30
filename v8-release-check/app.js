@@ -35,10 +35,10 @@ function importOfficialProgress(){
   next.review=cleanLessonIds([...(next.review||[]),...cleanLessonIds(old.review)]);
   next.wrong=cleanLessonIds([...(next.wrong||[]),...cleanLessonIds(old.wrong)]);
   next.favorites=[...new Set([...next.favorites,...bookmarks.map(id=>'lesson:'+id)])];
-  for(const [id,value] of Object.entries(notes)){if(!/^\\d+$/.test(id)||Number(id)<1||Number(id)>90||typeof value!=='string')continue;
+  for(const [id,value] of Object.entries(notes)){if(!/^\d+$/.test(id)||Number(id)<1||Number(id)>90||typeof value!=='string')continue;
    if(!String(next.notes[id]||'').trim())next.notes[id]=value.slice(0,10000);}
   const quizzes=old.quiz&&typeof old.quiz==='object'&&!Array.isArray(old.quiz)?old.quiz:{};
-  for(const [id,value] of Object.entries(quizzes)){if(!/^\\d+$/.test(id)||Number(id)<1||Number(id)>90||!Number.isInteger(value)||value<0||value>2||next.quiz[id])continue;
+  for(const [id,value] of Object.entries(quizzes)){if(!/^\d+$/.test(id)||Number(id)<1||Number(id)>90||!Number.isInteger(value)||value<0||value>2||next.quiz[id])continue;
    const l=findLesson(id);if(l)next.quiz[id]={value,correct:l.a===value};}
   if(state.lastLesson===49&&Number.isInteger(Number(old.lastLesson))&&Number(old.lastLesson)>=1&&Number(old.lastLesson)<=90)next.lastLesson=Number(old.lastLesson);
   state=next;
