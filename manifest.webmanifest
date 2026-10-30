@@ -1,7 +1,7 @@
 {
-  "name": "软件开发学习手册 · 广告工厂类比",
-  "short_name": "开发学习手册",
-  "description": "90课软件开发零基础课程，支持知识搜索、答题、复习、学习笔记与本地进度备份。",
+  "name": "软件开发学习工作台 V8 · 广告加工 ERP 学习",
+  "short_name": "开发学习工作台",
+  "description": "90 节开发课程、88 个交互组件与 6 个 ERP 实战场景。",
   "lang": "zh-CN",
   "start_url": "./index.html",
   "scope": "./",
