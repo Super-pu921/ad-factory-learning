@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#142239">
+<meta name="description" content="用广告字加工与 ERP 业务理解软件开发、Git、GitHub、Codex 的离线交互课程。">
+<title>软件开发学习手册 · 广告工厂类比</title>
+<style>
+:root{color-scheme:light;--ink:#18243a;--ink2:#33435b;--muted:#718096;--muted2:#8a97a9;--bg:#f4f6fa;--paper:#fff;--soft:#f8fafe;--line:#e4eaf2;--blue:#2259db;--blue2:#eef3ff;--teal:#047e77;--teal2:#eaf9f5;--amber:#ab6b10;--amber2:#fff7e8;--red:#ba4236;--red2:#fff1ef;--shadow:0 6px 25px rgba(22,35,63,.045);--radius:17px}
+:root[data-theme="dark"]{color-scheme:dark;--ink:#f0f5fc;--ink2:#d9e2ef;--muted:#a8b5c5;--muted2:#91a1b8;--bg:#0c1421;--paper:#142034;--soft:#1a293f;--line:#2a3a51;--blue:#8bacff;--blue2:#263b62;--teal:#70dcc1;--teal2:#153d40;--amber:#f5c97e;--amber2:#483a29;--red:#ffa89f;--red2:#452b34;--shadow:none}
+[hidden]{display:none!important}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);background:var(--bg);font:15px/1.7 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.45}a{color:var(--blue)}a:hover{text-decoration:underline}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid #719dff;outline-offset:2px}p{margin:0 0 10px}h1,h2,h3,h4{line-height:1.35}h1{font-size:28px;letter-spacing:-.5px}h2{font-size:20px}h3{font-size:16px}.mono{font-family:Consolas,"SFMono-Regular",monospace}.muted{color:var(--muted)}.small{font-size:12px}.tiny{font-size:11px}.strong{font-weight:750}
+.topbar{background:#142239;color:#f2f7ff;position:sticky;top:0;z-index:30;border-bottom:1px solid #2b3c55}.topinner{max-width:1490px;margin:auto;min-height:65px;padding:0 22px;display:flex;align-items:center;justify-content:space-between;gap:15px}.brand{display:flex;align-items:center;gap:11px;min-width:0}.brandmark{flex:none;display:grid;place-items:center;width:39px;height:39px;border-radius:11px;background:#3e75eb;font-size:18px;font-weight:900;color:white;letter-spacing:-.06em}.brandtext{line-height:1.24}.brandtext strong{font-size:15px;display:block}.brandtext span{font-size:11px;color:#aabbd4}.navtabs{display:flex;gap:4px}.navtabs button{border:0;background:transparent;color:#c2d0e4;font-size:13px;font-weight:650;border-radius:9px;padding:9px 13px}.navtabs button:hover{background:#243956;color:white}.navtabs button.active{background:#304970;color:white}.topright{display:flex;align-items:center;gap:8px}.iconbutton{border:1px solid rgba(255,255,255,.16);background:#22354f;color:white;padding:7px 10px;border-radius:9px;font-size:13px}.iconbutton:hover{background:#2b4467}.mobileMenu{display:none}
+.shell{max-width:1490px;margin:auto;padding:22px 22px 100px}.hero{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(300px,.85fr);gap:18px;margin-bottom:20px}.heroMain{background:linear-gradient(115deg,#183b76 0%,#1b5195 62%,#1b6b85 100%);color:#fff;padding:26px 30px;border-radius:var(--radius);position:relative;overflow:hidden;min-height:185px}.heroMain:before{content:"";position:absolute;border:1px solid rgba(255,255,255,.14);width:280px;height:280px;border-radius:50%;right:-95px;top:-145px}.eyebrow{font-size:11px;letter-spacing:.13em;font-weight:800;color:#9fd5f8}.hero h1{margin:7px 0 9px;font-size:clamp(24px,3vw,31px)}.heroMain p{max-width:600px;color:#d6e4f6;font-size:14px;position:relative}.heroActions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:17px}.hero .btn.primary{background:#fff;color:#1a498a;border-color:#fff}.hero .btn.glass{background:rgba(255,255,255,.09);color:#fff;border-color:rgba(255,255,255,.36)}.heroStats{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);display:flex;flex-direction:column;justify-content:center}.statsline{display:flex;align-items:baseline;justify-content:space-between;gap:10px}.statbig{font-size:31px;font-weight:840;letter-spacing:-.04em}.statcaption{font-size:13px;color:var(--muted)}.track{height:9px;background:var(--line);border-radius:999px;overflow:hidden;margin:10px 0 13px}.track > span{height:100%;display:block;background:linear-gradient(90deg,#2e63e9,#40a49b);width:0;transition:width .22s}.statgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.statitem{background:var(--soft);border-radius:10px;padding:9px;text-align:center}.statitem b{display:block;font-size:18px;line-height:1.3}.statitem span{display:block;font-size:11px;color:var(--muted)}
+.btn{border:1px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink2);padding:9px 13px;white-space:nowrap;font-size:13px;font-weight:700;min-height:38px;transition:background .15s,border-color .15s,transform .12s}.btn:hover:not(:disabled){background:var(--soft);border-color:#afc5ee}.btn:active:not(:disabled){transform:translateY(1px)}.btn.primary{background:#2459d9;border-color:#2459d9;color:#fff}.btn.primary:hover{background:#1649c4}.btn.ghost{background:transparent}.btn.teal{background:var(--teal2);color:var(--teal);border-color:#a6dcd3}.btn.warn{background:var(--amber2);color:var(--amber);border-color:#e9d4b3}.btn.red{color:var(--red);border-color:#ebc2be;background:var(--red2)}
+.searchrow{display:grid;grid-template-columns:minmax(220px,1.5fr) minmax(150px,.8fr) minmax(135px,.7fr) auto;gap:9px;padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--paper);margin-bottom:18px}.field,select,textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 12px;background:var(--soft);color:var(--ink);font-size:13px;outline:none}.field:focus,select:focus,textarea:focus{border-color:#6f9afa;box-shadow:0 0 0 3px rgba(55,108,245,.12)}.searchwrap{position:relative}.searchwrap:before{content:"⌕";position:absolute;left:13px;top:2px;font-size:22px;color:var(--muted)}.searchwrap .field{padding-left:36px;height:42px}.searchrow select{height:42px}.searchrow .btn{height:42px}
+.learningGrid{display:grid;grid-template-columns:292px minmax(0,1fr);gap:18px;align-items:start}.panel{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}.sidepanel{padding:13px;position:sticky;top:83px;max-height:calc(100vh - 101px);display:flex;flex-direction:column;min-height:220px}.sideHeader{padding:7px 8px 10px;display:flex;align-items:center;justify-content:space-between}.sideHeader strong{font-size:14px}.sideList{overflow:auto;padding-right:2px}.phaseLabel{font-size:11px;font-weight:850;letter-spacing:.02em;color:var(--muted);padding:12px 8px 5px;display:flex;justify-content:space-between;align-items:center}.phaseLabel small{color:var(--muted2)}.lessonItem{width:100%;display:grid;grid-template-columns:27px minmax(0,1fr) 14px;gap:7px;align-items:center;border:0;border-radius:10px;padding:9px 8px;background:transparent;color:var(--ink2);text-align:left;font-size:12px;line-height:1.4}.lessonItem:hover{background:var(--soft)}.lessonItem.active{color:var(--blue);background:var(--blue2);font-weight:750}.lessonNumber{font-size:11px;color:var(--muted2);font-variant-numeric:tabular-nums}.stateMark{width:9px;height:9px;border-radius:100%;background:#c3cfdd}.stateMark.done{background:#27a982}.stateMark.review{background:#e2a344}.sideEmpty{padding:30px 8px;font-size:13px;text-align:center;color:var(--muted)}
+.lessonMain{overflow:hidden}.lessonTop{padding:25px 29px 23px;border-bottom:1px solid var(--line)}.breadcrumbs{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12px;color:var(--muted)}.pill{display:inline-flex;align-items:center;padding:3px 9px;border:1px solid var(--line);background:var(--soft);border-radius:100px;font-size:11px;font-weight:750;color:var(--muted)}.pill.done{color:var(--teal);border-color:#c2e5dc;background:var(--teal2)}.pill.review{color:var(--amber);border-color:#f0deba;background:var(--amber2)}.pill.pending{color:var(--blue);border-color:#c9d9ff;background:var(--blue2)}.lessonTop h2{font-size:clamp(24px,3vw,30px);margin:12px 0 8px}.lessonLead{font-size:16px;color:var(--ink2);line-height:1.75;margin:0;border-left:4px solid var(--blue);padding-left:13px}.lessonQuickActions{margin-top:16px;display:flex;gap:8px;flex-wrap:wrap}.sectionPad{padding:23px 29px}.sectionTitle{display:flex;align-items:center;gap:9px;margin:0 0 13px;font-size:16px}.sectionTitle .miniIcon{width:27px;height:27px;display:grid;place-items:center;border-radius:9px;background:var(--blue2);color:var(--blue);font-size:14px}.infoCols{display:grid;grid-template-columns:1fr 1fr;gap:12px}.infoBox{background:var(--soft);border:1px solid var(--line);border-radius:13px;padding:15px}.infoBox h4{font-size:13px;margin:0 0 8px;color:var(--ink2)}.infoBox p{color:var(--ink2);font-size:14px;margin:0}.infoBox.warn{background:var(--amber2);border-color:#e6cfab}.infoBox.warn h4{color:var(--amber)}.rule{height:1px;background:var(--line);margin:18px 0}.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;counter-reset:step}.step{border:1px solid var(--line);padding:13px;border-radius:12px;min-height:95px}.step::before{counter-increment:step;content:counter(step);display:grid;place-items:center;width:24px;height:24px;border-radius:9px;color:var(--blue);background:var(--blue2);font-size:12px;font-weight:850;margin-bottom:9px}.step p{margin:0;font-size:13px;color:var(--ink2)}pre.code{white-space:pre-wrap;word-break:break-word;font:13px/1.65 Consolas,Monaco,monospace;background:#142338;color:#ebf5ff;border-radius:12px;padding:15px;margin:10px 0;overflow:auto}
+.quizcard{background:var(--soft);border:1px solid #c5d6f5;border-radius:14px;padding:18px;margin-top:18px}.quizcard h3{font-size:16px;margin:0 0 12px}.quizQ{font-weight:750;font-size:15px;margin:4px 0 13px}.radioChoice{display:flex;align-items:flex-start;gap:11px;border:1px solid var(--line);border-radius:11px;padding:11px 13px;background:var(--paper);margin:8px 0;cursor:pointer}.radioChoice:hover{border-color:#99b6f3}.radioChoice.selected{border-color:var(--blue);background:var(--blue2)}.radioChoice input{width:16px;height:16px;flex:none;margin:4px 0 0;accent-color:#2864df}.choiceText{font-size:13px;color:var(--ink2)}.quizActions{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-top:12px}.feedback{padding:11px 13px;border-radius:11px;margin-top:12px;font-size:13px}.feedback.good{background:var(--teal2);color:var(--teal)}.feedback.bad{background:var(--red2);color:var(--red)}
+.noteArea{margin-top:15px;padding:14px;border:1px solid var(--line);border-radius:13px}.noteArea textarea{resize:vertical;min-height:92px;line-height:1.7}.noteActions{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:8px}.noteActions span{font-size:11px;color:var(--muted)}.lessonFooter{display:flex;gap:9px;justify-content:space-between;padding:18px 29px;border-top:1px solid var(--line);background:var(--soft);flex-wrap:wrap}.lessonFooter .btn{max-width:48%;white-space:normal;text-align:left}.lessonFooter .btn:last-child{text-align:right}
+.sectionView{padding:24px}.sectionView h2{margin:0 0 5px;font-size:24px}.sectionSub{color:var(--muted);font-size:14px;margin-bottom:18px}.gridCards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.featureCard{border:1px solid var(--line);background:var(--paper);border-radius:14px;padding:18px;text-align:left;display:flex;flex-direction:column;gap:10px;color:var(--ink);min-height:185px}.featureCard:hover{border-color:#9ab5ea;box-shadow:0 8px 25px rgba(36,82,146,.07);transform:translateY(-1px)}.featureCard h3{margin:0;font-size:17px}.featureCard p{font-size:13px;color:var(--muted);flex:1;margin:0}.featureCard .meta{color:var(--blue);font-size:12px;font-weight:750}.roadProgress{height:5px;background:var(--line);border-radius:8px;overflow:hidden}.roadProgress span{height:100%;background:var(--teal);display:block}.listCard{border:1px solid var(--line);border-radius:12px;padding:15px;margin:10px 0;background:var(--paper)}.listCard:hover{border-color:#b8caec}.listCard .titleline{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.listCard h3{margin:0;font-size:15px}.listCard p{font-size:13px;color:var(--muted);margin:8px 0}.listCard .actions{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}.listCard a{font-size:13px;font-weight:750;text-decoration:none}.listCard a:hover{text-decoration:underline}.reviewTabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.reviewTabs .btn.active{background:var(--blue2);color:var(--blue);border-color:#a8c1fa}.reviewGrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}.reviewQuiz{padding:16px;border:1px solid var(--line);border-radius:14px;background:var(--soft)}.reviewQuiz h3{margin:0 0 10px}.reviewQueue{max-height:465px;overflow:auto}.reviewQueue button{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;border:0;background:transparent;color:var(--ink2);text-align:left;border-radius:8px;padding:9px 10px;font-size:13px}.reviewQueue button:hover{background:var(--blue2)}.reviewEmpty{text-align:center;padding:32px 18px;color:var(--muted);border:1px dashed var(--line);border-radius:12px;font-size:13px}.resourceTop{display:flex;gap:9px;flex-wrap:wrap;margin:14px 0}.resourceTop .field{max-width:440px}.resourceTag{font-size:11px;font-weight:750;color:var(--blue)}.resourceList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.resourceItem{border:1px solid var(--line);padding:16px;border-radius:13px;background:var(--paper)}.resourceItem h3{font-size:16px;margin:5px 0}.resourceItem p{font-size:13px;color:var(--ink2)}.resourceItem small{display:block;color:var(--muted);margin:0 0 10px}.resourceItem a{font-size:13px;font-weight:750}.settingCard{padding:19px;border:1px solid var(--line);border-radius:13px;margin:12px 0}.settingCard h3{margin:0 0 7px}.settingCard p{font-size:13px;color:var(--muted)}.settingCard .btn{margin-right:8px;margin-top:8px}.appFooter{text-align:center;color:var(--muted);font-size:11px;margin:24px 0 0}.toast{position:fixed;bottom:28px;left:50%;transform:translate(-50%,25px);background:#162b47;color:#fff;border:1px solid #385378;border-radius:11px;padding:12px 18px;font-size:13px;opacity:0;pointer-events:none;transition:.2s;z-index:100;max-width:90vw;box-shadow:0 16px 35px rgba(0,0,0,.18)}.toast.show{opacity:1;transform:translate(-50%,0)}.overlay{display:none}.bottomnav{display:none}.noData{padding:35px 18px;text-align:center;color:var(--muted);font-size:14px}.kbd{background:var(--soft);border:1px solid var(--line);padding:1px 5px;border-radius:5px}
+@media(max-width:1100px){.brandtext span{display:none}.navtabs button{padding:9px 10px}.gridCards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:900px){.shell{padding:15px 14px 100px}.topinner{padding:0 14px}.hero{grid-template-columns:1fr 1fr}.learningGrid{grid-template-columns:240px minmax(0,1fr);gap:12px}.sidepanel{top:80px}.infoCols{grid-template-columns:1fr}.steps{grid-template-columns:1fr}.step{min-height:0}.step:before{float:left;margin:0 10px 0 0}}
+@media(max-width:720px){.navtabs{display:none}.mobileMenu{display:inline-block}.hero{grid-template-columns:1fr}.heroMain{padding:22px}.heroStats{padding:16px}.searchrow{grid-template-columns:1fr 1fr}.searchwrap{grid-column:1/-1}.searchrow .btn{grid-column:1/-1}.learningGrid{display:block}.sidepanel{display:none;position:fixed;z-index:55;left:10px;right:10px;top:75px;max-height:calc(100dvh - 150px);box-shadow:0 12px 50px rgba(0,0,0,.23)}.sidepanel.open{display:flex}.overlay.open{display:block;position:fixed;inset:0;background:rgba(5,16,34,.55);z-index:50}.bottomnav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));position:fixed;bottom:0;left:0;right:0;background:var(--paper);border-top:1px solid var(--line);padding:6px max(6px,env(safe-area-inset-left)) calc(6px + env(safe-area-inset-bottom));z-index:40}.bottomnav button{border:0;background:transparent;color:var(--muted);font-size:10px;border-radius:8px;padding:6px 2px;line-height:1.35;display:flex;flex-direction:column;align-items:center;gap:1px}.bottomnav button b{font-size:17px}.bottomnav button.active{color:var(--blue);background:var(--blue2)}.shell{padding-bottom:90px}.sectionView{padding:17px}.reviewGrid,.resourceList{grid-template-columns:1fr}.topright{gap:5px}}
+@media(max-width:450px){.brandtext strong{font-size:13px}.brandmark{width:34px;height:34px}.iconbutton{padding:5px 8px}.heroMain h1{font-size:25px}.heroStats .statbig{font-size:27px}.statitem span{font-size:10px}.searchrow{gap:8px}.lessonTop{padding:19px 17px}.sectionPad{padding:19px 17px}.lessonFooter{padding:15px 17px}.lessonFooter .btn{font-size:12px}.infoBox{padding:13px}.heroActions .btn{padding:9px 11px}}
+@media print{.topbar,.topright,.hero,.searchrow,.sidepanel,.lessonQuickActions,.quizActions,.noteActions,.lessonFooter,.bottomnav,.overlay,.toast,.appFooter{display:none!important}.shell{padding:0}.learningGrid{display:block}.panel{box-shadow:none;border:0}.sectionPad,.lessonTop{padding:14px}.quizcard{background:#fff}.infoBox{break-inside:avoid}body{background:#fff} .sectionView{display:none}}
+
+/* Offline / iOS preview compatibility: native read-only fallback when JS is disabled */
+html:not(.app-ready) .topbar, html:not(.app-ready) .shell, html:not(.app-ready) .bottomnav,
+html:not(.app-ready) .overlay, html:not(.app-ready) .toast {display:none!important}
+.preview-fallback {max-width:940px;margin:0 auto;padding:22px 16px 70px;display:block;background:var(--bg);color:var(--ink)}
+html.app-ready .preview-fallback{display:none!important}
+.preview-fallback h1{font-size:clamp(24px,5vw,34px);margin:0 0 6px}
+.fallback-alert{background:#fff0db;border:2px solid #f3c477;border-radius:13px;padding:17px;margin:16px 0;color:#734400}
+.fallback-alert strong{display:block;font-size:16px}
+.fallback-alert p{margin:5px 0}
+.fallback-list{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0 20px}
+.fallback-list a{display:inline-block;background:#eef3ff;border:1px solid #d8e5ff;border-radius:9px;padding:8px 10px;font-size:13px;text-decoration:none;color:#16439b}
+.fallback-item{background:white;border:1px solid #e5e9ef;border-radius:12px;margin-bottom:12px;padding:17px;break-inside:avoid}
+.fallback-item h2{font-size:17px;margin:0 0 5px}
+.fallback-item p{margin:8px 0;font-size:14px}
+.fallback-item .label{font-size:12px;font-weight:bold;color:#4166a5}
+.fallback-item .answer{background:#ecf8f0;border-radius:8px;padding:9px;margin-top:6px}
+.fallback-toplink{text-decoration:none;color:#2055b7;font-size:12px}
+@media(max-width:600px){.preview-fallback{padding:16px 12px 90px}.fallback-item{padding:14px}}
+
+@media(max-width:900px){
+ .sidepanel{left:0!important;right:auto!important;width:min(85vw,360px)!important;top:65px!important;max-height:calc(100dvh - 80px)!important;border-radius:0 15px 15px 0!important;}
+ .mobileClose{display:inline-flex!important;align-items:center;justify-content:center;min-width:34px;height:34px;border:1px solid var(--line);border-radius:9px;background:var(--paper);color:var(--ink)}
+}
+.mobileClose{display:none}
+</style>
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default">
+</head>
+<body>
+<div class="preview-fallback" id="previewFallback">
+ <h1 id="fallbackTop">软件开发学习手册 · 阅读模式</h1>
+ <p>67 课完整内容 · 广告字加工类比 · ERP 实例</p>
+ <div class="fallback-alert" role="status">
+ <strong>当前打开方式不支持交互脚本</strong>
+ <p>你可能是在 iPhone「文件」预览或聊天附件预览中打开 HTML。该预览只能显示内容，无法运行课程按钮、搜索、测验和进度保存。</p>
+ <p><b>想要正常点击所有功能：</b>请在 Safari 访问部署后的 HTTPS 网页，或用支持运行 JavaScript 的 HTML 浏览器打开此文件。下方内容无需脚本仍可阅读。</p>
+ <p>如需发布到 GitHub Pages：使用同时提供的「Safari 可用部署包」，上传至 Pages 网站。无需后端服务器。</p>
+ </div>
+ <p><b>知识目录：</b>点击课程编号跳转。下方会显示全部内容与正确答案，用于离线复习；交互式答题需要在正式浏览器打开。</p>
+ <nav class="fallback-list" aria-label="阅读模式课程目录"><a href="#read-1">第1课 · 什么是软件</a><a href="#read-2">第2课 · 什么是代码</a><a href="#read-3">第3课 · 什么是编程语言</a><a href="#read-4">第4课 · 什么是前端</a><a href="#read-5">第5课 · 什么是后端</a><a href="#read-6">第6课 · 什么是数据库</a><a href="#read-7">第7课 · 前端、后端、数据库怎样配合</a><a href="#read-8">第8课 · 什么是服务器</a><a href="#read-9">第9课 · 本地运行与云端运行</a><a href="#read-10">第10课 · 什么是框架（Framework）</a><a href="#read-11">第11课 · 什么是 API（基础）</a><a href="#read-12">第12课 · 什么是 Bug</a><a href="#read-13">第13课 · 什么是软件测试</a><a href="#read-14">第14课 · 什么是软件版本</a><a href="#read-15">第15课 · 什么是软件需求</a><a href="#read-16">第16课 · 什么是软件设计</a><a href="#read-17">第17课 · 什么是软件开发</a><a href="#read-18">第18课 · 什么是软件部署</a><a href="#read-19">第19课 · 什么是软件维护</a><a href="#read-20">第20课 · 软件开发中的角色分工</a><a href="#read-21">第21课 · 什么是产品经理</a><a href="#read-22">第22课 · 什么是 UI 与 UX</a><a href="#read-23">第23课 · 什么是前端开发工程师</a><a href="#read-24">第24课 · 什么是后端开发工程师</a><a href="#read-25">第25课 · 什么是 QA（质量保证）</a><a href="#read-26">第26课 · 什么是 DevOps</a><a href="#read-27">第27课 · 什么是 PR 与 Code Review</a><a href="#read-28">第28课 · 什么是 Branch（分支）</a><a href="#read-29">第29课 · 什么是 Merge（合并）</a><a href="#read-30">第30课 · 什么是 Rollback（回退）</a><a href="#read-31">第31课 · 什么是 Conflict（冲突）</a><a href="#read-32">第32课 · 什么是自动化测试</a><a href="#read-33">第33课 · 什么是持续集成（CI）</a><a href="#read-34">第34课 · 什么是持续交付与持续部署（CD）</a><a href="#read-35">第35课 · 什么是 Docker</a><a href="#read-36">第36课 · 什么是开源软件</a><a href="#read-37">第37课 · 什么是 GitHub</a><a href="#read-38">第38课 · 什么是 Repository（仓库）</a><a href="#read-39">第39课 · 什么是 Commit（提交）</a><a href="#read-40">第40课 · 什么是 Push（推送）</a><a href="#read-41">第41课 · 什么是 Pull（拉取）</a><a href="#read-42">第42课 · 什么是 Clone（克隆）</a><a href="#read-43">第43课 · 什么是 Fork（派生仓库）</a><a href="#read-44">第44课 · 什么是 README.md</a><a href="#read-45">第45课 · 什么是 package.json</a><a href="#read-46">第46课 · 什么是 npm</a><a href="#read-47">第47课 · 什么是 Node.js</a><a href="#read-48">第48课 · API 在 ERP 对接中的应用</a><a href="#read-49">第49课 · 数据库：本地存储与云端存储</a><a href="#read-50">第50课 · 什么是 SQL</a><a href="#read-51">第51课 · 数据库表、行、列和主键</a><a href="#read-52">第52课 · 关系型数据库和 IndexedDB</a><a href="#read-53">第53课 · Dexie 和数据库升级</a><a href="#read-54">第54课 · 本地数据和云端同步</a><a href="#read-55">第55课 · HTTP 请求与响应</a><a href="#read-56">第56课 · JSON 和 REST API</a><a href="#read-57">第57课 · 登录认证和权限控制</a><a href="#read-58">第58课 · HTML、CSS、JavaScript 各负责什么</a><a href="#read-59">第59课 · React 组件、状态和路由</a><a href="#read-60">第60课 · TypeScript 是什么</a><a href="#read-61">第61课 · Vite：开发运行与正式构建</a><a href="#read-62">第62课 · 单元、集成、端到端与回归测试</a><a href="#read-63">第63课 · 环境变量和密钥管理</a><a href="#read-64">第64课 · Docker 镜像、容器、卷和网络</a><a href="#read-65">第65课 · 日志、监控、备份和恢复</a><a href="#read-66">第66课 · Codex 任务拆分与验收</a><a href="#read-67">第67课 · Codex 安全开发工作流</a></nav><div class="fallback-chapters"><article id="read-1" class="fallback-item"><span class="label">第 1 课 · 软件是怎样工作的</span><h2>什么是软件</h2>
+ <p><b>核心概念：</b>软件是让电脑或设备按照要求完成工作的程序和相关数据。</p>
+ <p><b>广告加工厂类比：</b>一套完整的广告加工方案：不只是机器，还包括图纸、工艺规则、材料数据和操作流程。</p>
+ <p><b>在 ERP 中：</b>ERP 是一套软件，帮助工厂管理客户、报价、订单、生产和财务。</p>
+ <p><b>易错点：</b>软件不等于某一个网页，也不等于一堆代码；它通常由程序、数据、配置和运行环境共同组成。</p>
+ <p><b>复习题：</b>ERP 最准确地说是什么？</p><ol style="list-style:none;padding-left:2px"><li>A：一套帮助工厂完成管理工作的软件系统</li><li>B：只有一个网页图片</li><li>C：一台服务器</li></ol>
+ <p class="answer">参考答案：<b>A</b>。ERP 是由多个功能和数据组成的软件系统。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-2" class="fallback-item"><span class="label">第 2 课 · 软件是怎样工作的</span><h2>什么是代码</h2>
+ <p><b>核心概念：</b>代码是开发人员写给电脑执行的指令。</p>
+ <p><b>广告加工厂类比：</b>像给雕刻机输入加工路径和参数，机器按照指令加工。</p>
+ <p><b>在 ERP 中：</b>按钮点击、报价计算、订单保存等行为，背后都由代码实现。</p>
+ <p><b>易错点：</b>代码只是实现方式；代码写出来不代表功能已经正确，仍要运行和测试。</p>
+ <p><b>复习题：</b>代码最主要的作用是什么？</p><ol style="list-style:none;padding-left:2px"><li>A：告诉电脑应该执行什么操作</li><li>B：自动保证业务规则正确</li><li>C：代替数据库保存所有资料</li></ol>
+ <p class="answer">参考答案：<b>A</b>。代码表达程序指令，但正确性仍要靠设计、测试和验收。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-3" class="fallback-item"><span class="label">第 3 课 · 软件是怎样工作的</span><h2>什么是编程语言</h2>
+ <p><b>核心概念：</b>编程语言是人们用来编写电脑指令的一套规则和语法。</p>
+ <p><b>广告加工厂类比：</b>不同机器可能使用不同的加工指令格式；编程语言也有不同语法。</p>
+ <p><b>在 ERP 中：</b>你的 ERP 使用 JavaScript/TypeScript；CDR 插件可能使用 C#。</p>
+ <p><b>易错点：</b>不同语言各有用途；不需要一开始学很多语言，先理解项目正在使用的语言即可。</p>
+ <p><b>复习题：</b>JavaScript 和 C# 属于什么？</p><ol style="list-style:none;padding-left:2px"><li>A：编程语言</li><li>B：数据库</li><li>C：代码托管平台</li></ol>
+ <p class="answer">参考答案：<b>A</b>。它们都是编程语言，可用于编写不同类型的软件。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-4" class="fallback-item"><span class="label">第 4 课 · 软件是怎样工作的</span><h2>什么是前端</h2>
+ <p><b>核心概念：</b>前端是用户直接看到并操作的软件部分。</p>
+ <p><b>广告加工厂类比：</b>像门店招牌正面和操作台，是客户或员工直接接触的部分。</p>
+ <p><b>在 ERP 中：</b>客户列表、报价录入页面、按钮、表格和手机卡片布局属于前端界面。</p>
+ <p><b>易错点：</b>前端不只是外观，也包含交互和部分业务逻辑；但不能把所有数据安全责任都放在前端。</p>
+ <p><b>复习题：</b>ERP 中客户列表和新增按钮主要属于哪一部分？</p><ol style="list-style:none;padding-left:2px"><li>A：前端</li><li>B：数据库服务器</li><li>C：Git 分支</li></ol>
+ <p class="answer">参考答案：<b>A</b>。它们是用户直接看到和操作的界面元素。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-5" class="fallback-item"><span class="label">第 5 课 · 软件是怎样工作的</span><h2>什么是后端</h2>
+ <p><b>核心概念：</b>后端是软件在后台处理业务、数据和权限的部分。</p>
+ <p><b>广告加工厂类比：</b>像工厂后台的生产调度、核价和仓库记录，客户不一定直接看到。</p>
+ <p><b>在 ERP 中：</b>报价规则、订单状态校验、员工权限、服务器端数据处理通常由后端承担。</p>
+ <p><b>易错点：</b>前端和后端不是绝对分界；一些校验和计算也可能在前端执行，关键是安全和权威数据应由可信端控制。</p>
+ <p><b>复习题：</b>订单状态和权限校验通常更应该由哪一层负责最终判断？</p><ol style="list-style:none;padding-left:2px"><li>A：可信的后端服务</li><li>B：页面颜色样式</li><li>C：README 文件</li></ol>
+ <p class="answer">参考答案：<b>A</b>。后端可以在可信环境中执行权威校验，避免只依赖浏览器端。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-6" class="fallback-item"><span class="label">第 6 课 · 软件是怎样工作的</span><h2>什么是数据库</h2>
+ <p><b>核心概念：</b>数据库是用来保存、组织、查找和管理软件数据的系统。</p>
+ <p><b>广告加工厂类比：</b>像广告厂的客户档案柜，把客户资料、报价单、订单和员工信息分类保存。</p>
+ <p><b>在 ERP 中：</b>员工录入客户资料后，系统把信息存入数据库，下次重新打开仍能查询到。</p>
+ <p><b>易错点：</b>数据库并不保证数据不会丢失，必须有合理的备份和权限管理。</p>
+ <p><b>复习题：</b>想长期保存并查询客户和订单资料，应该使用什么？</p><ol style="list-style:none;padding-left:2px"><li>A：数据库</li><li>B：页面颜色</li><li>C：Git 分支</li></ol>
+ <p class="answer">参考答案：<b>A</b>。数据库专门负责持久保存、组织和查询数据。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-7" class="fallback-item"><span class="label">第 7 课 · 软件是怎样工作的</span><h2>前端、后端、数据库怎样配合</h2>
+ <p><b>核心概念：</b>前端接收用户操作，后端处理业务和权限，数据库保存与查询数据，三者可以共同完成一个功能。</p>
+ <p><b>广告加工厂类比：</b>像业务接单窗口 → 生产调度办公室 → 资料档案室，完成接单、处理和存档。</p>
+ <p><b>在 ERP 中：</b>员工在前端点击保存订单，后端校验权限和订单内容，再写入数据库并返回结果。</p>
+ <p><b>易错点：</b>这是常见云端架构的简化图；本地浏览器 ERP 也可能直接通过 Dexie 操作 IndexedDB，不一定有独立后端。</p>
+ <p><b>复习题：</b>云端 ERP 中员工点击保存，哪种协作方式更合理？</p><ol style="list-style:none;padding-left:2px"><li>A：前端接收操作→后端处理→数据库保存</li><li>B：只由 CSS 保存数据</li><li>C：GitHub 自动计算订单</li></ol>
+ <p class="answer">参考答案：<b>A</b>。用户交互、可信处理和数据保存分别由对应部分配合完成。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-8" class="fallback-item"><span class="label">第 8 课 · 软件是怎样工作的</span><h2>什么是服务器</h2>
+ <p><b>核心概念：</b>服务器可以指提供服务的电脑，也可以指运行在电脑上的服务程序。</p>
+ <p><b>广告加工厂类比：</b>像工厂中央调度室，接收各部门请求并提供统一资料或处理能力。</p>
+ <p><b>在 ERP 中：</b>云端 ERP 的服务器可以接收员工请求、处理订单并访问共享数据库。</p>
+ <p><b>易错点：</b>服务器不一定是特别大型的机器；一台普通电脑也能临时充当服务器。</p>
+ <p><b>复习题：</b>服务器最主要的作用是什么？</p><ol style="list-style:none;padding-left:2px"><li>A：向其他设备或程序提供服务</li><li>B：只负责设计页面颜色</li><li>C：专门保存 Git 提交说明</li></ol>
+ <p class="answer">参考答案：<b>A</b>。服务器的核心是向客户端或其他系统提供服务。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-9" class="fallback-item"><span class="label">第 9 课 · 软件是怎样工作的</span><h2>本地运行与云端运行</h2>
+ <p><b>核心概念：</b>本地运行通常依赖当前电脑；云端运行由服务器提供服务，可供多人通过网络访问。</p>
+ <p><b>广告加工厂类比：</b>本地像某个工位自己的资料柜；云端像公司中央档案室，多个部门可按权限访问。</p>
+ <p><b>在 ERP 中：</b>本地 Vite 开发环境适合开发和测试；多人正式使用通常需要云端后端和共享数据库。</p>
+ <p><b>易错点：</b>本地网页能打开，不代表其他员工能访问；仅把前端放到云端，也不等于完成多人协作架构。</p>
+ <p><b>复习题：</b>想让不同门店员工共享同一份订单数据，通常需要什么？</p><ol style="list-style:none;padding-left:2px"><li>A：云端服务和共享数据架构</li><li>B：每个人各自保存一份浏览器数据</li><li>C：只把网页截图发给员工</li></ol>
+ <p class="answer">参考答案：<b>A</b>。多人共享需要共同的数据服务、身份和权限控制。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-10" class="fallback-item"><span class="label">第 10 课 · 软件是怎样工作的</span><h2>什么是框架（Framework）</h2>
+ <p><b>核心概念：</b>框架提供一套组织软件和实现功能的基础结构与规则。</p>
+ <p><b>广告加工厂类比：</b>像一套标准化生产线布局和工装夹具，规定常见工序如何组织。</p>
+ <p><b>在 ERP 中：</b>React 常被称为 UI 库；Vite 是构建工具。项目可能还使用路由、状态管理等框架或库。</p>
+ <p><b>易错点：</b>框架和库并非完全一样：通常框架对整体结构和调用流程约束更多；React 本身更准确地说是 UI 库。</p>
+ <p><b>复习题：</b>框架最主要提供什么？</p><ol style="list-style:none;padding-left:2px"><li>A：组织程序结构和常见能力的基础方案</li><li>B：自动替老板决定所有业务规则</li><li>C：自动保证程序没有 Bug</li></ol>
+ <p class="answer">参考答案：<b>A</b>。框架提供结构和约定，但不会替代业务决策与测试。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-11" class="fallback-item"><span class="label">第 11 课 · 软件是怎样工作的</span><h2>什么是 API（基础）</h2>
+ <p><b>核心概念：</b>API 是软件或模块之间按照约定交换信息、调用功能的接口。</p>
+ <p><b>广告加工厂类比：</b>像工厂和供应商约定好的采购窗口：按规定提交订单，按规定收到价格或库存结果。</p>
+ <p><b>在 ERP 中：</b>ERP 可以通过 API 请求支付系统查询付款状态，也可以让前端请求后端获取订单。</p>
+ <p><b>易错点：</b>API 不一定通过互联网；它也可以是本地程序、模块或设备之间的接口。</p>
+ <p><b>复习题：</b>ERP 和支付系统按约定交换支付信息，通常使用什么？</p><ol style="list-style:none;padding-left:2px"><li>A：API</li><li>B：README</li><li>C：Git Branch</li></ol>
+ <p class="answer">参考答案：<b>A</b>。API 定义了双方如何调用功能和交换数据。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-12" class="fallback-item"><span class="label">第 12 课 · 从需求到产品</span><h2>什么是 Bug</h2>
+ <p><b>核心概念：</b>Bug 是软件实际行为与预期行为不一致的问题。</p>
+ <p><b>广告加工厂类比：</b>像图纸要求字高 300mm，实际加工却只有 280mm。</p>
+ <p><b>在 ERP 中：</b>报价本应按最长边计价，却错误地按面积计价，就是 Bug。</p>
+ <p><b>易错点：</b>用户不喜欢的设计未必是 Bug；要先确认是否违反明确需求或预期行为。</p>
+ <p><b>复习题：</b>程序计算结果与已确认报价规则不一致，通常叫什么？</p><ol style="list-style:none;padding-left:2px"><li>A：Bug</li><li>B：Fork</li><li>C：API</li></ol>
+ <p class="answer">参考答案：<b>A</b>。实际结果偏离预期规则就是软件缺陷。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-13" class="fallback-item"><span class="label">第 13 课 · 从需求到产品</span><h2>什么是软件测试</h2>
+ <p><b>核心概念：</b>测试是通过检查和执行软件，判断它是否符合要求并发现缺陷。</p>
+ <p><b>广告加工厂类比：</b>像招牌出厂前测尺寸、检查焊点、通电和检查安装孔位。</p>
+ <p><b>在 ERP 中：</b>输入不同尺寸和边界值，检查报价金额、保存和查询是否正确。</p>
+ <p><b>易错点：</b>测试通过只说明已覆盖的测试场景通过，不代表软件绝对没有问题。</p>
+ <p><b>复习题：</b>输入多组尺寸并核对计算结果，属于什么？</p><ol style="list-style:none;padding-left:2px"><li>A：软件测试</li><li>B：软件部署</li><li>C：Fork</li></ol>
+ <p class="answer">参考答案：<b>A</b>。这是验证软件行为是否符合预期。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-14" class="fallback-item"><span class="label">第 14 课 · 从需求到产品</span><h2>什么是软件版本</h2>
+ <p><b>核心概念：</b>版本是软件某个发布阶段或状态的标识，例如 V1.0、V1.1。</p>
+ <p><b>广告加工厂类比：</b>像门头施工图的 A 版、B 版和最终确认版。</p>
+ <p><b>在 ERP 中：</b>V1.0 可能只有客户和报价；V2.0 增加生产和财务。</p>
+ <p><b>易错点：</b>版本号是人为制定的标识规则，不同团队可能采用不同版本策略。</p>
+ <p><b>复习题：</b>V1.0 和 V2.0 通常表示什么？</p><ol style="list-style:none;padding-left:2px"><li>A：软件不同发布版本</li><li>B：两条 Git 分支</li><li>C：两个数据库表</li></ol>
+ <p class="answer">参考答案：<b>A</b>。版本号用于标识软件发布或开发阶段。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-15" class="fallback-item"><span class="label">第 15 课 · 从需求到产品</span><h2>什么是软件需求</h2>
+ <p><b>核心概念：</b>软件需求说明软件要解决的问题、必须实现的功能，以及怎样算成功。</p>
+ <p><b>广告加工厂类比：</b>像广告厂接单必须确认尺寸、材料、数量、制作工艺和验收条件。</p>
+ <p><b>在 ERP 中：</b>“两边都不足 1 米时按最长边计价”是明确需求；“做一个好用的报价系统”过于模糊。</p>
+ <p><b>易错点：</b>需求不仅有功能要求，还应该明确边界、失败处理和验收标准。</p>
+ <p><b>复习题：</b>下列哪个是更明确的软件需求？</p><ol style="list-style:none;padding-left:2px"><li>A：做一个更好用的软件</li><li>B：按已确认的尺寸计价规则计算并保存报价单</li><li>C：尽量漂亮就行</li></ol>
+ <p class="answer">参考答案：<b>B</b>。明确了输入处理规则和要达到的结果。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-16" class="fallback-item"><span class="label">第 16 课 · 从需求到产品</span><h2>什么是软件设计</h2>
+ <p><b>核心概念：</b>软件设计是在编码前规划页面、数据结构、模块关系和操作流程。</p>
+ <p><b>广告加工厂类比：</b>像先出门头施工图，确定结构、尺寸、材料和安装节点，再加工。</p>
+ <p><b>在 ERP 中：</b>先画报价录入流程、确定报价字段和数据流，再让 Codex 编写代码。</p>
+ <p><b>易错点：</b>设计不是只画 UI；还包括数据、权限、异常流程和模块边界。</p>
+ <p><b>复习题：</b>编码前先规划页面和数据流程，属于什么？</p><ol style="list-style:none;padding-left:2px"><li>A：软件设计</li><li>B：软件部署</li><li>C：数据库备份</li></ol>
+ <p class="answer">参考答案：<b>A</b>。这是在实现之前规划系统如何工作。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-17" class="fallback-item"><span class="label">第 17 课 · 从需求到产品</span><h2>什么是软件开发</h2>
+ <p><b>核心概念：</b>开发是把需求和设计转化为可运行软件的实现过程。</p>
+ <p><b>广告加工厂类比：</b>像按施工图切割、焊接、组装和加工招牌。</p>
+ <p><b>在 ERP 中：</b>Codex 编写页面、报价逻辑、数据保存和接口代码，属于开发工作。</p>
+ <p><b>易错点：</b>开发不只是敲代码，还包括调试、集成、测试和修复。</p>
+ <p><b>复习题：</b>按照设计编写报价计算逻辑，属于什么？</p><ol style="list-style:none;padding-left:2px"><li>A：软件开发</li><li>B：Fork</li><li>C：软件维护</li></ol>
+ <p class="answer">参考答案：<b>A</b>。这是把设计要求实现成软件功能。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-18" class="fallback-item"><span class="label">第 18 课 · 从需求到产品</span><h2>什么是软件部署</h2>
+ <p><b>核心概念：</b>部署是把软件发布到目标环境并配置好，让它能够实际运行。</p>
+ <p><b>广告加工厂类比：</b>像把加工好的招牌运到门店，按现场条件安装、接电并验收。</p>
+ <p><b>在 ERP 中：</b>把前端构建产物、后端服务和数据库配置部署到服务器，员工才能访问正式系统。</p>
+ <p><b>易错点：</b>部署不等于开发完成；还要检查配置、数据迁移、权限、域名、备份和回退。</p>
+ <p><b>复习题：</b>把 ERP 发布到服务器并配置运行环境，属于什么？</p><ol style="list-style:none;padding-left:2px"><li>A：部署</li><li>B：需求分析</li><li>C：代码审核</li></ol>
+ <p class="answer">参考答案：<b>A</b>。部署是将软件放入目标运行环境。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-19" class="fallback-item"><span class="label">第 19 课 · 从需求到产品</span><h2>什么是软件维护</h2>
+ <p><b>核心概念：</b>维护是在软件运行后修复问题、保障安全稳定，并进行必要改进。</p>
+ <p><b>广告加工厂类比：</b>像雕刻机投产后定期保养、排故和更换损耗件。</p>
+ <p><b>在 ERP 中：</b>修复报价错误、升级依赖、修补安全问题、检查备份都属于维护。</p>
+ <p><b>易错点：</b>维护不等于随意增加功能；已确认的报价和生产规则不能未经批准被改变。</p>
+ <p><b>复习题：</b>ERP 上线后发现报价计算错误并修复，属于什么？</p><ol style="list-style:none;padding-left:2px"><li>A：软件维护</li><li>B：首次需求分析</li><li>C：Fork</li></ol>
+ <p class="answer">参考答案：<b>A</b>。上线后的故障修复和稳定性保障属于维护。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-20" class="fallback-item"><span class="label">第 20 课 · 岗位与协作</span><h2>软件开发中的角色分工</h2>
+ <p><b>核心概念：</b>不同角色负责产品决策、设计、实现、测试和运行保障。</p>
+ <p><b>广告加工厂类比：</b>像广告厂的业务、设计、排版、生产和质检岗位分工。</p>
+ <p><b>在 ERP 中：</b>经营者定义业务规则，Codex 协助实现，使用者参与验收，运维保障系统运行。</p>
+ <p><b>易错点：</b>小团队中一个人可以承担多个角色；AI 也能协助多项工作，但责任和验收不能无人负责。</p>
+ <p><b>复习题：</b>不同岗位合作完成需求、设计、开发和测试，体现什么？</p><ol style="list-style:none;padding-left:2px"><li>A：角色分工</li><li>B：代码冲突</li><li>C：数据库索引</li></ol>
+ <p class="answer">参考答案：<b>A</b>。不同职责共同完成软件项目。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-21" class="fallback-item"><span class="label">第 21 课 · 岗位与协作</span><h2>什么是产品经理</h2>
+ <p><b>核心概念：</b>产品经理负责理解用户问题、确定产品方向、规划需求优先级和验收目标。</p>
+ <p><b>广告加工厂类比：</b>像工厂负责人确定做什么产品、服务哪些客户、先安排哪条生产线。</p>
+ <p><b>在 ERP 中：</b>你确定 CDR 读取优先、手动录入备用，以及报价规则独立管理，属于产品决策。</p>
+ <p><b>易错点：</b>产品经理决定做什么和为什么，不必亲自写每一行代码。</p>
+ <p><b>复习题：</b>决定 ERP 必须先实现哪些业务功能，主要属于什么职责？</p><ol style="list-style:none;padding-left:2px"><li>A：产品管理</li><li>B：前端样式开发</li><li>C：服务器巡检</li></ol>
+ <p class="answer">参考答案：<b>A</b>。产品管理负责方向、需求和优先级。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-22" class="fallback-item"><span class="label">第 22 课 · 岗位与协作</span><h2>什么是 UI 与 UX</h2>
+ <p><b>核心概念：</b>UI 关注界面呈现；UX 关注用户完成任务的整体体验。</p>
+ <p><b>广告加工厂类比：</b>UI 像招牌的颜色、字体和排版；UX 像客户是否容易找到入口、看清信息和完成操作。</p>
+ <p><b>在 ERP 中：</b>页面漂亮属于 UI；新增报价是否步骤过多、保存反馈是否清楚属于 UX。</p>
+ <p><b>易错点：</b>UX 不只是按钮好不好点，还包括流程、效率、可访问性和错误恢复。</p>
+ <p><b>复习题：</b>页面漂亮但新增报价要点十几次，主要是什么问题？</p><ol style="list-style:none;padding-left:2px"><li>A：UX 用户体验</li><li>B：仅是颜色问题</li><li>C：Git 仓库问题</li></ol>
+ <p class="answer">参考答案：<b>A</b>。完成任务的流程效率属于用户体验。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-23" class="fallback-item"><span class="label">第 23 课 · 岗位与协作</span><h2>什么是前端开发工程师</h2>
+ <p><b>核心概念：</b>前端开发把界面设计转成可交互的网页或应用界面。</p>
+ <p><b>广告加工厂类比：</b>像把招牌设计稿转成可生产的排版和结构文件。</p>
+ <p><b>在 ERP 中：</b>实现客户表格、按钮、表单、移动端卡片和页面交互。</p>
+ <p><b>易错点：</b>前端也要处理状态和输入校验，但不应独自承担所有敏感权限判断。</p>
+ <p><b>复习题：</b>让新增按钮能点击并打开表单，主要属于什么工作？</p><ol style="list-style:none;padding-left:2px"><li>A：前端开发</li><li>B：产品战略</li><li>C：服务器采购</li></ol>
+ <p class="answer">参考答案：<b>A</b>。这是实现用户界面和交互。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-24" class="fallback-item"><span class="label">第 24 课 · 岗位与协作</span><h2>什么是后端开发工程师</h2>
+ <p><b>核心概念：</b>后端开发实现服务端业务处理、数据访问、权限和接口。</p>
+ <p><b>广告加工厂类比：</b>像工厂后台的核价、仓库、排产和财务处理流程。</p>
+ <p><b>在 ERP 中：</b>在服务器上执行订单状态变更、权限校验和报价规则，通常属于后端职责。</p>
+ <p><b>易错点：</b>前端也可能做即时计算；后端负责可信数据和最终规则校验的场景更关键。</p>
+ <p><b>复习题：</b>员工提交订单后，服务器校验权限并保存订单，主要属于什么？</p><ol style="list-style:none;padding-left:2px"><li>A：后端开发</li><li>B：UI 设计</li><li>C：README 编写</li></ol>
+ <p class="answer">参考答案：<b>A</b>。服务端业务和数据处理是后端的主要职责。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-25" class="fallback-item"><span class="label">第 25 课 · 岗位与协作</span><h2>什么是 QA（质量保证）</h2>
+ <p><b>核心概念：</b>QA 关注软件质量流程，测试是发现问题和验证质量的重要手段。</p>
+ <p><b>广告加工厂类比：</b>像工厂建立质量标准、抽检、追溯和返工制度。</p>
+ <p><b>在 ERP 中：</b>检查报价、订单、权限、手机布局和数据保存是否符合要求。</p>
+ <p><b>易错点：</b>QA 不只是点击按钮；还包括测试策略、风险控制、流程改进和质量标准。</p>
+ <p><b>复习题：</b>安排测试验证报价结果是否符合规则，属于哪个质量职责？</p><ol style="list-style:none;padding-left:2px"><li>A：QA / 测试工作</li><li>B：产品宣传</li><li>C：代码托管</li></ol>
+ <p class="answer">参考答案：<b>A</b>。验证功能质量是 QA 的重要工作。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-26" class="fallback-item"><span class="label">第 26 课 · 岗位与协作</span><h2>什么是 DevOps</h2>
+ <p><b>核心概念：</b>DevOps 强调开发与运维协作，并通过自动化让软件交付和运行更可靠。</p>
+ <p><b>广告加工厂类比：</b>像设计、生产、质检和仓储共同制定连续生产流程，而不是各部门互不沟通。</p>
+ <p><b>在 ERP 中：</b>自动构建、测试、发布、监控和备份可以组成 DevOps 实践。</p>
+ <p><b>易错点：</b>DevOps 不只是一个叫“运维工程师”的岗位，也不等于只会部署服务器。</p>
+ <p><b>复习题：</b>让开发、测试和运维通过自动化协作交付软件，属于什么理念？</p><ol style="list-style:none;padding-left:2px"><li>A：DevOps</li><li>B：UI</li><li>C：Fork</li></ol>
+ <p class="answer">参考答案：<b>A</b>。DevOps 关注开发和运维协作及交付自动化。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-27" class="fallback-item"><span class="label">第 27 课 · Git、GitHub 与代码质量</span><h2>什么是 PR 与 Code Review</h2>
+ <p><b>核心概念：</b>PR（Pull Request）是请求把一个分支的修改合并到另一个分支；Code Review 是检查修改的过程。</p>
+ <p><b>广告加工厂类比：</b>先提交试制工艺变更申请，再由负责人检查图纸和质量，决定是否批准。</p>
+ <p><b>在 ERP 中：</b>Codex 完成任务后开 PR；审核者检查改动范围、逻辑、测试和风险，再决定是否合并。</p>
+ <p><b>易错点：</b>PR 不等于审核本身，也不保证审核通过；PR 是 GitHub 等平台上的协作流程，不是 Git 核心命令。</p>
+ <p><b>复习题：</b>PR 和 Code Review 的正确关系是什么？</p><ol style="list-style:none;padding-left:2px"><li>A：PR 是合并请求，Code Review 是审查过程</li><li>B：PR 就是数据库</li><li>C：Code Review 就是部署</li></ol>
+ <p class="answer">参考答案：<b>A</b>。提交申请和审核行为是相关但不同的概念。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-28" class="fallback-item"><span class="label">第 28 课 · Git、GitHub 与代码质量</span><h2>什么是 Branch（分支）</h2>
+ <p><b>核心概念：</b>分支是同一仓库中并行开发的一条提交历史路线。</p>
+ <p><b>广告加工厂类比：</b>像保留正式生产线，同时开一条试制线测试新工艺。</p>
+ <p><b>在 ERP 中：</b>在 feature/order 分支开发订单功能，避免未完成修改直接进入 main。</p>
+ <p><b>易错点：</b>分支不是复制出一份完全独立项目；多个分支仍共享仓库历史，最终可以合并。</p>
+ <p><b>复习题：</b>开发新功能时，想与稳定主线隔离，应该怎么做？</p><ol style="list-style:none;padding-left:2px"><li>A：创建开发分支</li><li>B：删除主分支</li><li>C：把数据库清空</li></ol>
+ <p class="answer">参考答案：<b>A</b>。分支让新工作与主线并行进行。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-29" class="fallback-item"><span class="label">第 29 课 · Git、GitHub 与代码质量</span><h2>什么是 Merge（合并）</h2>
+ <p><b>核心概念：</b>Merge 将另一条分支的提交历史整合到当前分支。</p>
+ <p><b>广告加工厂类比：</b>试制线工艺通过检查后，把成熟工艺纳入正式生产线。</p>
+ <p><b>在 ERP 中：</b>订单功能分支通过审核后，可以合并到 main。</p>
+ <p><b>易错点：</b>合并可能采用 merge commit、squash 或 rebase 等策略；合并前应检查目标分支和测试结果。</p>
+ <p><b>复习题：</b>把已完成的功能分支整合进主分支，叫？</p><ol style="list-style:none;padding-left:2px"><li>A：Merge</li><li>B：Clone</li><li>C：README</li></ol>
+ <p class="answer">参考答案：<b>A</b>。Merge 整合不同分支的开发历史。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-30" class="fallback-item"><span class="label">第 30 课 · Git、GitHub 与代码质量</span><h2>什么是 Rollback（回退）</h2>
+ <p><b>核心概念：</b>回退是恢复到较早的可用状态，但代码撤销、历史重写、生产发布回退和数据库恢复是不同操作。</p>
+ <p><b>广告加工厂类比：</b>新工艺出问题时暂停使用，恢复上一个合格工艺；但已经加工的货物要另行处理。</p>
+ <p><b>在 ERP 中：</b>共享分支通常优先考虑 git revert；生产发布可重新部署上一版本；数据库数据要单独备份和恢复。</p>
+ <p><b>易错点：</b>git reset 可能移动分支指针并改写本地历史；不要把它和安全的生产回退、数据库恢复混为一谈。</p>
+ <p><b>复习题：</b>共享分支上要撤销某次错误提交，通常更安全的方式是？</p><ol style="list-style:none;padding-left:2px"><li>A：创建反向提交（git revert）</li><li>B：直接删除整个仓库</li><li>C：删除所有数据库数据</li></ol>
+ <p class="answer">参考答案：<b>A</b>。Revert 通过新提交撤销改动，通常更适合共享历史。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-31" class="fallback-item"><span class="label">第 31 课 · Git、GitHub 与代码质量</span><h2>什么是 Conflict（冲突）</h2>
+ <p><b>核心概念：</b>当 Git 无法自动判断如何整合不同修改时，就会出现合并冲突。</p>
+ <p><b>广告加工厂类比：</b>两份施工图对同一尺寸给出不同值，需要负责人确定最终方案。</p>
+ <p><b>在 ERP 中：</b>两个任务修改相同代码区域时，合并可能需要人工选择或组合修改。</p>
+ <p><b>易错点：</b>不一定必须两个人同时修改；重叠修改、删除与修改等情况也可能冲突。</p>
+ <p><b>复习题：</b>Git 无法自动决定如何整合重叠修改，叫什么？</p><ol style="list-style:none;padding-left:2px"><li>A：Conflict</li><li>B：Deploy</li><li>C：Package</li></ol>
+ <p class="answer">参考答案：<b>A</b>。冲突意味着需要人工明确最终内容。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-32" class="fallback-item"><span class="label">第 32 课 · Git、GitHub 与代码质量</span><h2>什么是自动化测试</h2>
+ <p><b>核心概念：</b>自动化测试是用程序自动执行预先编写的测试用例。</p>
+ <p><b>广告加工厂类比：</b>像设置自动尺寸检测设备，每批产品按相同标准检测。</p>
+ <p><b>在 ERP 中：</b>每次改报价引擎，自动运行一组固定尺寸、价格和边界条件测试。</p>
+ <p><b>易错点：</b>自动化只能检查写好的用例；业务流程和真实使用仍需人工验收。</p>
+ <p><b>复习题：</b>电脑自动执行预先编写的 100 条报价测试，属于什么？</p><ol style="list-style:none;padding-left:2px"><li>A：自动化测试</li><li>B：人工部署</li><li>C：版本命名</li></ol>
+ <p class="answer">参考答案：<b>A</b>。由程序自动运行测试用例就是自动化测试。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-33" class="fallback-item"><span class="label">第 33 课 · Git、GitHub 与代码质量</span><h2>什么是持续集成（CI）</h2>
+ <p><b>核心概念：</b>CI 是频繁整合代码，并自动运行构建、测试等检查，尽早发现问题。</p>
+ <p><b>广告加工厂类比：</b>每次工序变更后，自动检测设备立即检查尺寸和质量。</p>
+ <p><b>在 ERP 中：</b>Push 或 PR 触发 GitHub Actions，运行 npm run build 和自动化测试。</p>
+ <p><b>易错点：</b>CI 不是“代码一定正确”；它只执行配置好的检查。</p>
+ <p><b>复习题：</b>代码提交后自动运行构建和测试，属于什么？</p><ol style="list-style:none;padding-left:2px"><li>A：持续集成 CI</li><li>B：软件设计</li><li>C：数据库备份</li></ol>
+ <p class="answer">参考答案：<b>A</b>。CI 在代码集成时自动执行质量检查。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-34" class="fallback-item"><span class="label">第 34 课 · Git、GitHub 与代码质量</span><h2>什么是持续交付与持续部署（CD）</h2>
+ <p><b>核心概念：</b>持续交付让软件随时具备发布条件；持续部署则在满足条件后自动发布到生产环境。</p>
+ <p><b>广告加工厂类比：</b>持续交付像检验合格后打包待发货；持续部署像符合规则后自动发货。</p>
+ <p><b>在 ERP 中：</b>ERP 可以先让 CI 通过，再由负责人批准发布；成熟后再考虑自动部署。</p>
+ <p><b>易错点：</b>CD 在不同资料中可能指 Continuous Delivery 或 Continuous Deployment；要看具体上下文。生产系统不应未经授权自动发布高风险变更。</p>
+ <p><b>复习题：</b>检查通过后仍需人工批准再发布，通常更接近什么？</p><ol style="list-style:none;padding-left:2px"><li>A：持续交付</li><li>B：持续部署</li><li>C：代码冲突</li></ol>
+ <p class="answer">参考答案：<b>A</b>。持续交付通常保留发布前的人工批准环节。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-35" class="fallback-item"><span class="label">第 35 课 · Git、GitHub 与代码质量</span><h2>什么是 Docker</h2>
+ <p><b>核心概念：</b>Docker 用镜像和容器封装应用及其依赖，帮助不同环境更一致地运行软件。</p>
+ <p><b>广告加工厂类比：</b>像把设备、配套工具和标准安装说明装进统一运输箱，搬到另一处更容易复现。</p>
+ <p><b>在 ERP 中：</b>可以用 Docker 运行后端服务、数据库或整套测试环境。</p>
+ <p><b>易错点：</b>容器不是完整虚拟机；它通常共享宿主机内核。容器也不会自动解决数据备份和安全问题。</p>
+ <p><b>复习题：</b>Docker 容器与传统虚拟机相比，常见特点是什么？</p><ol style="list-style:none;padding-left:2px"><li>A：容器通常共享宿主机内核，不是完整虚拟机</li><li>B：容器一定包含独立完整操作系统内核</li><li>C：容器自动备份所有数据</li></ol>
+ <p class="answer">参考答案：<b>A</b>。容器通常以隔离进程方式运行，共享宿主机内核。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-36" class="fallback-item"><span class="label">第 36 课 · Git、GitHub 与代码质量</span><h2>什么是开源软件</h2>
+ <p><b>核心概念：</b>开源软件按许可证公开源代码，并允许他人按条款查看、使用、修改或分发。</p>
+ <p><b>广告加工厂类比：</b>像公开一套广告字工艺图纸，但使用者仍要遵守图纸附带的授权条件。</p>
+ <p><b>在 ERP 中：</b>可以参考开源表格组件或订单系统，但要先检查许可证和维护状况。</p>
+ <p><b>易错点：</b>开源不等于无条件免费商用；不同许可证有不同义务。</p>
+ <p><b>复习题：</b>使用开源项目之前，应该先检查什么？</p><ol style="list-style:none;padding-left:2px"><li>A：项目许可证和使用条件</li><li>B：作者头像颜色</li><li>C：仓库文件夹数量</li></ol>
+ <p class="answer">参考答案：<b>A</b>。许可证决定可以如何使用、修改和分发。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-37" class="fallback-item"><span class="label">第 37 课 · Git、GitHub 与代码质量</span><h2>什么是 GitHub</h2>
+ <p><b>核心概念：</b>GitHub 是用于托管 Git 仓库、管理代码并进行协作开发的平台。</p>
+ <p><b>广告加工厂类比：</b>像企业中央图纸档案中心，大家提交变更、查历史和审批新工艺。</p>
+ <p><b>在 ERP 中：</b>将 ERP 的代码推送到 GitHub，使用 PR 审核改动，再根据流程合并。</p>
+ <p><b>易错点：</b>Git 是版本控制工具，GitHub 是托管协作平台；两者不是同一个东西。</p>
+ <p><b>复习题：</b>GitHub 的主要作用是什么？</p><ol style="list-style:none;padding-left:2px"><li>A：提供在线仓库和开发协作功能</li><li>B：充当编程语言</li><li>C：充当 ERP 数据库</li></ol>
+ <p class="answer">参考答案：<b>A</b>。GitHub 托管 Git 仓库并提供 PR、审核等协作功能。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-38" class="fallback-item"><span class="label">第 38 课 · Git、GitHub 与代码质量</span><h2>什么是 Repository（仓库）</h2>
+ <p><b>核心概念：</b>仓库是一个项目的文件和 Git 版本历史的管理单位。</p>
+ <p><b>广告加工厂类比：</b>像一个项目专属档案柜，保存图纸、资料和修改历史。</p>
+ <p><b>在 ERP 中：</b>BJXTK-ERP 可以有独立仓库，CDR 插件也可以有另一个仓库。</p>
+ <p><b>易错点：</b>仓库不只是一个云端文件夹；Git 仓库还包含提交历史和分支信息。</p>
+ <p><b>复习题：</b>一个独立项目及其 Git 历史通常存放在哪里？</p><ol style="list-style:none;padding-left:2px"><li>A：Repository</li><li>B：API</li><li>C：CSS</li></ol>
+ <p class="answer">参考答案：<b>A</b>。Repository 是 Git 管理项目及历史的单位。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-39" class="fallback-item"><span class="label">第 39 课 · Git、GitHub 与代码质量</span><h2>什么是 Commit（提交）</h2>
+ <p><b>核心概念：</b>Commit 把已暂存的修改记录为一条本地 Git 历史快照。</p>
+ <p><b>广告加工厂类比：</b>像把本次确认修改的图纸版本登记入档，并写上修改说明。</p>
+ <p><b>在 ERP 中：</b>完成客户管理修改后，先检查暂存文件，再提交一条说明清楚的 Commit。</p>
+ <p><b>易错点：</b>Commit 只记录已暂存内容；它不是云端上传，也不是数据库备份。</p>
+ <p><b>复习题：</b>将已暂存的代码修改记录到本地 Git 历史，叫？</p><ol style="list-style:none;padding-left:2px"><li>A：Commit</li><li>B：Push</li><li>C：Deploy</li></ol>
+ <p class="answer">参考答案：<b>A</b>。Commit 创建本地提交记录。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-40" class="fallback-item"><span class="label">第 40 课 · Git、GitHub 与代码质量</span><h2>什么是 Push（推送）</h2>
+ <p><b>核心概念：</b>Push 把本地提交发送到远程仓库分支。</p>
+ <p><b>广告加工厂类比：</b>把办公室已归档的图纸修改记录上传到公司中央档案室。</p>
+ <p><b>在 ERP 中：</b>本地完成 Commit 后，Push 到 GitHub，让远程仓库也有这些提交。</p>
+ <p><b>易错点：</b>Push 不等于发布到生产服务器；上传代码不会自动让员工看到新功能。</p>
+ <p><b>复习题：</b>把本地 Commit 上传到 GitHub 远程分支，叫？</p><ol style="list-style:none;padding-left:2px"><li>A：Push</li><li>B：Pull</li><li>C：Clone</li></ol>
+ <p class="answer">参考答案：<b>A</b>。Push 将本地提交推送到远程仓库。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-41" class="fallback-item"><span class="label">第 41 课 · Git、GitHub 与代码质量</span><h2>什么是 Pull（拉取）</h2>
+ <p><b>核心概念：</b>Pull 获取远程更新，并把它整合到当前本地分支，通常包含 Fetch 加 Merge 或 Rebase。</p>
+ <p><b>广告加工厂类比：</b>先从中央档案室取回最新图纸，再把更新整合到手上的工作版本。</p>
+ <p><b>在 ERP 中：</b>同事 Push 了订单模块，你 Pull 后把远程更新整合进本地项目。</p>
+ <p><b>易错点：</b>Pull 可能产生冲突；它不是单纯下载文件，也不等于 Clone。</p>
+ <p><b>复习题：</b>获取远程更新并整合到当前分支，叫？</p><ol style="list-style:none;padding-left:2px"><li>A：Pull</li><li>B：Push</li><li>C：Fork</li></ol>
+ <p class="answer">参考答案：<b>A</b>。Pull 获取远程提交并整合到当前分支。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-42" class="fallback-item"><span class="label">第 42 课 · Git、GitHub 与代码质量</span><h2>什么是 Clone（克隆）</h2>
+ <p><b>核心概念：</b>Clone 将远程仓库复制到本地，并带上仓库历史。</p>
+ <p><b>广告加工厂类比：</b>第一次把公司中央档案柜中的整套项目资料和修改记录复制到新办公室。</p>
+ <p><b>在 ERP 中：</b>新电脑第一次获取 BJXTK-ERP 项目时使用 git clone。</p>
+ <p><b>易错点：</b>Clone 不只是下载当前文件，也会建立本地 Git 仓库和远程关联。</p>
+ <p><b>复习题：</b>新电脑第一次获取整个 GitHub 项目，通常使用什么？</p><ol style="list-style:none;padding-left:2px"><li>A：Clone</li><li>B：Commit</li><li>C：Merge</li></ol>
+ <p class="answer">参考答案：<b>A</b>。Clone 用于创建本地仓库副本。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-43" class="fallback-item"><span class="label">第 43 课 · Git、GitHub 与代码质量</span><h2>什么是 Fork（派生仓库）</h2>
+ <p><b>核心概念：</b>Fork 是在 GitHub 等托管平台上把别人的仓库派生到自己的账号下。</p>
+ <p><b>广告加工厂类比：</b>像把公开工艺资料复制到自己的档案室，再独立研究和修改。</p>
+ <p><b>在 ERP 中：</b>想基于某个开源 ERP 做自己的版本，可以先 Fork，再 Clone 自己的副本。</p>
+ <p><b>易错点：</b>Fork 是平台上的仓库派生功能，不是 Git 的核心命令；它不会自动获得原作者项目的维护权限。</p>
+ <p><b>复习题：</b>把别人的 GitHub 仓库复制到自己的账号下，通常叫？</p><ol style="list-style:none;padding-left:2px"><li>A：Fork</li><li>B：Pull</li><li>C：Commit</li></ol>
+ <p class="answer">参考答案：<b>A</b>。Fork 在托管平台上创建自己的派生仓库。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-44" class="fallback-item"><span class="label">第 44 课 · 开源与开发工具</span><h2>什么是 README.md</h2>
+ <p><b>核心概念：</b>README 是项目说明文件，介绍项目用途、安装、运行和协作方式。</p>
+ <p><b>广告加工厂类比：</b>像设备说明书，告诉工人设备用途、操作方法和注意事项。</p>
+ <p><b>在 ERP 中：</b>新开发者接手 ERP 时，先读 README 了解项目结构、启动命令和开发规范。</p>
+ <p><b>易错点：</b>README 可能过时；还要核对 package.json、实际代码和部署配置。</p>
+ <p><b>复习题：</b>想先了解项目用途和启动方法，通常先看什么？</p><ol style="list-style:none;padding-left:2px"><li>A：README.md</li><li>B：Git 分支名</li><li>C：图片文件</li></ol>
+ <p class="answer">参考答案：<b>A</b>。README 通常是项目入口说明。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-45" class="fallback-item"><span class="label">第 45 课 · 开源与开发工具</span><h2>什么是 package.json</h2>
+ <p><b>核心概念：</b>package.json 记录 JavaScript 项目的元信息、依赖和可运行脚本。</p>
+ <p><b>广告加工厂类比：</b>像生产材料清单和工艺命令表，写明需要哪些工具和常用操作。</p>
+ <p><b>在 ERP 中：</b>可查看 React、Dexie、Vite 等依赖，以及 npm run dev/build 等脚本。</p>
+ <p><b>易错点：</b>package-lock.json 会锁定更具体的依赖解析结果；package.json 不等于实际安装目录。</p>
+ <p><b>复习题：</b>查看项目依赖和 npm scripts，主要看哪个文件？</p><ol style="list-style:none;padding-left:2px"><li>A：package.json</li><li>B：README 图片</li><li>C：GitHub 头像</li></ol>
+ <p class="answer">参考答案：<b>A</b>。package.json 保存依赖声明和脚本配置。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-46" class="fallback-item"><span class="label">第 46 课 · 开源与开发工具</span><h2>什么是 npm</h2>
+ <p><b>核心概念：</b>npm 是 JavaScript 生态中的包管理工具和包注册表客户端。</p>
+ <p><b>广告加工厂类比：</b>像软件材料采购和库存管理工具，根据清单下载所需零件。</p>
+ <p><b>在 ERP 中：</b>npm install 根据项目依赖声明安装包；npm run dev 执行项目脚本。</p>
+ <p><b>易错点：</b>npm 不负责设计页面；它管理包和脚本。Node.js 安装包通常附带 npm，但两者不是同一个东西。</p>
+ <p><b>复习题：</b>执行 npm install 主要是在做什么？</p><ol style="list-style:none;padding-left:2px"><li>A：安装项目依赖包</li><li>B：自动设计 UI</li><li>C：自动创建 GitHub PR</li></ol>
+ <p class="answer">参考答案：<b>A</b>。npm install 会解析并安装项目依赖。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-47" class="fallback-item"><span class="label">第 47 课 · 开源与开发工具</span><h2>什么是 Node.js</h2>
+ <p><b>核心概念：</b>Node.js 是让 JavaScript 在浏览器之外运行的运行时环境。</p>
+ <p><b>广告加工厂类比：</b>像能执行加工程序的设备，让指令不只在某一种机器上运行。</p>
+ <p><b>在 ERP 中：</b>Node.js 可以运行 Vite 开发服务器、构建工具和 JavaScript 后端服务。</p>
+ <p><b>易错点：</b>Node.js 不是浏览器，也不是 npm；浏览器仍负责展示网页界面。</p>
+ <p><b>复习题：</b>在终端运行 Vite 等 JavaScript 工具通常需要什么？</p><ol style="list-style:none;padding-left:2px"><li>A：Node.js</li><li>B：Photoshop</li><li>C：GitHub Pages</li></ol>
+ <p class="answer">参考答案：<b>A</b>。Node.js 提供运行这些 JavaScript 工具的环境。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-48" class="fallback-item"><span class="label">第 48 课 · 开源与开发工具</span><h2>API 在 ERP 对接中的应用</h2>
+ <p><b>核心概念：</b>API 可以让 ERP 与支付、物流、云端服务或插件按规则交换数据。</p>
+ <p><b>广告加工厂类比：</b>像工厂与外协厂之间约定订单格式、交货状态和回执方式。</p>
+ <p><b>在 ERP 中：</b>CDR 插件可以把对象尺寸、周长和数量传给 ERP；支付系统可以回传支付结果。</p>
+ <p><b>易错点：</b>能否对接取决于对方是否提供接口、认证方式、数据格式、网络权限和接口限制。</p>
+ <p><b>复习题：</b>CDR 插件要把对象尺寸传给 ERP，首先需要约定什么？</p><ol style="list-style:none;padding-left:2px"><li>A：数据接口和传输格式</li><li>B：页面字体颜色</li><li>C：Git 仓库星标数</li></ol>
+ <p class="answer">参考答案：<b>A</b>。双方必须约定字段、格式、调用方式和错误处理。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-49" class="fallback-item"><span class="label">第 49 课 · 开源与开发工具</span><h2>数据库：本地存储与云端存储</h2>
+ <p><b>核心概念：</b>数据库负责持久管理数据；本地浏览器数据库和云端共享数据库的位置、访问方式不同。</p>
+ <p><b>广告加工厂类比：</b>本地 IndexedDB 像每个工位自己的资料柜；云端数据库像有权限控制的公司总档案室。</p>
+ <p><b>在 ERP 中：</b>Dexie 帮 ERP 读写浏览器 IndexedDB。只有把前端部署上云，并不能自动让不同员工共享一份数据库。</p>
+ <p><b>易错点：</b>Dexie 不是独立云端数据库；多人共享需要服务端数据、权限、同步以及备份设计。</p>
+ <p><b>复习题：</b>把 Vite 网页部署到阿里云，浏览器内的 IndexedDB 会自动变成多人共享吗？</p><ol style="list-style:none;padding-left:2px"><li>A：会，云服务器会自动同步全部浏览器数据</li><li>B：不会，还需要后端、共享存储和同步机制</li><li>C：只要运行 npm install 就可以</li></ol>
+ <p class="answer">参考答案：<b>B</b>。浏览器 IndexedDB 默认存放在用户各自的浏览器环境中。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-50" class="fallback-item"><span class="label">第 50 课 · 数据库、网络与权限</span><h2>什么是 SQL</h2>
+ <p><b>核心概念：</b>SQL 是与关系型数据库沟通的常见语言，可以查询、新增、修改和删除数据。</p>
+ <p><b>广告加工厂类比：</b>像给工厂档案员发标准指令：查找客户、登记订单或改联系电话。</p>
+ <p><b>在 ERP 中：</b>用 SELECT 查询客户，用 INSERT 新增客户；ERP 程序可以通过 SQL 操作服务器数据库。</p>
+ <p><b>易错点：</b>SQL 是针对关系型数据库的语言；浏览器 IndexedDB 不直接使用 SQL。未经条件限制的 UPDATE/DELETE 可能误改大量记录。</p>
+ <p><b>复习题：</b>SQL 常用来做什么？</p><ol style="list-style:none;padding-left:2px"><li>A：操作关系型数据库</li><li>B：画出门头效果图</li><li>C：提交 Git PR</li></ol>
+ <p class="answer">参考答案：<b>A</b>。SQL 主要用于查询和管理关系型数据。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-51" class="fallback-item"><span class="label">第 51 课 · 数据库、网络与权限</span><h2>数据库表、行、列和主键</h2>
+ <p><b>核心概念：</b>关系型数据库通常用表组织数据：列表示字段，行表示记录，主键唯一标识记录。</p>
+ <p><b>广告加工厂类比：</b>客户档案表就像按格式印好的登记簿：每一列是资料字段，每一行是一个客户。</p>
+ <p><b>在 ERP 中：</b>customers 表可有 id、name、phone；其中 id 是客户唯一编号，避免同名客户混淆。</p>
+ <p><b>易错点：</b>主键不是客户名称，因为不同客户可能同名；订单编号和内部唯一 ID 也可能有不同规则。</p>
+ <p><b>复习题：</b>数据库中哪个字段最适合当客户表的主键？</p><ol style="list-style:none;padding-left:2px"><li>A：客户名称</li><li>B：唯一客户 ID</li><li>C：客户备注</li></ol>
+ <p class="answer">参考答案：<b>B</b>。主键要能稳定唯一地识别每条记录。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-52" class="fallback-item"><span class="label">第 52 课 · 数据库、网络与权限</span><h2>关系型数据库和 IndexedDB</h2>
+ <p><b>核心概念：</b>关系型数据库常用于服务器结构化共享数据；IndexedDB 是浏览器提供的本地数据库。</p>
+ <p><b>广告加工厂类比：</b>关系型数据库像工厂中央档案室；IndexedDB 像员工各自工作台的资料柜。</p>
+ <p><b>在 ERP 中：</b>当前 ERP 通过 Dexie 操作 IndexedDB；未来多人协作可引入 PostgreSQL、MySQL 等服务器数据库。</p>
+ <p><b>易错点：</b>两者都有优缺点，不能只凭“存在哪里”判断安全；离线能力、多人一致性和备份机制都需要设计。</p>
+ <p><b>复习题：</b>哪种数据库直接运行在浏览器本地环境中？</p><ol style="list-style:none;padding-left:2px"><li>A：IndexedDB</li><li>B：PostgreSQL 服务器实例</li><li>C：Git 仓库</li></ol>
+ <p class="answer">参考答案：<b>A</b>。IndexedDB 是浏览器端本地数据库 API。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-53" class="fallback-item"><span class="label">第 53 课 · 数据库、网络与权限</span><h2>Dexie 和数据库升级</h2>
+ <p><b>核心概念：</b>Dexie 是简化 IndexedDB 访问的 JavaScript 库；数据结构变化时要考虑版本升级和迁移。</p>
+ <p><b>广告加工厂类比：</b>像把纸质档案从旧表格换成新表格，要保证旧客户资料仍能被正确识别。</p>
+ <p><b>在 ERP 中：</b>ERP 原来客户记录只有姓名、电话，新增客户分类字段时，旧数据仍要能正常读取。</p>
+ <p><b>易错点：</b>修改字段名或删除对象仓库之前必须规划兼容和迁移；不能假设升级后历史数据自动正确适配。</p>
+ <p><b>复习题：</b>给已有客户数据增加新字段时，最应注意什么？</p><ol style="list-style:none;padding-left:2px"><li>A：旧数据能否正确迁移和继续读取</li><li>B：只改页面颜色即可</li><li>C：直接删除全部旧记录</li></ol>
+ <p class="answer">参考答案：<b>A</b>。数据结构改变需要兼容旧数据和必要的迁移流程。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-54" class="fallback-item"><span class="label">第 54 课 · 数据库、网络与权限</span><h2>本地数据和云端同步</h2>
+ <p><b>核心概念：</b>同步是让多个设备上的数据变化有计划地传输、对齐并处理冲突。</p>
+ <p><b>广告加工厂类比：</b>各工位先记录自己的生产数据，最后汇总到工厂总台账，需要避免覆盖别人的新记录。</p>
+ <p><b>在 ERP 中：</b>员工 A 离线登记订单，联网后同步到云端；员工 B 才能按权限看到新的订单。</p>
+ <p><b>易错点：</b>“同步”不是简单覆盖文件；需考虑重复提交、断网、冲突、删除、时间差和权限。</p>
+ <p><b>复习题：</b>两名员工同时修改一张订单时，系统主要需要什么机制？</p><ol style="list-style:none;padding-left:2px"><li>A：同步和冲突解决规则</li><li>B：把两份数据随便覆盖</li><li>C：关闭数据库</li></ol>
+ <p class="answer">参考答案：<b>A</b>。多设备同步要定义变化合并和冲突处理策略。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-55" class="fallback-item"><span class="label">第 55 课 · 数据库、网络与权限</span><h2>HTTP 请求与响应</h2>
+ <p><b>核心概念：</b>HTTP 是浏览器和服务器交换请求、响应信息的通信协议。</p>
+ <p><b>广告加工厂类比：</b>像生产部向仓库提交领料单，仓库收到后回复材料是否可用。</p>
+ <p><b>在 ERP 中：</b>前端请求 GET /api/orders 查询订单；服务器返回 JSON 数据和状态码。</p>
+ <p><b>易错点：</b>HTTP 不等于 API；HTTP 是通信协议，API 是接口约定。HTTPS 在 HTTP 基础上加入传输加密保护。</p>
+ <p><b>复习题：</b>浏览器向 ERP 服务器请求订单列表，这一通信过程通常使用什么？</p><ol style="list-style:none;padding-left:2px"><li>A：HTTP/HTTPS</li><li>B：Git Fork</li><li>C：CSS</li></ol>
+ <p class="answer">参考答案：<b>A</b>。Web 客户端和服务器通常通过 HTTP/HTTPS 通信。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-56" class="fallback-item"><span class="label">第 56 课 · 数据库、网络与权限</span><h2>JSON 和 REST API</h2>
+ <p><b>核心概念：</b>JSON 是常见的数据交换格式；REST 是一种常见 API 设计风格，通常通过 HTTP 方法操作资源。</p>
+ <p><b>广告加工厂类比：</b>像外协厂约定每张加工单的统一表格格式和操作约定。</p>
+ <p><b>在 ERP 中：</b>ERP 接口可能使用 GET 查询订单、POST 新建订单、PATCH 修改订单状态，返回 JSON。</p>
+ <p><b>易错点：</b>JSON 只是数据格式，不等于数据库；REST 不是强制标准，也不是所有 API 都必须 REST。</p>
+ <p><b>复习题：</b>接口返回 {&quot;id&quot;:12,&quot;status&quot;:&quot;待生产&quot;}，这种文本格式叫什么？</p><ol style="list-style:none;padding-left:2px"><li>A：JSON</li><li>B：Git Branch</li><li>C：Docker</li></ol>
+ <p class="answer">参考答案：<b>A</b>。带字段和值的这种结构是 JSON 数据对象。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-57" class="fallback-item"><span class="label">第 57 课 · 数据库、网络与权限</span><h2>登录认证和权限控制</h2>
+ <p><b>核心概念：</b>认证是确认“你是谁”；授权是判断“你能做什么”。</p>
+ <p><b>广告加工厂类比：</b>门卫核对工牌属于认证；不同岗位能进入哪个车间属于授权。</p>
+ <p><b>在 ERP 中：</b>业务员可建立订单，录单员可核对资料，财务人员可查看收款数据，权限应由服务端最终校验。</p>
+ <p><b>易错点：</b>登录成功不意味着能访问所有订单；只隐藏前端按钮不能真正保护后台接口。</p>
+ <p><b>复习题：</b>登录后判断是否有权删除订单，属于什么？</p><ol style="list-style:none;padding-left:2px"><li>A：授权权限判断</li><li>B：UI 配色</li><li>C：数据库主键</li></ol>
+ <p class="answer">参考答案：<b>A</b>。身份认证之后还需要针对操作进行授权校验。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-58" class="fallback-item"><span class="label">第 58 课 · 读懂前端项目</span><h2>HTML、CSS、JavaScript 各负责什么</h2>
+ <p><b>核心概念：</b>HTML 定义网页结构，CSS 负责样式布局，JavaScript 实现动态行为和交互。</p>
+ <p><b>广告加工厂类比：</b>HTML 像招牌的骨架和文字内容，CSS 像配色排版，JavaScript 像开关和可动作机构。</p>
+ <p><b>在 ERP 中：</b>ERP 客户表格由 HTML 呈现，CSS 控制电脑手机布局，JavaScript 处理搜索和按钮操作。</p>
+ <p><b>易错点：</b>三者经常协作，不代表 HTML/CSS 完全没有逻辑，也不代表 JavaScript 负责所有设计。</p>
+ <p><b>复习题：</b>点击新增客户后弹出表单，通常主要由什么控制交互？</p><ol style="list-style:none;padding-left:2px"><li>A：JavaScript</li><li>B：只有 CSS 颜色</li><li>C：Git Merge</li></ol>
+ <p class="answer">参考答案：<b>A</b>。JavaScript 负责执行交互逻辑。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-59" class="fallback-item"><span class="label">第 59 课 · 读懂前端项目</span><h2>React 组件、状态和路由</h2>
+ <p><b>核心概念：</b>React 用组件构建界面；状态保存界面当前数据；路由决定显示哪个页面。</p>
+ <p><b>广告加工厂类比：</b>组件像标准化字壳模块，状态像当前生产订单数据，路由像进入哪个生产工位。</p>
+ <p><b>在 ERP 中：</b>ERP 的客户列表、报价表单可拆成组件；点击菜单切换页面，新增客户后更新列表状态。</p>
+ <p><b>易错点：</b>React 是用户界面库，不是数据库或完整后端；页面状态不等于长期保存的数据。</p>
+ <p><b>复习题：</b>React 中“新增成功后立即刷新客户列表”的界面数据常由什么管理？</p><ol style="list-style:none;padding-left:2px"><li>A：组件状态与数据刷新机制</li><li>B：Git Commit</li><li>C：域名</li></ol>
+ <p class="answer">参考答案：<b>A</b>。React 状态和数据获取逻辑共同驱动界面更新。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-60" class="fallback-item"><span class="label">第 60 课 · 读懂前端项目</span><h2>TypeScript 是什么</h2>
+ <p><b>核心概念：</b>TypeScript 在 JavaScript 上增加类型检查，帮助开发阶段更早发现不匹配的数据和调用。</p>
+ <p><b>广告加工厂类比：</b>像给图纸尺寸标注“毫米”、给材料标注“板材厚度”，减少混用错误。</p>
+ <p><b>在 ERP 中：</b>报价单字段 price 应为数字，customerName 应为文本；TypeScript 能发现部分错误传值。</p>
+ <p><b>易错点：</b>类型检查不能保证报价规则正确，且类型通常不会在运行时自动校验外部输入。</p>
+ <p><b>复习题：</b>把数字型价格字段误传入字符串，哪个工具可能在开发时提前提示？</p><ol style="list-style:none;padding-left:2px"><li>A：TypeScript 类型检查</li><li>B：GitHub Star</li><li>C：Docker 容器</li></ol>
+ <p class="answer">参考答案：<b>A</b>。TypeScript 通过静态类型分析提前发现部分问题。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-61" class="fallback-item"><span class="label">第 61 课 · 读懂前端项目</span><h2>Vite：开发运行与正式构建</h2>
+ <p><b>核心概念：</b>Vite 为现代前端项目提供开发服务器和构建能力；开发运行与发布构建是不同阶段。</p>
+ <p><b>广告加工厂类比：</b>像在试制工位快速调整样板，最终出厂前再按规范生成正式生产文件。</p>
+ <p><b>在 ERP 中：</b>npm run dev 用于本地开发预览，npm run build 生成部署用的构建产物。</p>
+ <p><b>易错点：</b>build 成功不代表业务测试通过；开发服务器也不应直接当作生产部署方案。</p>
+ <p><b>复习题：</b>哪条命令通常用于生成可部署的前端构建产物？</p><ol style="list-style:none;padding-left:2px"><li>A：npm run build</li><li>B：git fork</li><li>C：npm run dev</li></ol>
+ <p class="answer">参考答案：<b>A</b>。Vite 项目通常通过 build 脚本生成生产构建产物。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-62" class="fallback-item"><span class="label">第 62 课 · 测试、安全与运维</span><h2>单元、集成、端到端与回归测试</h2>
+ <p><b>核心概念：</b>不同测试覆盖不同范围：单元测小逻辑，集成测模块协作，端到端测完整流程，回归测旧功能未被破坏。</p>
+ <p><b>广告加工厂类比：</b>单元测试像检查单个字尺寸，集成测试像检查字与电源装配，端到端像安装后整套点亮。</p>
+ <p><b>在 ERP 中：</b>单元测试报价函数；集成测试保存订单；端到端测试从录单到出单；改动后执行回归测试。</p>
+ <p><b>易错点：</b>构建通过不等于测试通过；一种测试也无法取代全部测试。</p>
+ <p><b>复习题：</b>从新增客户到完成报价并保存订单，模拟员工全流程属于哪种测试？</p><ol style="list-style:none;padding-left:2px"><li>A：端到端测试</li><li>B：只检查代码格式</li><li>C：仅检查 Git 分支</li></ol>
+ <p class="answer">参考答案：<b>A</b>。端到端测试验证真实流程跨模块是否正常工作。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-63" class="fallback-item"><span class="label">第 63 课 · 测试、安全与运维</span><h2>环境变量和密钥管理</h2>
+ <p><b>核心概念：</b>环境变量是软件运行时读取的配置；敏感密钥必须按安全要求保存在可信环境中。</p>
+ <p><b>广告加工厂类比：</b>像工厂不同车间使用不同设备参数，但保险柜密码不能印在公开施工图上。</p>
+ <p><b>在 ERP 中：</b>开发环境和生产环境使用不同 API 地址；支付平台密钥不能写进公开前端代码或 Git 仓库。</p>
+ <p><b>易错点：</b>前端构建时注入的“环境变量”通常会暴露给浏览器；不要把密钥放进 Vite 的公开前端变量。</p>
+ <p><b>复习题：</b>支付接口私钥应放在哪里？</p><ol style="list-style:none;padding-left:2px"><li>A：可信的服务器安全配置中</li><li>B：公开网页 JS 中</li><li>C：GitHub README 中</li></ol>
+ <p class="answer">参考答案：<b>A</b>。敏感密钥必须放在用户不可直接访问的可信环境。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-64" class="fallback-item"><span class="label">第 64 课 · 测试、安全与运维</span><h2>Docker 镜像、容器、卷和网络</h2>
+ <p><b>核心概念：</b>镜像是可复用运行模板；容器是运行实例；卷可保存数据；网络让容器之间通信。</p>
+ <p><b>广告加工厂类比：</b>镜像像标准设备安装包，容器像实际开工的工位，卷像独立仓库，网络像工序间的传送通道。</p>
+ <p><b>在 ERP 中：</b>ERP 后端跑在容器内；数据库用卷保存持久数据；服务间通过内部网络互通。</p>
+ <p><b>易错点：</b>删除容器不一定删除卷数据，但错误配置仍会丢数据；生产数据库必须单独做备份验证。</p>
+ <p><b>复习题：</b>想在重新创建数据库容器时尽量保留已有数据，通常应正确配置什么？</p><ol style="list-style:none;padding-left:2px"><li>A：持久化卷与备份</li><li>B：只使用临时容器文件系统</li><li>C：把数据写进前端页面</li></ol>
+ <p class="answer">参考答案：<b>A</b>。卷提供独立于容器生命周期的数据持久化机制。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-65" class="fallback-item"><span class="label">第 65 课 · 测试、安全与运维</span><h2>日志、监控、备份和恢复</h2>
+ <p><b>核心概念：</b>日志记录发生了什么；监控帮助发现异常；备份和恢复用于应对数据损坏或丢失。</p>
+ <p><b>广告加工厂类比：</b>像工厂生产日志、设备报警、材料盘点记录和备用图纸档案。</p>
+ <p><b>在 ERP 中：</b>出现“报价保存失败”先看日志定位错误；监控服务器；定期备份数据库并演练恢复。</p>
+ <p><b>易错点：</b>备份文件存在不等于一定能恢复；还要验证恢复过程、备份频率和权限安全。</p>
+ <p><b>复习题：</b>备份是否可靠，最重要的验证是什么？</p><ol style="list-style:none;padding-left:2px"><li>A：定期实际演练恢复</li><li>B：只检查文件名</li><li>C：把备份放在同一块硬盘就够了</li></ol>
+ <p class="answer">参考答案：<b>A</b>。可恢复性必须通过实际恢复演练确认。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-66" class="fallback-item"><span class="label">第 66 课 · 管理 Codex 开发任务</span><h2>Codex 任务拆分与验收</h2>
+ <p><b>核心概念：</b>把开发目标写成明确任务包：背景、范围、规则、实现要求、验证、验收和回退。</p>
+ <p><b>广告加工厂类比：</b>像广告制作生产单：不仅写“做招牌”，还要写尺寸、工艺、禁止修改范围和验收标准。</p>
+ <p><b>在 ERP 中：</b>开发客户新增功能时，只允许改客户模块；要求构建成功、保存刷新可见、取消不写入。</p>
+ <p><b>易错点：</b>不要把互不相关的大量功能放进一个任务；AI 汇报“已完成”不等于已经验收。</p>
+ <p><b>复习题：</b>给 Codex 的任务中，哪项最能减少改错功能？</p><ol style="list-style:none;padding-left:2px"><li>A：明确允许和禁止修改的范围</li><li>B：只写“全部优化”</li><li>C：不写验收条件</li></ol>
+ <p class="answer">参考答案：<b>A</b>。明确变更边界能降低意外修改风险。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article><article id="read-67" class="fallback-item"><span class="label">第 67 课 · 管理 Codex 开发任务</span><h2>Codex 安全开发工作流</h2>
+ <p><b>核心概念：</b>安全工作流是按固定顺序开发、检查、测试、提交、审核、合并和部署，并保留回退能力。</p>
+ <p><b>广告加工厂类比：</b>像工厂从设计确认、试制、质检、签字，到正式投产和故障追溯。</p>
+ <p><b>在 ERP 中：</b>Codex 在功能分支修改 ERP，先检查 git diff、运行测试、提交，再开 PR；业务负责人验收后合并。</p>
+ <p><b>易错点：</b>未经授权不要让 AI 删除生产数据、强推主分支或直接上线高风险修改；测试通过也不代表实际业务一定正确。</p>
+ <p><b>复习题：</b>下列哪个流程更稳妥？</p><ol style="list-style:none;padding-left:2px"><li>A：独立分支开发→测试→PR 审核→验收合并→部署</li><li>B：直接改主分支并自动上线</li><li>C：先删除数据再让 AI 修复</li></ol>
+ <p class="answer">参考答案：<b>A</b>。分支隔离、检查和授权可降低影响现有 ERP 的风险。</p>
+ <a class="fallback-toplink" href="#fallbackTop">返回目录 ↑</a></article></div></div>
+<header class="topbar"><div class="topinner">
+ <div class="brand"><div class="brandmark" aria-hidden="true">学</div><div class="brandtext"><strong>软件开发学习手册</strong><span>广告加工厂 · 零基础课程</span></div></div>
+ <nav class="navtabs" aria-label="主导航"><button data-tab="learn" class="active">课程学习</button><button data-tab="review">复习中心</button><button data-tab="roadmap">学习路线</button><button data-tab="resources">教程资源</button><button data-tab="settings">设置</button></nav>
+ <div class="topright"><button class="iconbutton mobileMenu" id="menuToggle" title="打开课程目录" aria-label="打开课程目录">☰ 目录</button><button class="iconbutton" id="themeToggle" title="切换浅色或深色">夜间模式</button></div>
+</div></header>
+<div class="overlay" id="overlay"></div>
+<main class="shell">
+ <section class="hero" id="hero">
+  <div class="heroMain"><div class="eyebrow">SOFTWARE DEVELOPMENT · ERP & CODEX</div><h1>把复杂开发知识，学成生产流程</h1><p>不背术语、不从零写大型程序。每课一个概念，结合广告字加工实例，理解 Codex、GitHub 和 ERP 软件开发。</p><div class="heroActions"><button class="btn primary" id="resumeBtn">继续学习第 49 课</button><button class="btn glass" data-tab="roadmap">查看学习路线</button></div></div>
+  <div class="heroStats"><div class="statsline"><div><div class="statcaption">已掌握知识点</div><div class="statbig" id="progressFraction">48 / 67</div></div><div style="text-align:right"><div class="statcaption">总体进度</div><strong class="statbig" id="progressPct">72%</strong></div></div><div class="track"><span id="progressBar"></span></div><div class="statgrid"><div class="statitem"><b id="doneCount">48</b><span>已掌握</span></div><div class="statitem"><b id="wrongCount">0</b><span>错题待复习</span></div><div class="statitem"><b id="bookmarkCount">0</b><span>收藏知识</span></div></div></div>
+ </section>
+ <div id="learnArea">
+  <section class="searchrow" aria-label="课程筛选"><label class="searchwrap"><input class="field" id="lessonSearch" placeholder="搜索 SQL、Git、API、报价……" aria-label="搜索知识点"></label><select id="phaseFilter" aria-label="筛选学习阶段"><option value="all">全部阶段</option></select><select id="statusFilter" aria-label="按学习状态筛选"><option value="all">全部状态</option><option value="done">已掌握</option><option value="pending">未掌握</option><option value="review">待复习</option><option value="bookmarked">已收藏</option></select><button class="btn" id="clearFilters">清除筛选</button></section>
+  <div class="learningGrid"><aside class="panel sidepanel" id="sidebar"><div class="sideHeader"><strong>知识点目录</strong><button class="mobileClose" id="menuClose" type="button" aria-label="关闭课程目录">✕</button><span id="navCount" class="pill">67 课</span></div><div class="sideList" id="lessonNav"></div></aside><section class="panel lessonMain" id="lessonDetail" aria-live="polite"></section></div>
+ </div>
+ <section class="panel sectionView" id="reviewArea" hidden></section>
+ <section class="panel sectionView" id="roadmapArea" hidden></section>
+ <section class="panel sectionView" id="resourcesArea" hidden></section>
+ <section class="panel sectionView" id="settingsArea" hidden></section>
+ <div class="appFooter">离线学习版 · 2026-10-30 · 内容类比仅用于理解，技术操作以官方文档为准 · 进度保存在本机浏览器</div>
+</main>
+<nav class="bottomnav" aria-label="移动端导航"><button data-tab="learn" class="active"><b>▦</b>课程</button><button data-tab="review"><b>✓</b>复习</button><button data-tab="roadmap"><b>≡</b>路线</button><button data-tab="resources"><b>↗</b>资源</button><button data-tab="settings"><b>⚙</b>设置</button></nav>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<input type="file" id="importInput" accept=".json,application/json" hidden>
+<script>
+const DATA={"lessons":[{"id":1,"phase":"软件是怎样工作的","title":"什么是软件","key":"软件是让电脑或设备按照要求完成工作的程序和相关数据。","analogy":"一套完整的广告加工方案：不只是机器，还包括图纸、工艺规则、材料数据和操作流程。","erp":"ERP 是一套软件，帮助工厂管理客户、报价、订单、生产和财务。","pitfall":"软件不等于某一个网页，也不等于一堆代码；它通常由程序、数据、配置和运行环境共同组成。","q":"ERP 最准确地说是什么？","opts":["一套帮助工厂完成管理工作的软件系统","只有一个网页图片","一台服务器"],"a":0,"why":"ERP 是由多个功能和数据组成的软件系统。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":1,"keywords":["软件是怎样工作的","什么是软件"],"resourceId":13},{"id":2,"phase":"软件是怎样工作的","title":"什么是代码","key":"代码是开发人员写给电脑执行的指令。","analogy":"像给雕刻机输入加工路径和参数，机器按照指令加工。","erp":"按钮点击、报价计算、订单保存等行为，背后都由代码实现。","pitfall":"代码只是实现方式；代码写出来不代表功能已经正确，仍要运行和测试。","q":"代码最主要的作用是什么？","opts":["告诉电脑应该执行什么操作","自动保证业务规则正确","代替数据库保存所有资料"],"a":0,"why":"代码表达程序指令，但正确性仍要靠设计、测试和验收。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":2,"keywords":["什么是代码","软件是怎样工作的"],"resourceId":13},{"id":3,"phase":"软件是怎样工作的","title":"什么是编程语言","key":"编程语言是人们用来编写电脑指令的一套规则和语法。","analogy":"不同机器可能使用不同的加工指令格式；编程语言也有不同语法。","erp":"你的 ERP 使用 JavaScript/TypeScript；CDR 插件可能使用 C#。","pitfall":"不同语言各有用途；不需要一开始学很多语言，先理解项目正在使用的语言即可。","q":"JavaScript 和 C# 属于什么？","opts":["编程语言","数据库","代码托管平台"],"a":0,"why":"它们都是编程语言，可用于编写不同类型的软件。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":3,"keywords":["软件是怎样工作的","什么是编程语言"],"resourceId":13},{"id":4,"phase":"软件是怎样工作的","title":"什么是前端","key":"前端是用户直接看到并操作的软件部分。","analogy":"像门店招牌正面和操作台，是客户或员工直接接触的部分。","erp":"客户列表、报价录入页面、按钮、表格和手机卡片布局属于前端界面。","pitfall":"前端不只是外观，也包含交互和部分业务逻辑；但不能把所有数据安全责任都放在前端。","q":"ERP 中客户列表和新增按钮主要属于哪一部分？","opts":["前端","数据库服务器","Git 分支"],"a":0,"why":"它们是用户直接看到和操作的界面元素。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":4,"keywords":["什么是前端","软件是怎样工作的"],"resourceId":13},{"id":5,"phase":"软件是怎样工作的","title":"什么是后端","key":"后端是软件在后台处理业务、数据和权限的部分。","analogy":"像工厂后台的生产调度、核价和仓库记录，客户不一定直接看到。","erp":"报价规则、订单状态校验、员工权限、服务器端数据处理通常由后端承担。","pitfall":"前端和后端不是绝对分界；一些校验和计算也可能在前端执行，关键是安全和权威数据应由可信端控制。","q":"订单状态和权限校验通常更应该由哪一层负责最终判断？","opts":["可信的后端服务","页面颜色样式","README 文件"],"a":0,"why":"后端可以在可信环境中执行权威校验，避免只依赖浏览器端。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":5,"keywords":["软件是怎样工作的","什么是后端"],"resourceId":13},{"id":6,"phase":"软件是怎样工作的","title":"什么是数据库","key":"数据库是用来保存、组织、查找和管理软件数据的系统。","analogy":"像广告厂的客户档案柜，把客户资料、报价单、订单和员工信息分类保存。","erp":"员工录入客户资料后，系统把信息存入数据库，下次重新打开仍能查询到。","pitfall":"数据库并不保证数据不会丢失，必须有合理的备份和权限管理。","q":"想长期保存并查询客户和订单资料，应该使用什么？","opts":["数据库","页面颜色","Git 分支"],"a":0,"why":"数据库专门负责持久保存、组织和查询数据。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":6,"keywords":["软件是怎样工作的","什么是数据库"],"resourceId":11},{"id":7,"phase":"软件是怎样工作的","title":"前端、后端、数据库怎样配合","key":"前端接收用户操作，后端处理业务和权限，数据库保存与查询数据，三者可以共同完成一个功能。","analogy":"像业务接单窗口 → 生产调度办公室 → 资料档案室，完成接单、处理和存档。","erp":"员工在前端点击保存订单，后端校验权限和订单内容，再写入数据库并返回结果。","pitfall":"这是常见云端架构的简化图；本地浏览器 ERP 也可能直接通过 Dexie 操作 IndexedDB，不一定有独立后端。","q":"云端 ERP 中员工点击保存，哪种协作方式更合理？","opts":["前端接收操作→后端处理→数据库保存","只由 CSS 保存数据","GitHub 自动计算订单"],"a":0,"why":"用户交互、可信处理和数据保存分别由对应部分配合完成。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":7,"keywords":["前端、后端、数据库怎样配合","软件是怎样工作的"],"resourceId":13},{"id":8,"phase":"软件是怎样工作的","title":"什么是服务器","key":"服务器可以指提供服务的电脑，也可以指运行在电脑上的服务程序。","analogy":"像工厂中央调度室，接收各部门请求并提供统一资料或处理能力。","erp":"云端 ERP 的服务器可以接收员工请求、处理订单并访问共享数据库。","pitfall":"服务器不一定是特别大型的机器；一台普通电脑也能临时充当服务器。","q":"服务器最主要的作用是什么？","opts":["向其他设备或程序提供服务","只负责设计页面颜色","专门保存 Git 提交说明"],"a":0,"why":"服务器的核心是向客户端或其他系统提供服务。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":8,"keywords":["软件是怎样工作的","什么是服务器"],"resourceId":13},{"id":9,"phase":"软件是怎样工作的","title":"本地运行与云端运行","key":"本地运行通常依赖当前电脑；云端运行由服务器提供服务，可供多人通过网络访问。","analogy":"本地像某个工位自己的资料柜；云端像公司中央档案室，多个部门可按权限访问。","erp":"本地 Vite 开发环境适合开发和测试；多人正式使用通常需要云端后端和共享数据库。","pitfall":"本地网页能打开，不代表其他员工能访问；仅把前端放到云端，也不等于完成多人协作架构。","q":"想让不同门店员工共享同一份订单数据，通常需要什么？","opts":["云端服务和共享数据架构","每个人各自保存一份浏览器数据","只把网页截图发给员工"],"a":0,"why":"多人共享需要共同的数据服务、身份和权限控制。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":9,"keywords":["软件是怎样工作的","本地运行与云端运行"],"resourceId":13},{"id":10,"phase":"软件是怎样工作的","title":"什么是框架（Framework）","key":"框架提供一套组织软件和实现功能的基础结构与规则。","analogy":"像一套标准化生产线布局和工装夹具，规定常见工序如何组织。","erp":"React 常被称为 UI 库；Vite 是构建工具。项目可能还使用路由、状态管理等框架或库。","pitfall":"框架和库并非完全一样：通常框架对整体结构和调用流程约束更多；React 本身更准确地说是 UI 库。","q":"框架最主要提供什么？","opts":["组织程序结构和常见能力的基础方案","自动替老板决定所有业务规则","自动保证程序没有 Bug"],"a":0,"why":"框架提供结构和约定，但不会替代业务决策与测试。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":10,"keywords":["Framework","软件是怎样工作的","什么是框架"],"resourceId":13},{"id":11,"phase":"软件是怎样工作的","title":"什么是 API（基础）","key":"API 是软件或模块之间按照约定交换信息、调用功能的接口。","analogy":"像工厂和供应商约定好的采购窗口：按规定提交订单，按规定收到价格或库存结果。","erp":"ERP 可以通过 API 请求支付系统查询付款状态，也可以让前端请求后端获取订单。","pitfall":"API 不一定通过互联网；它也可以是本地程序、模块或设备之间的接口。","q":"ERP 和支付系统按约定交换支付信息，通常使用什么？","opts":["API","README","Git Branch"],"a":0,"why":"API 定义了双方如何调用功能和交换数据。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":11,"keywords":["软件是怎样工作的","什么是 API","API"],"resourceId":13},{"id":12,"phase":"从需求到产品","title":"什么是 Bug","key":"Bug 是软件实际行为与预期行为不一致的问题。","analogy":"像图纸要求字高 300mm，实际加工却只有 280mm。","erp":"报价本应按最长边计价，却错误地按面积计价，就是 Bug。","pitfall":"用户不喜欢的设计未必是 Bug；要先确认是否违反明确需求或预期行为。","q":"程序计算结果与已确认报价规则不一致，通常叫什么？","opts":["Bug","Fork","API"],"a":0,"why":"实际结果偏离预期规则就是软件缺陷。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":12,"keywords":["Bug","什么是 Bug","从需求到产品"],"resourceId":13},{"id":13,"phase":"从需求到产品","title":"什么是软件测试","key":"测试是通过检查和执行软件，判断它是否符合要求并发现缺陷。","analogy":"像招牌出厂前测尺寸、检查焊点、通电和检查安装孔位。","erp":"输入不同尺寸和边界值，检查报价金额、保存和查询是否正确。","pitfall":"测试通过只说明已覆盖的测试场景通过，不代表软件绝对没有问题。","q":"输入多组尺寸并核对计算结果，属于什么？","opts":["软件测试","软件部署","Fork"],"a":0,"why":"这是验证软件行为是否符合预期。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":13,"keywords":["什么是软件测试","从需求到产品"],"resourceId":13},{"id":14,"phase":"从需求到产品","title":"什么是软件版本","key":"版本是软件某个发布阶段或状态的标识，例如 V1.0、V1.1。","analogy":"像门头施工图的 A 版、B 版和最终确认版。","erp":"V1.0 可能只有客户和报价；V2.0 增加生产和财务。","pitfall":"版本号是人为制定的标识规则，不同团队可能采用不同版本策略。","q":"V1.0 和 V2.0 通常表示什么？","opts":["软件不同发布版本","两条 Git 分支","两个数据库表"],"a":0,"why":"版本号用于标识软件发布或开发阶段。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":14,"keywords":["什么是软件版本","V","从需求到产品"],"resourceId":13},{"id":15,"phase":"从需求到产品","title":"什么是软件需求","key":"软件需求说明软件要解决的问题、必须实现的功能，以及怎样算成功。","analogy":"像广告厂接单必须确认尺寸、材料、数量、制作工艺和验收条件。","erp":"“两边都不足 1 米时按最长边计价”是明确需求；“做一个好用的报价系统”过于模糊。","pitfall":"需求不仅有功能要求，还应该明确边界、失败处理和验收标准。","q":"下列哪个是更明确的软件需求？","opts":["做一个更好用的软件","按已确认的尺寸计价规则计算并保存报价单","尽量漂亮就行"],"a":1,"why":"明确了输入处理规则和要达到的结果。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":15,"keywords":["什么是软件需求","从需求到产品"],"resourceId":13},{"id":16,"phase":"从需求到产品","title":"什么是软件设计","key":"软件设计是在编码前规划页面、数据结构、模块关系和操作流程。","analogy":"像先出门头施工图，确定结构、尺寸、材料和安装节点，再加工。","erp":"先画报价录入流程、确定报价字段和数据流，再让 Codex 编写代码。","pitfall":"设计不是只画 UI；还包括数据、权限、异常流程和模块边界。","q":"编码前先规划页面和数据流程，属于什么？","opts":["软件设计","软件部署","数据库备份"],"a":0,"why":"这是在实现之前规划系统如何工作。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":16,"keywords":["什么是软件设计","从需求到产品"],"resourceId":13},{"id":17,"phase":"从需求到产品","title":"什么是软件开发","key":"开发是把需求和设计转化为可运行软件的实现过程。","analogy":"像按施工图切割、焊接、组装和加工招牌。","erp":"Codex 编写页面、报价逻辑、数据保存和接口代码，属于开发工作。","pitfall":"开发不只是敲代码，还包括调试、集成、测试和修复。","q":"按照设计编写报价计算逻辑，属于什么？","opts":["软件开发","Fork","软件维护"],"a":0,"why":"这是把设计要求实现成软件功能。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":17,"keywords":["什么是软件开发","从需求到产品"],"resourceId":13},{"id":18,"phase":"从需求到产品","title":"什么是软件部署","key":"部署是把软件发布到目标环境并配置好，让它能够实际运行。","analogy":"像把加工好的招牌运到门店，按现场条件安装、接电并验收。","erp":"把前端构建产物、后端服务和数据库配置部署到服务器，员工才能访问正式系统。","pitfall":"部署不等于开发完成；还要检查配置、数据迁移、权限、域名、备份和回退。","q":"把 ERP 发布到服务器并配置运行环境，属于什么？","opts":["部署","需求分析","代码审核"],"a":0,"why":"部署是将软件放入目标运行环境。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":18,"keywords":["什么是软件部署","从需求到产品"],"resourceId":13},{"id":19,"phase":"从需求到产品","title":"什么是软件维护","key":"维护是在软件运行后修复问题、保障安全稳定，并进行必要改进。","analogy":"像雕刻机投产后定期保养、排故和更换损耗件。","erp":"修复报价错误、升级依赖、修补安全问题、检查备份都属于维护。","pitfall":"维护不等于随意增加功能；已确认的报价和生产规则不能未经批准被改变。","q":"ERP 上线后发现报价计算错误并修复，属于什么？","opts":["软件维护","首次需求分析","Fork"],"a":0,"why":"上线后的故障修复和稳定性保障属于维护。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":19,"keywords":["从需求到产品","什么是软件维护"],"resourceId":13},{"id":20,"phase":"岗位与协作","title":"软件开发中的角色分工","key":"不同角色负责产品决策、设计、实现、测试和运行保障。","analogy":"像广告厂的业务、设计、排版、生产和质检岗位分工。","erp":"经营者定义业务规则，Codex 协助实现，使用者参与验收，运维保障系统运行。","pitfall":"小团队中一个人可以承担多个角色；AI 也能协助多项工作，但责任和验收不能无人负责。","q":"不同岗位合作完成需求、设计、开发和测试，体现什么？","opts":["角色分工","代码冲突","数据库索引"],"a":0,"why":"不同职责共同完成软件项目。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":20,"keywords":["软件开发中的角色分工","岗位与协作"],"resourceId":13},{"id":21,"phase":"岗位与协作","title":"什么是产品经理","key":"产品经理负责理解用户问题、确定产品方向、规划需求优先级和验收目标。","analogy":"像工厂负责人确定做什么产品、服务哪些客户、先安排哪条生产线。","erp":"你确定 CDR 读取优先、手动录入备用，以及报价规则独立管理，属于产品决策。","pitfall":"产品经理决定做什么和为什么，不必亲自写每一行代码。","q":"决定 ERP 必须先实现哪些业务功能，主要属于什么职责？","opts":["产品管理","前端样式开发","服务器巡检"],"a":0,"why":"产品管理负责方向、需求和优先级。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":21,"keywords":["什么是产品经理","岗位与协作"],"resourceId":13},{"id":22,"phase":"岗位与协作","title":"什么是 UI 与 UX","key":"UI 关注界面呈现；UX 关注用户完成任务的整体体验。","analogy":"UI 像招牌的颜色、字体和排版；UX 像客户是否容易找到入口、看清信息和完成操作。","erp":"页面漂亮属于 UI；新增报价是否步骤过多、保存反馈是否清楚属于 UX。","pitfall":"UX 不只是按钮好不好点，还包括流程、效率、可访问性和错误恢复。","q":"页面漂亮但新增报价要点十几次，主要是什么问题？","opts":["UX 用户体验","仅是颜色问题","Git 仓库问题"],"a":0,"why":"完成任务的流程效率属于用户体验。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":22,"keywords":["UX","UI","岗位与协作","什么是 UI 与 UX"],"resourceId":13},{"id":23,"phase":"岗位与协作","title":"什么是前端开发工程师","key":"前端开发把界面设计转成可交互的网页或应用界面。","analogy":"像把招牌设计稿转成可生产的排版和结构文件。","erp":"实现客户表格、按钮、表单、移动端卡片和页面交互。","pitfall":"前端也要处理状态和输入校验，但不应独自承担所有敏感权限判断。","q":"让新增按钮能点击并打开表单，主要属于什么工作？","opts":["前端开发","产品战略","服务器采购"],"a":0,"why":"这是实现用户界面和交互。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":23,"keywords":["岗位与协作","什么是前端开发工程师"],"resourceId":13},{"id":24,"phase":"岗位与协作","title":"什么是后端开发工程师","key":"后端开发实现服务端业务处理、数据访问、权限和接口。","analogy":"像工厂后台的核价、仓库、排产和财务处理流程。","erp":"在服务器上执行订单状态变更、权限校验和报价规则，通常属于后端职责。","pitfall":"前端也可能做即时计算；后端负责可信数据和最终规则校验的场景更关键。","q":"员工提交订单后，服务器校验权限并保存订单，主要属于什么？","opts":["后端开发","UI 设计","README 编写"],"a":0,"why":"服务端业务和数据处理是后端的主要职责。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":24,"keywords":["什么是后端开发工程师","岗位与协作"],"resourceId":13},{"id":25,"phase":"岗位与协作","title":"什么是 QA（质量保证）","key":"QA 关注软件质量流程，测试是发现问题和验证质量的重要手段。","analogy":"像工厂建立质量标准、抽检、追溯和返工制度。","erp":"检查报价、订单、权限、手机布局和数据保存是否符合要求。","pitfall":"QA 不只是点击按钮；还包括测试策略、风险控制、流程改进和质量标准。","q":"安排测试验证报价结果是否符合规则，属于哪个质量职责？","opts":["QA / 测试工作","产品宣传","代码托管"],"a":0,"why":"验证功能质量是 QA 的重要工作。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":25,"keywords":["什么是 QA","岗位与协作","QA"],"resourceId":13},{"id":26,"phase":"岗位与协作","title":"什么是 DevOps","key":"DevOps 强调开发与运维协作，并通过自动化让软件交付和运行更可靠。","analogy":"像设计、生产、质检和仓储共同制定连续生产流程，而不是各部门互不沟通。","erp":"自动构建、测试、发布、监控和备份可以组成 DevOps 实践。","pitfall":"DevOps 不只是一个叫“运维工程师”的岗位，也不等于只会部署服务器。","q":"让开发、测试和运维通过自动化协作交付软件，属于什么理念？","opts":["DevOps","UI","Fork"],"a":0,"why":"DevOps 关注开发和运维协作及交付自动化。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":26,"keywords":["DevOps","岗位与协作","什么是 DevOps"],"resourceId":13},{"id":27,"phase":"Git、GitHub 与代码质量","title":"什么是 PR 与 Code Review","key":"PR（Pull Request）是请求把一个分支的修改合并到另一个分支；Code Review 是检查修改的过程。","analogy":"先提交试制工艺变更申请，再由负责人检查图纸和质量，决定是否批准。","erp":"Codex 完成任务后开 PR；审核者检查改动范围、逻辑、测试和风险，再决定是否合并。","pitfall":"PR 不等于审核本身，也不保证审核通过；PR 是 GitHub 等平台上的协作流程，不是 Git 核心命令。","q":"PR 和 Code Review 的正确关系是什么？","opts":["PR 是合并请求，Code Review 是审查过程","PR 就是数据库","Code Review 就是部署"],"a":0,"why":"提交申请和审核行为是相关但不同的概念。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":27,"keywords":["PR","什么是 PR 与 Code Review","Code","Review","Request","Git、GitHub 与代码质量","Pull"],"resourceId":1},{"id":28,"phase":"Git、GitHub 与代码质量","title":"什么是 Branch（分支）","key":"分支是同一仓库中并行开发的一条提交历史路线。","analogy":"像保留正式生产线，同时开一条试制线测试新工艺。","erp":"在 feature/order 分支开发订单功能，避免未完成修改直接进入 main。","pitfall":"分支不是复制出一份完全独立项目；多个分支仍共享仓库历史，最终可以合并。","q":"开发新功能时，想与稳定主线隔离，应该怎么做？","opts":["创建开发分支","删除主分支","把数据库清空"],"a":0,"why":"分支让新工作与主线并行进行。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":28,"keywords":["Branch","Git、GitHub 与代码质量","什么是 Branch"],"resourceId":1},{"id":29,"phase":"Git、GitHub 与代码质量","title":"什么是 Merge（合并）","key":"Merge 将另一条分支的提交历史整合到当前分支。","analogy":"试制线工艺通过检查后，把成熟工艺纳入正式生产线。","erp":"订单功能分支通过审核后，可以合并到 main。","pitfall":"合并可能采用 merge commit、squash 或 rebase 等策略；合并前应检查目标分支和测试结果。","q":"把已完成的功能分支整合进主分支，叫？","opts":["Merge","Clone","README"],"a":0,"why":"Merge 整合不同分支的开发历史。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":29,"keywords":["Merge","什么是 Merge","Git、GitHub 与代码质量"],"resourceId":1},{"id":30,"phase":"Git、GitHub 与代码质量","title":"什么是 Rollback（回退）","key":"回退是恢复到较早的可用状态，但代码撤销、历史重写、生产发布回退和数据库恢复是不同操作。","analogy":"新工艺出问题时暂停使用，恢复上一个合格工艺；但已经加工的货物要另行处理。","erp":"共享分支通常优先考虑 git revert；生产发布可重新部署上一版本；数据库数据要单独备份和恢复。","pitfall":"git reset 可能移动分支指针并改写本地历史；不要把它和安全的生产回退、数据库恢复混为一谈。","q":"共享分支上要撤销某次错误提交，通常更安全的方式是？","opts":["创建反向提交（git revert）","直接删除整个仓库","删除所有数据库数据"],"a":0,"why":"Revert 通过新提交撤销改动，通常更适合共享历史。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":30,"keywords":["Git、GitHub 与代码质量","什么是 Rollback","Rollback"],"resourceId":1},{"id":31,"phase":"Git、GitHub 与代码质量","title":"什么是 Conflict（冲突）","key":"当 Git 无法自动判断如何整合不同修改时，就会出现合并冲突。","analogy":"两份施工图对同一尺寸给出不同值，需要负责人确定最终方案。","erp":"两个任务修改相同代码区域时，合并可能需要人工选择或组合修改。","pitfall":"不一定必须两个人同时修改；重叠修改、删除与修改等情况也可能冲突。","q":"Git 无法自动决定如何整合重叠修改，叫什么？","opts":["Conflict","Deploy","Package"],"a":0,"why":"冲突意味着需要人工明确最终内容。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":31,"keywords":["Git","什么是 Conflict","Git、GitHub 与代码质量","Conflict"],"resourceId":1},{"id":32,"phase":"Git、GitHub 与代码质量","title":"什么是自动化测试","key":"自动化测试是用程序自动执行预先编写的测试用例。","analogy":"像设置自动尺寸检测设备，每批产品按相同标准检测。","erp":"每次改报价引擎，自动运行一组固定尺寸、价格和边界条件测试。","pitfall":"自动化只能检查写好的用例；业务流程和真实使用仍需人工验收。","q":"电脑自动执行预先编写的 100 条报价测试，属于什么？","opts":["自动化测试","人工部署","版本命名"],"a":0,"why":"由程序自动运行测试用例就是自动化测试。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":32,"keywords":["Git、GitHub 与代码质量","什么是自动化测试"],"resourceId":17},{"id":33,"phase":"Git、GitHub 与代码质量","title":"什么是持续集成（CI）","key":"CI 是频繁整合代码，并自动运行构建、测试等检查，尽早发现问题。","analogy":"每次工序变更后，自动检测设备立即检查尺寸和质量。","erp":"Push 或 PR 触发 GitHub Actions，运行 npm run build 和自动化测试。","pitfall":"CI 不是“代码一定正确”；它只执行配置好的检查。","q":"代码提交后自动运行构建和测试，属于什么？","opts":["持续集成 CI","软件设计","数据库备份"],"a":0,"why":"CI 在代码集成时自动执行质量检查。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":33,"keywords":["Git、GitHub 与代码质量","什么是持续集成","CI"],"resourceId":17},{"id":34,"phase":"Git、GitHub 与代码质量","title":"什么是持续交付与持续部署（CD）","key":"持续交付让软件随时具备发布条件；持续部署则在满足条件后自动发布到生产环境。","analogy":"持续交付像检验合格后打包待发货；持续部署像符合规则后自动发货。","erp":"ERP 可以先让 CI 通过，再由负责人批准发布；成熟后再考虑自动部署。","pitfall":"CD 在不同资料中可能指 Continuous Delivery 或 Continuous Deployment；要看具体上下文。生产系统不应未经授权自动发布高风险变更。","q":"检查通过后仍需人工批准再发布，通常更接近什么？","opts":["持续交付","持续部署","代码冲突"],"a":0,"why":"持续交付通常保留发布前的人工批准环节。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":34,"keywords":["Git、GitHub 与代码质量","CD","什么是持续交付与持续部署"],"resourceId":17},{"id":35,"phase":"Git、GitHub 与代码质量","title":"什么是 Docker","key":"Docker 用镜像和容器封装应用及其依赖，帮助不同环境更一致地运行软件。","analogy":"像把设备、配套工具和标准安装说明装进统一运输箱，搬到另一处更容易复现。","erp":"可以用 Docker 运行后端服务、数据库或整套测试环境。","pitfall":"容器不是完整虚拟机；它通常共享宿主机内核。容器也不会自动解决数据备份和安全问题。","q":"Docker 容器与传统虚拟机相比，常见特点是什么？","opts":["容器通常共享宿主机内核，不是完整虚拟机","容器一定包含独立完整操作系统内核","容器自动备份所有数据"],"a":0,"why":"容器通常以隔离进程方式运行，共享宿主机内核。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":35,"keywords":["Git、GitHub 与代码质量","什么是 Docker","Docker"],"resourceId":10},{"id":36,"phase":"Git、GitHub 与代码质量","title":"什么是开源软件","key":"开源软件按许可证公开源代码，并允许他人按条款查看、使用、修改或分发。","analogy":"像公开一套广告字工艺图纸，但使用者仍要遵守图纸附带的授权条件。","erp":"可以参考开源表格组件或订单系统，但要先检查许可证和维护状况。","pitfall":"开源不等于无条件免费商用；不同许可证有不同义务。","q":"使用开源项目之前，应该先检查什么？","opts":["项目许可证和使用条件","作者头像颜色","仓库文件夹数量"],"a":0,"why":"许可证决定可以如何使用、修改和分发。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":36,"keywords":["什么是开源软件","Git、GitHub 与代码质量"],"resourceId":13},{"id":37,"phase":"Git、GitHub 与代码质量","title":"什么是 GitHub","key":"GitHub 是用于托管 Git 仓库、管理代码并进行协作开发的平台。","analogy":"像企业中央图纸档案中心，大家提交变更、查历史和审批新工艺。","erp":"将 ERP 的代码推送到 GitHub，使用 PR 审核改动，再根据流程合并。","pitfall":"Git 是版本控制工具，GitHub 是托管协作平台；两者不是同一个东西。","q":"GitHub 的主要作用是什么？","opts":["提供在线仓库和开发协作功能","充当编程语言","充当 ERP 数据库"],"a":0,"why":"GitHub 托管 Git 仓库并提供 PR、审核等协作功能。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":37,"keywords":["Git","什么是 GitHub","Git、GitHub 与代码质量","GitHub"],"resourceId":1},{"id":38,"phase":"Git、GitHub 与代码质量","title":"什么是 Repository（仓库）","key":"仓库是一个项目的文件和 Git 版本历史的管理单位。","analogy":"像一个项目专属档案柜，保存图纸、资料和修改历史。","erp":"BJXTK-ERP 可以有独立仓库，CDR 插件也可以有另一个仓库。","pitfall":"仓库不只是一个云端文件夹；Git 仓库还包含提交历史和分支信息。","q":"一个独立项目及其 Git 历史通常存放在哪里？","opts":["Repository","API","CSS"],"a":0,"why":"Repository 是 Git 管理项目及历史的单位。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":38,"keywords":["Git","Git、GitHub 与代码质量","什么是 Repository","Repository"],"resourceId":1},{"id":39,"phase":"Git、GitHub 与代码质量","title":"什么是 Commit（提交）","key":"Commit 把已暂存的修改记录为一条本地 Git 历史快照。","analogy":"像把本次确认修改的图纸版本登记入档，并写上修改说明。","erp":"完成客户管理修改后，先检查暂存文件，再提交一条说明清楚的 Commit。","pitfall":"Commit 只记录已暂存内容；它不是云端上传，也不是数据库备份。","q":"将已暂存的代码修改记录到本地 Git 历史，叫？","opts":["Commit","Push","Deploy"],"a":0,"why":"Commit 创建本地提交记录。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":39,"keywords":["Commit","什么是 Commit","Git、GitHub 与代码质量","Git"],"resourceId":1},{"id":40,"phase":"Git、GitHub 与代码质量","title":"什么是 Push（推送）","key":"Push 把本地提交发送到远程仓库分支。","analogy":"把办公室已归档的图纸修改记录上传到公司中央档案室。","erp":"本地完成 Commit 后，Push 到 GitHub，让远程仓库也有这些提交。","pitfall":"Push 不等于发布到生产服务器；上传代码不会自动让员工看到新功能。","q":"把本地 Commit 上传到 GitHub 远程分支，叫？","opts":["Push","Pull","Clone"],"a":0,"why":"Push 将本地提交推送到远程仓库。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":40,"keywords":["Git、GitHub 与代码质量","Push","什么是 Push"],"resourceId":1},{"id":41,"phase":"Git、GitHub 与代码质量","title":"什么是 Pull（拉取）","key":"Pull 获取远程更新，并把它整合到当前本地分支，通常包含 Fetch 加 Merge 或 Rebase。","analogy":"先从中央档案室取回最新图纸，再把更新整合到手上的工作版本。","erp":"同事 Push 了订单模块，你 Pull 后把远程更新整合进本地项目。","pitfall":"Pull 可能产生冲突；它不是单纯下载文件，也不等于 Clone。","q":"获取远程更新并整合到当前分支，叫？","opts":["Pull","Push","Fork"],"a":0,"why":"Pull 获取远程提交并整合到当前分支。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":41,"keywords":["Merge","Rebase","什么是 Pull","Git、GitHub 与代码质量","Fetch","Pull"],"resourceId":1},{"id":42,"phase":"Git、GitHub 与代码质量","title":"什么是 Clone（克隆）","key":"Clone 将远程仓库复制到本地，并带上仓库历史。","analogy":"第一次把公司中央档案柜中的整套项目资料和修改记录复制到新办公室。","erp":"新电脑第一次获取 BJXTK-ERP 项目时使用 git clone。","pitfall":"Clone 不只是下载当前文件，也会建立本地 Git 仓库和远程关联。","q":"新电脑第一次获取整个 GitHub 项目，通常使用什么？","opts":["Clone","Commit","Merge"],"a":0,"why":"Clone 用于创建本地仓库副本。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":42,"keywords":["Git、GitHub 与代码质量","什么是 Clone","Clone"],"resourceId":1},{"id":43,"phase":"Git、GitHub 与代码质量","title":"什么是 Fork（派生仓库）","key":"Fork 是在 GitHub 等托管平台上把别人的仓库派生到自己的账号下。","analogy":"像把公开工艺资料复制到自己的档案室，再独立研究和修改。","erp":"想基于某个开源 ERP 做自己的版本，可以先 Fork，再 Clone 自己的副本。","pitfall":"Fork 是平台上的仓库派生功能，不是 Git 的核心命令；它不会自动获得原作者项目的维护权限。","q":"把别人的 GitHub 仓库复制到自己的账号下，通常叫？","opts":["Fork","Pull","Commit"],"a":0,"why":"Fork 在托管平台上创建自己的派生仓库。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":43,"keywords":["什么是 Fork","Git、GitHub 与代码质量","Fork","GitHub"],"resourceId":1},{"id":44,"phase":"开源与开发工具","title":"什么是 README.md","key":"README 是项目说明文件，介绍项目用途、安装、运行和协作方式。","analogy":"像设备说明书，告诉工人设备用途、操作方法和注意事项。","erp":"新开发者接手 ERP 时，先读 README 了解项目结构、启动命令和开发规范。","pitfall":"README 可能过时；还要核对 package.json、实际代码和部署配置。","q":"想先了解项目用途和启动方法，通常先看什么？","opts":["README.md","Git 分支名","图片文件"],"a":0,"why":"README 通常是项目入口说明。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":44,"keywords":["README","README.md","什么是 README.md","开源与开发工具"],"resourceId":13},{"id":45,"phase":"开源与开发工具","title":"什么是 package.json","key":"package.json 记录 JavaScript 项目的元信息、依赖和可运行脚本。","analogy":"像生产材料清单和工艺命令表，写明需要哪些工具和常用操作。","erp":"可查看 React、Dexie、Vite 等依赖，以及 npm run dev/build 等脚本。","pitfall":"package-lock.json 会锁定更具体的依赖解析结果；package.json 不等于实际安装目录。","q":"查看项目依赖和 npm scripts，主要看哪个文件？","opts":["package.json","README 图片","GitHub 头像"],"a":0,"why":"package.json 保存依赖声明和脚本配置。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":45,"keywords":["什么是 package.json","package.json","开源与开发工具","JavaScript"],"resourceId":13},{"id":46,"phase":"开源与开发工具","title":"什么是 npm","key":"npm 是 JavaScript 生态中的包管理工具和包注册表客户端。","analogy":"像软件材料采购和库存管理工具，根据清单下载所需零件。","erp":"npm install 根据项目依赖声明安装包；npm run dev 执行项目脚本。","pitfall":"npm 不负责设计页面；它管理包和脚本。Node.js 安装包通常附带 npm，但两者不是同一个东西。","q":"执行 npm install 主要是在做什么？","opts":["安装项目依赖包","自动设计 UI","自动创建 GitHub PR"],"a":0,"why":"npm install 会解析并安装项目依赖。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":46,"keywords":["npm","开源与开发工具","什么是 npm","JavaScript"],"resourceId":13},{"id":47,"phase":"开源与开发工具","title":"什么是 Node.js","key":"Node.js 是让 JavaScript 在浏览器之外运行的运行时环境。","analogy":"像能执行加工程序的设备，让指令不只在某一种机器上运行。","erp":"Node.js 可以运行 Vite 开发服务器、构建工具和 JavaScript 后端服务。","pitfall":"Node.js 不是浏览器，也不是 npm；浏览器仍负责展示网页界面。","q":"在终端运行 Vite 等 JavaScript 工具通常需要什么？","opts":["Node.js","Photoshop","GitHub Pages"],"a":0,"why":"Node.js 提供运行这些 JavaScript 工具的环境。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":47,"keywords":["Node.js","什么是 Node.js","开源与开发工具","JavaScript"],"resourceId":13},{"id":48,"phase":"开源与开发工具","title":"API 在 ERP 对接中的应用","key":"API 可以让 ERP 与支付、物流、云端服务或插件按规则交换数据。","analogy":"像工厂与外协厂之间约定订单格式、交货状态和回执方式。","erp":"CDR 插件可以把对象尺寸、周长和数量传给 ERP；支付系统可以回传支付结果。","pitfall":"能否对接取决于对方是否提供接口、认证方式、数据格式、网络权限和接口限制。","q":"CDR 插件要把对象尺寸传给 ERP，首先需要约定什么？","opts":["数据接口和传输格式","页面字体颜色","Git 仓库星标数"],"a":0,"why":"双方必须约定字段、格式、调用方式和错误处理。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":48,"keywords":["ERP","开源与开发工具","API 在 ERP 对接中的应用","API"],"resourceId":13},{"id":49,"phase":"开源与开发工具","title":"数据库：本地存储与云端存储","key":"数据库负责持久管理数据；本地浏览器数据库和云端共享数据库的位置、访问方式不同。","analogy":"本地 IndexedDB 像每个工位自己的资料柜；云端数据库像有权限控制的公司总档案室。","erp":"Dexie 帮 ERP 读写浏览器 IndexedDB。只有把前端部署上云，并不能自动让不同员工共享一份数据库。","pitfall":"Dexie 不是独立云端数据库；多人共享需要服务端数据、权限、同步以及备份设计。","q":"把 Vite 网页部署到阿里云，浏览器内的 IndexedDB 会自动变成多人共享吗？","opts":["会，云服务器会自动同步全部浏览器数据","不会，还需要后端、共享存储和同步机制","只要运行 npm install 就可以"],"a":1,"why":"浏览器 IndexedDB 默认存放在用户各自的浏览器环境中。","steps":["先用一句话说清核心概念","在广告工厂里找到对应的加工或管理场景","回到 ERP 看这个概念解决什么问题"],"code":"","chapterNumber":49,"keywords":["数据库：本地存储与云端存储","开源与开发工具"],"resourceId":11},{"id":50,"title":"什么是 SQL","phase":"数据库、网络与权限","key":"SQL 是与关系型数据库沟通的常见语言，可以查询、新增、修改和删除数据。","analogy":"像给工厂档案员发标准指令：查找客户、登记订单或改联系电话。","erp":"用 SELECT 查询客户，用 INSERT 新增客户；ERP 程序可以通过 SQL 操作服务器数据库。","pitfall":"SQL 是针对关系型数据库的语言；浏览器 IndexedDB 不直接使用 SQL。未经条件限制的 UPDATE/DELETE 可能误改大量记录。","q":"SQL 常用来做什么？","opts":["操作关系型数据库","画出门头效果图","提交 Git PR"],"a":0,"why":"SQL 主要用于查询和管理关系型数据。","code":"SELECT name FROM customers WHERE id = 1;","steps":["先明确要查询哪个表","使用条件限定查询范围","检查返回结果是否正确"],"chapterNumber":50,"keywords":["数据库、网络与权限","SQL","什么是 SQL"],"resourceId":12},{"id":51,"title":"数据库表、行、列和主键","phase":"数据库、网络与权限","key":"关系型数据库通常用表组织数据：列表示字段，行表示记录，主键唯一标识记录。","analogy":"客户档案表就像按格式印好的登记簿：每一列是资料字段，每一行是一个客户。","erp":"customers 表可有 id、name、phone；其中 id 是客户唯一编号，避免同名客户混淆。","pitfall":"主键不是客户名称，因为不同客户可能同名；订单编号和内部唯一 ID 也可能有不同规则。","q":"数据库中哪个字段最适合当客户表的主键？","opts":["客户名称","唯一客户 ID","客户备注"],"a":1,"why":"主键要能稳定唯一地识别每条记录。","code":"customers: id | name | phone","steps":["表：客户资料集合","列：客户名称、电话等字段","行：某一个客户的完整记录"],"chapterNumber":51,"keywords":["数据库、网络与权限","数据库表、行、列和主键"],"resourceId":12},{"id":52,"title":"关系型数据库和 IndexedDB","phase":"数据库、网络与权限","key":"关系型数据库常用于服务器结构化共享数据；IndexedDB 是浏览器提供的本地数据库。","analogy":"关系型数据库像工厂中央档案室；IndexedDB 像员工各自工作台的资料柜。","erp":"当前 ERP 通过 Dexie 操作 IndexedDB；未来多人协作可引入 PostgreSQL、MySQL 等服务器数据库。","pitfall":"两者都有优缺点，不能只凭“存在哪里”判断安全；离线能力、多人一致性和备份机制都需要设计。","q":"哪种数据库直接运行在浏览器本地环境中？","opts":["IndexedDB","PostgreSQL 服务器实例","Git 仓库"],"a":0,"why":"IndexedDB 是浏览器端本地数据库 API。","code":"","steps":["明确哪些资料需要多人共享","区分浏览器数据与服务器权威数据","设计同步、备份和冲突处理"],"chapterNumber":52,"keywords":["数据库、网络与权限","IndexedDB","关系型数据库和 IndexedDB"],"resourceId":11},{"id":53,"title":"Dexie 和数据库升级","phase":"数据库、网络与权限","key":"Dexie 是简化 IndexedDB 访问的 JavaScript 库；数据结构变化时要考虑版本升级和迁移。","analogy":"像把纸质档案从旧表格换成新表格，要保证旧客户资料仍能被正确识别。","erp":"ERP 原来客户记录只有姓名、电话，新增客户分类字段时，旧数据仍要能正常读取。","pitfall":"修改字段名或删除对象仓库之前必须规划兼容和迁移；不能假设升级后历史数据自动正确适配。","q":"给已有客户数据增加新字段时，最应注意什么？","opts":["旧数据能否正确迁移和继续读取","只改页面颜色即可","直接删除全部旧记录"],"a":0,"why":"数据结构改变需要兼容旧数据和必要的迁移流程。","code":"db.version(2).stores({customers: \"++id,name,phone,type\"});","steps":["梳理现有数据库结构","明确新增或调整的字段","验证旧数据升级后仍可读取"],"chapterNumber":53,"keywords":["数据库、网络与权限","IndexedDB","Dexie 和数据库升级","JavaScript","Dexie"],"resourceId":11},{"id":54,"title":"本地数据和云端同步","phase":"数据库、网络与权限","key":"同步是让多个设备上的数据变化有计划地传输、对齐并处理冲突。","analogy":"各工位先记录自己的生产数据，最后汇总到工厂总台账，需要避免覆盖别人的新记录。","erp":"员工 A 离线登记订单，联网后同步到云端；员工 B 才能按权限看到新的订单。","pitfall":"“同步”不是简单覆盖文件；需考虑重复提交、断网、冲突、删除、时间差和权限。","q":"两名员工同时修改一张订单时，系统主要需要什么机制？","opts":["同步和冲突解决规则","把两份数据随便覆盖","关闭数据库"],"a":0,"why":"多设备同步要定义变化合并和冲突处理策略。","code":"","steps":["决定云端哪一份数据是权威版本","记录每次变更及标识","断网恢复后校验与合并"],"chapterNumber":54,"keywords":["数据库、网络与权限","本地数据和云端同步"],"resourceId":11},{"id":55,"title":"HTTP 请求与响应","phase":"数据库、网络与权限","key":"HTTP 是浏览器和服务器交换请求、响应信息的通信协议。","analogy":"像生产部向仓库提交领料单，仓库收到后回复材料是否可用。","erp":"前端请求 GET /api/orders 查询订单；服务器返回 JSON 数据和状态码。","pitfall":"HTTP 不等于 API；HTTP 是通信协议，API 是接口约定。HTTPS 在 HTTP 基础上加入传输加密保护。","q":"浏览器向 ERP 服务器请求订单列表，这一通信过程通常使用什么？","opts":["HTTP/HTTPS","Git Fork","CSS"],"a":0,"why":"Web 客户端和服务器通常通过 HTTP/HTTPS 通信。","code":"GET /api/orders → 200 OK","steps":["客户端发送请求","服务器处理并返回响应","前端根据响应更新页面"],"chapterNumber":55,"keywords":["数据库、网络与权限","HTTP","HTTP 请求与响应"],"resourceId":13},{"id":56,"title":"JSON 和 REST API","phase":"数据库、网络与权限","key":"JSON 是常见的数据交换格式；REST 是一种常见 API 设计风格，通常通过 HTTP 方法操作资源。","analogy":"像外协厂约定每张加工单的统一表格格式和操作约定。","erp":"ERP 接口可能使用 GET 查询订单、POST 新建订单、PATCH 修改订单状态，返回 JSON。","pitfall":"JSON 只是数据格式，不等于数据库；REST 不是强制标准，也不是所有 API 都必须 REST。","q":"接口返回 {\"id\":12,\"status\":\"待生产\"}，这种文本格式叫什么？","opts":["JSON","Git Branch","Docker"],"a":0,"why":"带字段和值的这种结构是 JSON 数据对象。","code":"{\"id\": 12, \"status\": \"待生产\"}","steps":["约定请求路径和方法","约定 JSON 字段及字段类型","约定成功与失败的返回信息"],"chapterNumber":56,"keywords":["数据库、网络与权限","JSON","REST","JSON 和 REST API","API","HTTP"],"resourceId":13},{"id":57,"title":"登录认证和权限控制","phase":"数据库、网络与权限","key":"认证是确认“你是谁”；授权是判断“你能做什么”。","analogy":"门卫核对工牌属于认证；不同岗位能进入哪个车间属于授权。","erp":"业务员可建立订单，录单员可核对资料，财务人员可查看收款数据，权限应由服务端最终校验。","pitfall":"登录成功不意味着能访问所有订单；只隐藏前端按钮不能真正保护后台接口。","q":"登录后判断是否有权删除订单，属于什么？","opts":["授权权限判断","UI 配色","数据库主键"],"a":0,"why":"身份认证之后还需要针对操作进行授权校验。","code":"","steps":["登录确认员工身份","按岗位和资源定义权限","服务器验证每个敏感请求"],"chapterNumber":57,"keywords":["数据库、网络与权限","登录认证和权限控制"],"resourceId":13},{"id":58,"title":"HTML、CSS、JavaScript 各负责什么","phase":"读懂前端项目","key":"HTML 定义网页结构，CSS 负责样式布局，JavaScript 实现动态行为和交互。","analogy":"HTML 像招牌的骨架和文字内容，CSS 像配色排版，JavaScript 像开关和可动作机构。","erp":"ERP 客户表格由 HTML 呈现，CSS 控制电脑手机布局，JavaScript 处理搜索和按钮操作。","pitfall":"三者经常协作，不代表 HTML/CSS 完全没有逻辑，也不代表 JavaScript 负责所有设计。","q":"点击新增客户后弹出表单，通常主要由什么控制交互？","opts":["JavaScript","只有 CSS 颜色","Git Merge"],"a":0,"why":"JavaScript 负责执行交互逻辑。","code":"<button id=\"add\">新增客户<\/button>","steps":["HTML 建立表单和按钮","CSS 控制布局和可读性","JavaScript 处理点击与数据变化"],"chapterNumber":58,"keywords":["JavaScript","读懂前端项目","CSS","HTML","HTML、CSS、JavaScript 各负责什么"],"resourceId":13},{"id":59,"title":"React 组件、状态和路由","phase":"读懂前端项目","key":"React 用组件构建界面；状态保存界面当前数据；路由决定显示哪个页面。","analogy":"组件像标准化字壳模块，状态像当前生产订单数据，路由像进入哪个生产工位。","erp":"ERP 的客户列表、报价表单可拆成组件；点击菜单切换页面，新增客户后更新列表状态。","pitfall":"React 是用户界面库，不是数据库或完整后端；页面状态不等于长期保存的数据。","q":"React 中“新增成功后立即刷新客户列表”的界面数据常由什么管理？","opts":["组件状态与数据刷新机制","Git Commit","域名"],"a":0,"why":"React 状态和数据获取逻辑共同驱动界面更新。","code":"const [count, setCount] = useState(0);","steps":["按职责拆分页面组件","确定数据从哪里来","状态变化时更新可见界面"],"chapterNumber":59,"keywords":["React 组件、状态和路由","读懂前端项目","React"],"resourceId":15},{"id":60,"title":"TypeScript 是什么","phase":"读懂前端项目","key":"TypeScript 在 JavaScript 上增加类型检查，帮助开发阶段更早发现不匹配的数据和调用。","analogy":"像给图纸尺寸标注“毫米”、给材料标注“板材厚度”，减少混用错误。","erp":"报价单字段 price 应为数字，customerName 应为文本；TypeScript 能发现部分错误传值。","pitfall":"类型检查不能保证报价规则正确，且类型通常不会在运行时自动校验外部输入。","q":"把数字型价格字段误传入字符串，哪个工具可能在开发时提前提示？","opts":["TypeScript 类型检查","GitHub Star","Docker 容器"],"a":0,"why":"TypeScript 通过静态类型分析提前发现部分问题。","code":"type Quote = { price: number; customerName: string };","steps":["为关键数据定义类型","让编辑器和构建器检查类型","仍要做运行时校验和业务测试"],"chapterNumber":60,"keywords":["JavaScript","读懂前端项目","TypeScript","TypeScript 是什么"],"resourceId":14},{"id":61,"title":"Vite：开发运行与正式构建","phase":"读懂前端项目","key":"Vite 为现代前端项目提供开发服务器和构建能力；开发运行与发布构建是不同阶段。","analogy":"像在试制工位快速调整样板，最终出厂前再按规范生成正式生产文件。","erp":"npm run dev 用于本地开发预览，npm run build 生成部署用的构建产物。","pitfall":"build 成功不代表业务测试通过；开发服务器也不应直接当作生产部署方案。","q":"哪条命令通常用于生成可部署的前端构建产物？","opts":["npm run build","git fork","npm run dev"],"a":0,"why":"Vite 项目通常通过 build 脚本生成生产构建产物。","code":"npm run dev\nnpm run build","steps":["开发时启动本地服务器","修改后运行构建与测试","部署构建产物到正式环境"],"chapterNumber":61,"keywords":["Vite：开发运行与正式构建","Vite","读懂前端项目"],"resourceId":16},{"id":62,"title":"单元、集成、端到端与回归测试","phase":"测试、安全与运维","key":"不同测试覆盖不同范围：单元测小逻辑，集成测模块协作，端到端测完整流程，回归测旧功能未被破坏。","analogy":"单元测试像检查单个字尺寸，集成测试像检查字与电源装配，端到端像安装后整套点亮。","erp":"单元测试报价函数；集成测试保存订单；端到端测试从录单到出单；改动后执行回归测试。","pitfall":"构建通过不等于测试通过；一种测试也无法取代全部测试。","q":"从新增客户到完成报价并保存订单，模拟员工全流程属于哪种测试？","opts":["端到端测试","只检查代码格式","仅检查 Git 分支"],"a":0,"why":"端到端测试验证真实流程跨模块是否正常工作。","code":"","steps":["先测试报价函数","再测试数据和页面协作","最后测试真实业务闭环"],"chapterNumber":62,"keywords":["测试、安全与运维","单元、集成、端到端与回归测试"],"resourceId":17},{"id":63,"title":"环境变量和密钥管理","phase":"测试、安全与运维","key":"环境变量是软件运行时读取的配置；敏感密钥必须按安全要求保存在可信环境中。","analogy":"像工厂不同车间使用不同设备参数，但保险柜密码不能印在公开施工图上。","erp":"开发环境和生产环境使用不同 API 地址；支付平台密钥不能写进公开前端代码或 Git 仓库。","pitfall":"前端构建时注入的“环境变量”通常会暴露给浏览器；不要把密钥放进 Vite 的公开前端变量。","q":"支付接口私钥应放在哪里？","opts":["可信的服务器安全配置中","公开网页 JS 中","GitHub README 中"],"a":0,"why":"敏感密钥必须放在用户不可直接访问的可信环境。","code":"API_BASE_URL=https://example.com","steps":["区分开发和生产配置","公开参数与机密参数分开","不要提交密钥到代码仓库"],"chapterNumber":63,"keywords":["环境变量和密钥管理","测试、安全与运维"],"resourceId":13},{"id":64,"title":"Docker 镜像、容器、卷和网络","phase":"测试、安全与运维","key":"镜像是可复用运行模板；容器是运行实例；卷可保存数据；网络让容器之间通信。","analogy":"镜像像标准设备安装包，容器像实际开工的工位，卷像独立仓库，网络像工序间的传送通道。","erp":"ERP 后端跑在容器内；数据库用卷保存持久数据；服务间通过内部网络互通。","pitfall":"删除容器不一定删除卷数据，但错误配置仍会丢数据；生产数据库必须单独做备份验证。","q":"想在重新创建数据库容器时尽量保留已有数据，通常应正确配置什么？","opts":["持久化卷与备份","只使用临时容器文件系统","把数据写进前端页面"],"a":0,"why":"卷提供独立于容器生命周期的数据持久化机制。","code":"services:\n  app:\n    image: your-erp-app","steps":["从镜像启动容器","配置网络和持久化卷","验证重启及备份恢复"],"chapterNumber":64,"keywords":["Docker","测试、安全与运维","Docker 镜像、容器、卷和网络"],"resourceId":10},{"id":65,"title":"日志、监控、备份和恢复","phase":"测试、安全与运维","key":"日志记录发生了什么；监控帮助发现异常；备份和恢复用于应对数据损坏或丢失。","analogy":"像工厂生产日志、设备报警、材料盘点记录和备用图纸档案。","erp":"出现“报价保存失败”先看日志定位错误；监控服务器；定期备份数据库并演练恢复。","pitfall":"备份文件存在不等于一定能恢复；还要验证恢复过程、备份频率和权限安全。","q":"备份是否可靠，最重要的验证是什么？","opts":["定期实际演练恢复","只检查文件名","把备份放在同一块硬盘就够了"],"a":0,"why":"可恢复性必须通过实际恢复演练确认。","code":"","steps":["记录关键操作和错误日志","配置健康监控和告警","定期备份并验证恢复"],"chapterNumber":65,"keywords":["日志、监控、备份和恢复","测试、安全与运维"],"resourceId":17},{"id":66,"title":"Codex 任务拆分与验收","phase":"管理 Codex 开发任务","key":"把开发目标写成明确任务包：背景、范围、规则、实现要求、验证、验收和回退。","analogy":"像广告制作生产单：不仅写“做招牌”，还要写尺寸、工艺、禁止修改范围和验收标准。","erp":"开发客户新增功能时，只允许改客户模块；要求构建成功、保存刷新可见、取消不写入。","pitfall":"不要把互不相关的大量功能放进一个任务；AI 汇报“已完成”不等于已经验收。","q":"给 Codex 的任务中，哪项最能减少改错功能？","opts":["明确允许和禁止修改的范围","只写“全部优化”","不写验收条件"],"a":0,"why":"明确变更边界能降低意外修改风险。","code":"","steps":["明确业务目标和已确认规则","列出文件、字段、禁止事项","写出验证命令和验收标准"],"chapterNumber":66,"keywords":["Codex","Codex 任务拆分与验收","管理 Codex 开发任务"],"resourceId":1},{"id":67,"title":"Codex 安全开发工作流","phase":"管理 Codex 开发任务","key":"安全工作流是按固定顺序开发、检查、测试、提交、审核、合并和部署，并保留回退能力。","analogy":"像工厂从设计确认、试制、质检、签字，到正式投产和故障追溯。","erp":"Codex 在功能分支修改 ERP，先检查 git diff、运行测试、提交，再开 PR；业务负责人验收后合并。","pitfall":"未经授权不要让 AI 删除生产数据、强推主分支或直接上线高风险修改；测试通过也不代表实际业务一定正确。","q":"下列哪个流程更稳妥？","opts":["独立分支开发→测试→PR 审核→验收合并→部署","直接改主分支并自动上线","先删除数据再让 AI 修复"],"a":0,"why":"分支隔离、检查和授权可降低影响现有 ERP 的风险。","code":"git status\ngit diff\nnpm run build","steps":["开发前确认工作区和修改范围","完成后检查差异、构建和测试","经审核验收后再合并与部署"],"chapterNumber":67,"keywords":["Codex 安全开发工作流","Codex","管理 Codex 开发任务"],"resourceId":1}],"resources":[{"name":"Microsoft Web Development for Beginners","kind":"系统课程 · 24课/12周","desc":"有简体中文翻译，课程包含测验、练习、项目和部分补充视频。适合按基础顺序了解网页开发。","url":"https://github.com/microsoft/Web-Dev-For-Beginners","extra":"MIT；仓库说明支持简体中文翻译。"},{"name":"GitHub Skills：Introduction to GitHub","kind":"交互练习 · GitHub 入门","desc":"从零练习 Repository、Branch、Commit、Pull Request 和 Merge，官方课程说明约 1 小时。","url":"https://github.com/skills/introduction-to-github","extra":"适合在理解概念后亲手走一遍。"},{"name":"GitHub Skills：Review Pull Requests","kind":"交互练习 · PR 审核","desc":"练习分配审核、评论、建议修改、批准和合并 PR。","url":"https://github.com/skills/review-pull-requests","extra":"仓库页面标注 MIT 许可证；课程约 30 分钟。"},{"name":"GitHub Skills：Resolve Merge Conflicts","kind":"交互练习 · 冲突处理","desc":"通过网页编辑器练习发现和解决合并冲突。","url":"https://github.com/skills/resolve-merge-conflicts","extra":"仓库页面标注 MIT 许可证；课程约 30 分钟。"},{"name":"GitHub Skills：Hello GitHub Actions","kind":"交互练习 · CI 自动化","desc":"创建 workflow、job 和 step，观察 GitHub Actions 自动运行。","url":"https://github.com/skills/hello-github-actions","extra":"需要先完成 Introduction to GitHub。"},{"name":"Learn Git Branching","kind":"可视化交互 · Git","desc":"用动态图展示提交树和分支变化，适合练习 branch、commit、merge、rebase 等概念。","url":"https://learngitbranching.js.org/","extra":"对应 GitHub 项目：https://github.com/pcottle/learnGitBranching"},{"name":"The Odin Project Curriculum","kind":"系统课程 · 全栈路线","desc":"课程按 Foundations、Git、HTML/CSS、JavaScript、数据库、Node.js、React 等模块组织。内容较完整，部分实践偏程序员训练，不必全部照做。","url":"https://github.com/TheOdinProject/curriculum","extra":"更适合作为课程依赖顺序参考。"},{"name":"千古前端图文教程","kind":"中文知识库 · 查阅","desc":"覆盖 HTML、CSS、JavaScript、异步、MySQL、Node.js、React 等主题，适合按关键词查找。","url":"https://github.com/qianguyihao/Web","extra":"CC BY-NC-SA 4.0；商用再利用需遵守非商业许可限制。"},{"name":"Pro Git 第二版简体中文","kind":"中文书籍 · Git 深入参考","desc":"当 Git 分支、提交、远程仓库和合并概念不清楚时，按章节查阅，不建议一开始通读。","url":"https://github.com/progit/progit2-zh","extra":"在线阅读：https://git-scm.com/book/zh/v2"},{"name":"roadmap.sh","kind":"交互知识地图 · 查漏补缺","desc":"可查看前端、后端、QA、DevOps、Docker、SQL 等路线图。它是知识地图，不是必须逐项完成的入门课程。","url":"https://roadmap.sh/","extra":"GitHub：https://github.com/kamranahmedse/developer-roadmap"},{"name":"Docker Getting Started","kind":"官方入门教程 · 容器","desc":"介绍运行第一个容器、构建镜像、卷、网络和 Docker Compose。","url":"https://github.com/docker/getting-started","extra":"官方 Docker 入门项目。"},{"name":"Dexie.js","kind":"项目技术文档 · IndexedDB","desc":"说明 Dexie 如何封装浏览器 IndexedDB。用于理解当前 ERP 本地数据存储，不代表云端多人数据库。","url":"https://github.com/dexie/Dexie.js","extra":"官方文档：https://dexie.org"},{"name":"SQLBolt SQL 互动教程","kind":"SQL 练习 · 外部网站","desc":"从 SELECT、过滤、JOIN 到新增、更新、删除及建表，适合第50-52课继续练习。","url":"https://sqlbolt.com/","extra":"英文互动练习；需要联网。"},{"name":"MDN Web Docs 学习区","kind":"网页基础 · 官方文档","desc":"HTML、CSS、JavaScript、HTTP 和浏览器 API 基础，按主题逐步阅读。","url":"https://developer.mozilla.org/zh-CN/docs/Learn_web_development","extra":"有中文内容；部分页面翻译进度不一。"},{"name":"TypeScript 官方手册","kind":"类型系统 · 官方文档","desc":"帮助理解类型、对象接口和 TypeScript 对 JavaScript 的补充。","url":"https://www.typescriptlang.org/docs/handbook/intro.html","extra":"英文教程；用于第60课补充。"},{"name":"React 官方学习文档","kind":"React · 官方文档","desc":"理解组件、props、state、事件与渲染更新。","url":"https://react.dev/learn","extra":"可选择简体中文版本；适合第59课。"},{"name":"Vite 官方使用指南","kind":"前端构建工具 · 官方文档","desc":"解释开发服务器、脚本和生产构建。","url":"https://vite.dev/guide/","extra":"用于第61课查看配置和构建方式。"},{"name":"GitHub Actions 官方文档","kind":"CI/CD · 官方文档","desc":"学习自动工作流、测试、构建与发布的基本机制。","url":"https://docs.github.com/zh/actions","extra":"支持简体中文；适合第33-34课。"}],"phases":[{"name":"软件是怎样工作的","desc":"先建立软件、代码、前端、后端、数据库、服务器和 API 的基础认识。","start":1,"end":11},{"name":"从需求到产品","desc":"理解软件为什么要先确认需求、设计、开发、测试、部署并维护。","start":12,"end":19},{"name":"岗位与协作","desc":"明确产品经理、设计、前端、后端、测试和 DevOps 等分工。","start":20,"end":26},{"name":"Git、GitHub 与代码质量","desc":"掌握审核、分支、合并、回退、自动化测试和代码版本协作。","start":27,"end":43},{"name":"开源与开发工具","desc":"认识项目说明、包管理、运行环境、API 对接和数据库存储。","start":44,"end":49},{"name":"数据库、网络与权限","desc":"学会理解 SQL、数据关系、HTTP、JSON、API 和认证权限。","start":50,"end":57},{"name":"读懂前端项目","desc":"掌握 HTML、CSS、JavaScript、React、TypeScript 和 Vite 的分工。","start":58,"end":61},{"name":"测试、安全与运维","desc":"理解不同测试、环境密钥、容器和数据保护措施。","start":62,"end":65},{"name":"管理 Codex 开发任务","desc":"把学过的知识变成可执行的 Codex 项目工作流程。","start":66,"end":67}]};
+const lessons=DATA.lessons,resources=DATA.resources,phases=DATA.phases;
+const deepCopy = obj => JSON.parse(JSON.stringify(obj));
+const STOR='adFactoryLearning.v2',LEGACY='adFactorySoftwareLearning.v1';
+const BASE={done:Array.from({length:48},(_,i)=>i+1),review:[],wrong:[],bookmarks:[],notes:{},quiz:{},lastLesson:49,theme:'light'};
+let progress=deepCopy(BASE),activeTab='learn',activeLesson=49,reviewMode='wrong',reviewLesson=49,reviewChoice=null,resourceQuery='';
+let toastTimer=0,saveAvailable=true;
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function getLesson(id){return lessons.find(l=>l.id===Number(id));}
+function cleanNums(a){return Array.isArray(a)?[...new Set(a.filter(Number.isInteger).filter(n=>n>=1&&n<=67))]:[];}
+function validateProgress(data){
+ const safe=deepCopy(BASE);
+ for(const k of ['done','review','wrong','bookmarks']) safe[k]=cleanNums(data?.[k]);
+ if(data?.notes&&typeof data.notes==='object'&&!Array.isArray(data.notes))for(const [k,v] of Object.entries(data.notes))if(getLesson(+k)&&typeof v==='string')safe.notes[k]=v.slice(0,10000);
+ if(data?.quiz&&typeof data.quiz==='object'&&!Array.isArray(data.quiz))for(const [k,v]of Object.entries(data.quiz))if(getLesson(+k)&&Number.isInteger(v)&&v>=0&&v<=2)safe.quiz[k]=v;
+ if(getLesson(data?.lastLesson))safe.lastLesson=+data.lastLesson;
+ safe.theme=data?.theme==='dark'?'dark':'light';
+ return safe;
+}
+function load(){
+ try{
+  const existing=localStorage.getItem(STOR);
+  if(existing)progress=validateProgress(JSON.parse(existing));
+  else{
+   const prev=localStorage.getItem(LEGACY);
+   if(prev){const p=JSON.parse(prev);progress=validateProgress({...BASE,...p,wrong:(p.wrong||[])});}
+   localStorage.setItem(STOR,JSON.stringify(progress));
+  }
+ }catch(e){saveAvailable=false;progress=deepCopy(BASE);}
+ activeLesson=progress.lastLesson||49;
+}
+function save(){
+ try{localStorage.setItem(STOR,JSON.stringify(progress));saveAvailable=true;return true;}
+ catch(e){saveAvailable=false;toast('当前浏览器不允许本地保存。建议导出进度文件作为备份。','warn');return false;}
+}
+function toast(msg,type='ok'){
+ const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');
+ if(toastTimer)clearTimeout(toastTimer);
+ toastTimer=setTimeout(()=>el.classList.remove('show'),2800);
+}
+function status(id){if(progress.review.includes(id)||progress.wrong.includes(id))return'review';return progress.done.includes(id)?'done':'pending';}
+function statusText(id){return status(id)==='done'?'已掌握':status(id)==='review'?'待复习':'未掌握';}
+function setList(key,id,on){const s=new Set(progress[key]);if(on)s.add(id);else s.delete(id);progress[key]=[...s].sort((a,b)=>a-b);}
+function markDone(id){setList('done',id,true);setList('review',id,false);setList('wrong',id,false);save();updateHero();renderSidebar();renderLesson();toast(`第 ${id} 课已标记掌握`);}
+function markReview(id){setList('review',id,true);setList('done',id,false);save();updateHero();renderSidebar();renderLesson();toast('已加入待复习');}
+function updateHero(){
+ const n=progress.done.length,pct=Math.round(n/lessons.length*100);
+ document.getElementById('doneCount').textContent=n;
+ document.getElementById('wrongCount').textContent=progress.wrong.length;
+ document.getElementById('bookmarkCount').textContent=progress.bookmarks.length;
+ document.getElementById('progressFraction').textContent=n+' / '+lessons.length;
+ document.getElementById('progressPct').textContent=pct+'%';
+ document.getElementById('progressBar').style.width=pct+'%';
+ const next=lessons.find(l=>!progress.done.includes(l.id))||lessons[lessons.length-1];
+ const btn=document.getElementById('resumeBtn');btn.textContent=progress.done.length===lessons.length?'全部课程已掌握 · 重新复习':`继续学习第 ${next.id} 课`;
+ btn.dataset.goLesson=next.id;
+}
+function updateTheme(){document.documentElement.dataset.theme=progress.theme;document.getElementById('themeToggle').textContent=progress.theme==='dark'?'日间模式':'夜间模式';}
+function goTab(tab){
+ if(!['learn','review','roadmap','resources','settings'].includes(tab))return;
+ activeTab=tab;
+ for(const id of ['learn','review','roadmap','resources','settings']){
+  document.getElementById(id==='learn'?'learnArea':id+'Area').hidden=(id!==tab);
+ }
+ document.querySelectorAll('[data-tab]').forEach(b=>{b.classList.toggle('active',b.dataset.tab===tab);if(b.dataset.tab===tab)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
+ document.getElementById('hero').hidden=tab!=='learn';
+ if(tab==='learn'){renderSidebar();renderLesson();}
+ if(tab==='review')renderReview();
+ if(tab==='roadmap')renderRoadmap();
+ if(tab==='resources')renderResources();
+ if(tab==='settings')renderSettings();
+ closeMenu();
+ window.scrollTo({top:0,behavior:'instant'});
+}
+function closeMenu(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('open');}
+function selectLesson(id){
+ const l=getLesson(id);if(!l)return;
+ activeLesson=l.id;progress.lastLesson=l.id;save();
+ if(activeTab!=='learn')goTab('learn');else{renderSidebar();renderLesson();}
+ closeMenu();
+ try{history.replaceState(null,'','#lesson-'+l.id);}catch(e){}
+ if(window.innerWidth<900)document.getElementById('lessonDetail').scrollIntoView({block:'start',behavior:'smooth'});
+}
+function filterLessons(){
+ const q=document.getElementById('lessonSearch').value.trim().toLowerCase();
+ const p=document.getElementById('phaseFilter').value,st=document.getElementById('statusFilter').value;
+ return lessons.filter(l=>{
+  const whole=[l.id,l.title,l.key,l.phase,l.analogy,l.erp,l.pitfall,...(l.keywords||[])].join(' ').toLowerCase();
+  return(!q||whole.includes(q))&&(p==='all'||p===l.phase)&&(st==='all'||(st==='bookmarked'?progress.bookmarks.includes(l.id):status(l.id)===st));
+ });
+}
+function renderSidebar(){
+ const filtered=filterLessons(),root=document.getElementById('lessonNav');root.innerHTML='';
+ document.getElementById('navCount').textContent=filtered.length+' / 67';
+ if(!filtered.length){root.innerHTML='<div class="sideEmpty">没有匹配的知识点。可以清除筛选，重新查找。</div>';return;}
+ for(const ph of phases){
+  const ls=filtered.filter(l=>l.phase===ph.name);if(!ls.length)continue;
+  const t=document.createElement('div');t.className='phaseLabel';t.innerHTML=`<span>${esc(ph.name)}</span><small>${ls.length} 课</small>`;root.appendChild(t);
+  for(const l of ls){
+   const b=document.createElement('button');b.type='button';b.className='lessonItem'+(activeLesson===l.id?' active':'');b.dataset.lesson=l.id;
+   b.innerHTML=`<span class="lessonNumber">${String(l.id).padStart(2,'0')}</span><span>${esc(l.title)}</span><span class="stateMark ${status(l.id)==='pending'?'':status(l.id)}" title="${statusText(l.id)}"></span>`;
+   root.appendChild(b);
+  }
+ }
+}
+function renderLesson(){
+ const l=getLesson(activeLesson);if(!l)return;
+ const root=document.getElementById('lessonDetail'),s=status(l.id),r=resources[l.resourceId];
+ const prev=getLesson(l.id-1),next=getLesson(l.id+1);
+ const answers=l.opts.map((t,i)=>`<label class="radioChoice" data-choice="${i}"><input type="radio" name="lessonAnswer" value="${i}"><span class="choiceText">${String.fromCharCode(65+i)}. ${esc(t)}</span></label>`).join('');
+ const steps=l.steps.map(x=>`<div class="step"><p>${esc(x)}</p></div>`).join('');
+ root.innerHTML=`
+  <div class="lessonTop"><div class="breadcrumbs"><span>${esc(l.phase)}</span><span>/</span><span>第 ${l.id} 课</span><span class="pill ${s}">${statusText(l.id)}</span></div>
+   <h2>${esc(l.title)}</h2><p class="lessonLead">${esc(l.key)}</p>
+   <div class="lessonQuickActions"><button class="btn ${progress.bookmarks.includes(l.id)?'warn':''}" data-action="bookmark">${progress.bookmarks.includes(l.id)?'★ 已收藏':'☆ 收藏这课'}</button><button class="btn" data-action="copy">复制本课摘要</button><button class="btn" data-action="print">打印本课</button></div>
+  </div>
+  <div class="sectionPad">
+   <h3 class="sectionTitle"><span class="miniIcon">工</span> 用广告加工厂理解</h3><div class="infoCols"><div class="infoBox"><h4>工厂里的类似场景</h4><p>${esc(l.analogy)}</p></div><div class="infoBox"><h4>放到自己的 ERP 里</h4><p>${esc(l.erp)}</p></div></div>
+   <div class="rule"></div><h3 class="sectionTitle"><span class="miniIcon">①</span> 按这三步理解</h3><div class="steps">${steps}</div>
+   ${l.code?`<div class="rule"></div><h3 class="sectionTitle"><span class="miniIcon">{ }</span> 小例子（看懂即可，无需背诵）</h3><pre class="code">${esc(l.code)}</pre>`:''}
+   <div class="rule"></div><div class="infoBox warn"><h4>容易理解错的地方</h4><p>${esc(l.pitfall)}</p></div>
+   <div class="quizcard" id="lessonQuiz"><h3>理解测试 · 1 道题</h3><p class="quizQ">${esc(l.q)}</p><div id="answers">${answers}</div><div class="quizActions"><button class="btn primary" data-action="submitQuiz">提交答案</button><button class="btn" data-action="resetQuiz">重新选择</button></div><div id="lessonFeedback" aria-live="polite"></div></div>
+   <div class="noteArea"><h3 class="sectionTitle"><span class="miniIcon">✎</span> 我的学习笔记</h3><textarea id="lessonNotes" rows="3" maxlength="10000" placeholder="用自己的话记录：这个概念像工厂里的什么？以后开发 ERP 在哪里会用到？">${esc(progress.notes[l.id]||'')}</textarea><div class="noteActions"><span id="notesState">仅保存在当前浏览器；也可以在设置中导出备份</span><button class="btn" data-action="saveNote">保存笔记</button></div></div>
+   <div class="noteArea" style="background:var(--soft)"><h3 class="sectionTitle"><span class="miniIcon">↗</span> 进一步学习</h3><p class="small">${r?`<a href="${esc(r.url)}" target="_blank" rel="noopener noreferrer">${esc(r.name)} ↗</a><span class="muted"> · 外部网站需联网</span>`:'可在资源中心查找相关教程'}</p></div>
+   <div class="lessonQuickActions"><button class="btn teal" data-action="markDone">✓ ${s==='done'?'已掌握 · 保持状态':'我已理解这课'}</button><button class="btn warn" data-action="markReview">↺ 加入待复习</button></div>
+  </div>
+  <div class="lessonFooter"><button class="btn" data-go-lesson="${prev?prev.id:''}" ${prev?'':'disabled'}>← ${prev?'第 '+prev.id+' 课 · '+esc(prev.title):'已经是第1课'}</button><button class="btn primary" data-go-lesson="${next?next.id:''}" ${next?'':'disabled'}>${next?'第 '+next.id+' 课 · '+esc(next.title):'已到最后一课'} →</button></div>
+ `;
+ if(Number.isInteger(progress.quiz[l.id])){
+  const choice=root.querySelector(`input[name="lessonAnswer"][value="${progress.quiz[l.id]}"]`);
+  if(choice){choice.checked=true;choice.closest('label').classList.add('selected');}
+ }
+}
+function submitLessonAnswer(){
+ const answer=document.querySelector('input[name="lessonAnswer"]:checked'),l=getLesson(activeLesson),fb=document.getElementById('lessonFeedback');
+ if(!answer){fb.innerHTML='<div class="feedback bad">请先选择一个答案，再点击提交。</div>';return;}
+ const n=Number(answer.value);progress.quiz[l.id]=n;
+ if(n===l.a){setList('done',l.id,true);setList('review',l.id,false);setList('wrong',l.id,false);fb.innerHTML=`<div class="feedback good"><b>回答正确。</b>${esc(l.why)}<br>这节课已自动标记为已掌握。</div>`;}
+ else{setList('wrong',l.id,true);setList('review',l.id,true);setList('done',l.id,false);fb.innerHTML=`<div class="feedback bad"><b>这道题需要复习。</b>正确答案：${String.fromCharCode(65+l.a)}。${esc(l.why)}<br>已加入错题复习。</div>`;}
+ save();updateHero();renderSidebar();
+ const st=document.querySelector('.breadcrumbs .pill');if(st){st.className='pill '+status(l.id);st.textContent=statusText(l.id);}
+}
+function saveCurrentNote(){const val=document.getElementById('lessonNotes')?.value;if(val===undefined)return;progress.notes[activeLesson]=val.slice(0,10000);save();const s=document.getElementById('notesState');if(s)s.textContent='笔记已保存到本机浏览器';}
+function copySummary(){
+ const l=getLesson(activeLesson);const t=`第${l.id}课：${l.title}\n定义：${l.key}\n工厂类比：${l.analogy}\nERP案例：${l.erp}\n易错点：${l.pitfall}`;
+ if(navigator.clipboard?.writeText){navigator.clipboard.writeText(t).then(()=>toast('本课摘要已复制')).catch(()=>fallbackCopy(t));}else fallbackCopy(t);
+}
+function fallbackCopy(t){
+ const el=document.createElement('textarea');el.value=t;el.style.position='fixed';el.style.opacity='0';document.body.appendChild(el);el.select();const ok=document.execCommand('copy');el.remove();toast(ok?'本课摘要已复制':'复制失败，请手动选择文字复制');
+}
+function reviewItems(){
+ if(reviewMode==='wrong')return lessons.filter(l=>progress.wrong.includes(l.id));
+ if(reviewMode==='review')return lessons.filter(l=>progress.review.includes(l.id)||progress.wrong.includes(l.id));
+ if(reviewMode==='bookmark')return lessons.filter(l=>progress.bookmarks.includes(l.id));
+ if(reviewMode==='pending')return lessons.filter(l=>!progress.done.includes(l.id));
+ return lessons;
+}
+function renderReview(){
+ const root=document.getElementById('reviewArea'),items=reviewItems();
+ if(!items.some(l=>l.id===reviewLesson))reviewLesson=items[0]?.id||49;
+ const l=getLesson(reviewLesson);
+ root.innerHTML=`<h2>复习中心</h2><p class="sectionSub">按错题、待复习、收藏或未掌握课程抽查。答对后自动清除该课程的错题标记，学习数据保存在本机。</p>
+ <div class="reviewTabs">
+  <button class="btn ${reviewMode==='wrong'?'active':''}" data-review-mode="wrong">错题本 (${progress.wrong.length})</button>
+  <button class="btn ${reviewMode==='review'?'active':''}" data-review-mode="review">待复习 (${[...new Set([...progress.review,...progress.wrong])].length})</button>
+  <button class="btn ${reviewMode==='bookmark'?'active':''}" data-review-mode="bookmark">已收藏 (${progress.bookmarks.length})</button>
+  <button class="btn ${reviewMode==='pending'?'active':''}" data-review-mode="pending">未掌握 (${lessons.length-progress.done.length})</button>
+  <button class="btn ${reviewMode==='all'?'active':''}" data-review-mode="all">全部题目</button>
+ </div>
+ <div class="reviewGrid"><div class="reviewQuiz" id="reviewQuiz">
+ ${items.length?`<div class="pill">第 ${l.id} 课 · ${esc(l.phase)}</div><h3 style="margin-top:9px">${esc(l.title)}</h3><p style="font-size:14px;font-weight:750">${esc(l.q)}</p><div id="reviewOptions">${l.opts.map((o,i)=>`<label class="radioChoice"><input type="radio" name="reviewAnswer" value="${i}"><span class="choiceText">${String.fromCharCode(65+i)}. ${esc(o)}</span></label>`).join('')}</div><div class="quizActions"><button class="btn primary" data-action="checkReview">检查答案</button><button class="btn" data-action="randomReview">下一题 / 换一题</button><button class="btn" data-go-lesson="${l.id}">阅读本课</button></div><div id="reviewFeedback" aria-live="polite"></div>`:`<div class="reviewEmpty">当前没有需要复习的题目。<br>可以选择“全部题目”进行随机抽查，或继续学习下一课。</div><button class="btn primary" data-tab="learn">继续学习</button>`}
+ </div><div><div class="sectionTitle"><span class="miniIcon">✓</span> ${reviewMode==='wrong'?'错题清单':'本组知识点'} · ${items.length} 项</div><div class="reviewQueue">${items.map(x=>`<button data-review-id="${x.id}"><span>第 ${x.id} 课 · ${esc(x.title)}</span><span class="pill ${status(x.id)}">${statusText(x.id)}</span></button>`).join('')||'<div class="reviewEmpty">目前没有记录</div>'}</div></div></div>`;
+}
+function randomReview(){const pool=reviewItems();if(!pool.length){toast('当前筛选下没有题目，请切换复习范围');return;}let choices=pool.filter(l=>l.id!==reviewLesson);if(!choices.length)choices=pool;reviewLesson=choices[Math.floor(Math.random()*choices.length)].id;renderReview();}
+function checkReview(){
+ const radio=document.querySelector('input[name="reviewAnswer"]:checked'),el=document.getElementById('reviewFeedback'),l=getLesson(reviewLesson);
+ if(!radio){el.innerHTML='<div class="feedback bad">请先选择答案。</div>';return;}
+ const n=Number(radio.value);progress.quiz[l.id]=n;
+ if(n===l.a){setList('done',l.id,true);setList('review',l.id,false);setList('wrong',l.id,false);el.innerHTML=`<div class="feedback good">回答正确。${esc(l.why)}<br>这节课已更新为已掌握。</div>`;}
+ else{setList('done',l.id,false);setList('review',l.id,true);setList('wrong',l.id,true);el.innerHTML=`<div class="feedback bad">需要复习。正确答案为 ${String.fromCharCode(65+l.a)}。${esc(l.why)}</div>`;}
+ save();updateHero();
+ // Keep current feedback visible; refresh queue only after the next question or mode change.
+}
+function renderRoadmap(){
+ const root=document.getElementById('roadmapArea');
+ root.innerHTML=`<h2>循序渐进的学习路线</h2><p class="sectionSub">共 67 课，分为 9 个阶段。第 1～49 课沿用原聊天编号，第 50～67 课已补齐完整内容。可以点任意阶段开始学习。</p>
+ <div class="gridCards">${phases.map((p,i)=>{const ls=lessons.filter(l=>l.phase===p.name),done=ls.filter(l=>progress.done.includes(l.id)).length;return`<button class="featureCard" data-phase="${esc(p.name)}"><span class="pill ${done===ls.length?'done':'pending'}">阶段 ${i+1} · ${ls[0].id}—${ls.at(-1).id} 课</span><h3>${esc(p.name)}</h3><p>${esc(p.desc)}</p><div class="roadProgress"><span style="width:${Math.round(done/ls.length*100)}%"></span></div><span class="meta">${done} / ${ls.length} 已掌握 · 点击进入 →</span></button>`}).join('')}</div>
+ <div class="listCard" style="margin-top:20px"><h3>针对广告加工 ERP 的学习建议</h3><p>先完成第 49 课数据库验收，再按 50 → 67 的顺序理解 SQL、共享数据、网络接口、前端项目结构、测试安全和 Codex 工作流。以前学过的章节可以随时通过搜索和复习中心重新查看。</p><button class="btn primary" data-go-lesson="${lessons.find(l=>!progress.done.includes(l.id))?.id||49}">跳到下一节未掌握课程</button></div>`;
+}
+function renderResources(){
+ const root=document.getElementById('resourcesArea');
+ const hit=resources.map((r,i)=>({...r,index:i})).filter(r=>[r.name,r.kind,r.desc,r.extra].join(' ').toLowerCase().includes(resourceQuery.toLowerCase()));
+ root.innerHTML=`<h2>教程与官方资料库</h2><p class="sectionSub">课程内容可以离线学习。以下资源为真实外部教程、文档和 GitHub 项目，需要联网打开；不会伪装成可离线播放的视频。</p>
+ <div class="resourceTop"><input id="resourceSearch" class="field" aria-label="搜索教程资源" placeholder="搜索 GitHub、SQL、Docker、React……" value="${esc(resourceQuery)}"><button class="btn" data-action="resetResource">清除搜索</button></div>
+ <div class="resourceList">${hit.map(r=>`<article class="resourceItem"><div class="resourceTag">${esc(r.kind)}</div><h3>${esc(r.name)}</h3><p>${esc(r.desc)}</p><small>${esc(r.extra)}</small><a href="${esc(r.url)}" target="_blank" rel="noopener noreferrer">打开外部资源 ↗</a></article>`).join('')||'<div class="noData">没有符合关键词的资源，请清除搜索重试。</div>'}</div>`;
+}
+function renderSettings(){
+ const n=Object.keys(progress.notes||{}).filter(k=>progress.notes[k]?.trim()).length;
+ document.getElementById('settingsArea').innerHTML=`<h2>学习设置与备份</h2><p class="sectionSub">当前手册是本地单文件网页，不需要账号或服务器。学习状态保存在打开此文件的浏览器中。</p>
+ <div class="settingCard"><h3>本地数据概览</h3><p>已掌握 ${progress.done.length} 课；收藏 ${progress.bookmarks.length} 课；错题 ${progress.wrong.length} 课；有笔记 ${n} 课。${saveAvailable?'当前浏览器允许保存进度。':'当前浏览器可能限制本地保存，建议使用导出备份。'}</p><button class="btn primary" data-action="export">导出进度和笔记（JSON）</button><button class="btn" data-action="import">导入进度文件</button></div>
+ <div class="settingCard"><h3>外观设置</h3><p>白天适合长时间阅读；夜间模式适合低亮度环境。设置仅作用于当前学习手册。</p><button class="btn" data-action="theme">${progress.theme==='dark'?'切换为浅色模式':'切换为深色模式'}</button><button class="btn" data-action="print">打印当前课程</button></div>
+ <div class="settingCard"><h3>学习记录说明</h3><p>首次打开自动依据聊天进度将第 1～48 课标记为已掌握，第 49～67 课为待学习。答对题目后自动更新进度，错题会进入错题本。课程编号已按原聊天记录修正。</p></div>
+ 
+ <div class="settingCard"><h3>iPhone 打开方式说明</h3><p>如果在聊天附件预览或「文件」预览中按钮无法点击，那是预览器没有运行 JavaScript。请在 Safari 打开 HTTPS 网页版；首次打开后可从 Safari 分享菜单选择「添加到主屏幕」，使用部署包自带的离线缓存。</p><p>在电脑端直接双击 HTML 可离线交互。在 iPhone 上仅打开本地 HTML 文件，不保证获得完整浏览器功能。</p></div>
+ <div class="settingCard"><h3>重置学习记录</h3><p>会删除当前浏览器里本手册的学习笔记、错题、收藏和标记，并恢复到原始进度（1～48 已掌握，49～67 待学习）。此操作不可撤销，建议先导出备份。</p><button class="btn red" data-action="resetAll">重置全部学习数据</button></div>`;
+}
+function exportProgress(){
+ const payload={format:'ad-factory-learning-progress',version:2,exportedAt:new Date().toISOString(),state:progress};
+ const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+ a.href=url;a.download='软件开发学习进度备份.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('已导出学习进度和笔记');
+}
+async function importProgress(file){
+ if(!file)return;
+ try{
+  if(file.size>3*1024*1024)throw Error('文件超过 3MB，请选择本手册导出的进度 JSON。');
+  const obj=JSON.parse(await file.text());
+  if(obj.format!=='ad-factory-learning-progress'||obj.version!==2||!obj.state||!Array.isArray(obj.state.done))throw Error('文件格式不匹配，请选择本手册导出的 JSON。');
+  if(!confirm('导入会覆盖当前浏览器的学习进度、笔记和收藏。确定继续吗？'))return;
+  progress=validateProgress(obj.state);activeLesson=progress.lastLesson||49;save();updateHero();updateTheme();renderSidebar();renderLesson();renderSettings();toast('进度导入成功');
+ }catch(e){toast('导入失败：'+e.message,'warn');}
+ finally{document.getElementById('importInput').value='';}
+}
+function resetAll(){
+ if(!confirm('确定要清空当前学习记录吗？笔记、收藏和错题都会清除，建议先导出备份。'))return;
+ progress=deepCopy(BASE);activeLesson=49;save();updateHero();updateTheme();renderSidebar();renderSettings();toast('已恢复到初始进度');
+}
+function jumpPhase(name){
+ const ls=lessons.filter(l=>l.phase===name),target=ls.find(l=>!progress.done.includes(l.id))||ls[0];
+ if(!target)return;document.getElementById('lessonSearch').value='';document.getElementById('phaseFilter').value='all';document.getElementById('statusFilter').value='all';selectLesson(target.id);
+}
+function handleAction(action){
+ switch(action){
+ case'bookmark':setList('bookmarks',activeLesson,!progress.bookmarks.includes(activeLesson));save();updateHero();renderLesson();toast(progress.bookmarks.includes(activeLesson)?'已收藏本课':'已取消收藏');break;
+ case'copy':copySummary();break;
+ case'print':goTab('learn');window.print();break;
+ case'submitQuiz':submitLessonAnswer();break;
+ case'resetQuiz':{document.querySelectorAll('input[name="lessonAnswer"]').forEach(r=>r.checked=false);document.querySelectorAll('#answers .radioChoice').forEach(e=>e.classList.remove('selected'));document.getElementById('lessonFeedback').innerHTML='';break;}
+ case'markDone':markDone(activeLesson);break;
+ case'markReview':markReview(activeLesson);break;
+ case'saveNote':saveCurrentNote();toast('笔记保存成功');break;
+ case'checkReview':checkReview();break;
+ case'randomReview':randomReview();break;
+ case'resetResource':resourceQuery='';renderResources();break;
+ case'export':exportProgress();break;
+ case'import':document.getElementById('importInput').click();break;
+ case'theme':progress.theme=progress.theme==='dark'?'light':'dark';save();updateTheme();renderSettings();break;
+ case'resetAll':resetAll();break;
+ }
+}
+function init(){
+ load();updateTheme();updateHero();
+ for(const ph of phases){const o=document.createElement('option');o.value=ph.name;o.textContent=`${ph.name}（${ph.start}-${ph.end}）`;document.getElementById('phaseFilter').appendChild(o);}
+ const hash=location.hash.match(/^#lesson-(\d+)$/);if(hash&&getLesson(+hash[1]))activeLesson=+hash[1];
+ renderSidebar();renderLesson();
+ document.body.addEventListener('click',e=>{
+  const tab=e.target.closest('[data-tab]');if(tab){goTab(tab.dataset.tab);return;}
+  const lesson=e.target.closest('[data-lesson]');if(lesson){selectLesson(+lesson.dataset.lesson);return;}
+  const go=e.target.closest('[data-go-lesson]');if(go){if(go.dataset.goLesson)selectLesson(+go.dataset.goLesson);return;}
+  const phase=e.target.closest('[data-phase]');if(phase){jumpPhase(phase.dataset.phase);return;}
+  const mode=e.target.closest('[data-review-mode]');if(mode){reviewMode=mode.dataset.reviewMode;renderReview();return;}
+  const q=e.target.closest('[data-review-id]');if(q){reviewLesson=+q.dataset.reviewId;renderReview();return;}
+  const act=e.target.closest('[data-action]');if(act){handleAction(act.dataset.action);return;}
+ });
+ document.body.addEventListener('change',e=>{
+  if(e.target.name==='lessonAnswer'){document.querySelectorAll('#answers .radioChoice').forEach(x=>x.classList.toggle('selected',x.querySelector('input')?.checked));}
+  if(e.target.name==='reviewAnswer'){document.querySelectorAll('#reviewOptions .radioChoice').forEach(x=>x.classList.toggle('selected',x.querySelector('input')?.checked));}
+ });
+ for(const id of ['lessonSearch','phaseFilter','statusFilter'])document.getElementById(id).addEventListener(id==='lessonSearch'?'input':'change',()=>{renderSidebar();});
+ document.getElementById('clearFilters').addEventListener('click',()=>{document.getElementById('lessonSearch').value='';document.getElementById('phaseFilter').value='all';document.getElementById('statusFilter').value='all';renderSidebar();toast('已清除全部筛选条件');});
+ document.getElementById('resumeBtn').addEventListener('click',e=>selectLesson(+e.currentTarget.dataset.goLesson));
+ document.getElementById('themeToggle').addEventListener('click',()=>handleAction('theme'));
+ document.getElementById('menuToggle').addEventListener('click',()=>{document.getElementById('sidebar').classList.toggle('open');document.getElementById('overlay').classList.toggle('open');});
+ document.getElementById('overlay').addEventListener('click',closeMenu);
+ document.getElementById('menuClose').addEventListener('click',closeMenu);
+ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu();});
+ document.getElementById('importInput').addEventListener('change',e=>importProgress(e.target.files?.[0]));
+ document.body.addEventListener('input',e=>{
+  if(e.target.id==='resourceSearch'){resourceQuery=e.target.value; // avoid stealing focus by re-rendering while typing
+   const cards=document.querySelectorAll('.resourceItem');cards.forEach(card=>{card.hidden=!card.textContent.toLowerCase().includes(resourceQuery.toLowerCase());});
+  }
+  if(e.target.id==='lessonNotes'){progress.notes[activeLesson]=e.target.value.slice(0,10000);save();const msg=document.getElementById('notesState');if(msg)msg.textContent='已自动保存到本机';}
+ });
+ document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')save();});
+ window.addEventListener('hashchange',()=>{const h=location.hash.match(/^#lesson-(\d+)$/);if(h&&getLesson(+h[1])&&+h[1]!==activeLesson)selectLesson(+h[1]);});
+}
+try {
+ init();
+ document.documentElement.classList.add('app-ready');
+
+} catch(err) {
+ console.error('学习手册初始化失败',err);
+ // Leave native read-only content visible rather than showing dead buttons.
+ const alert=document.querySelector('.fallback-alert');
+ if(alert) alert.insertAdjacentHTML('beforeend','<p>检测到页面初始化失败，已切换到无脚本阅读模式。若需要答题和进度记录，请使用 Safari 的 HTTPS 网页版。</p>');
+}
+</script>
+</body>
+</html>
