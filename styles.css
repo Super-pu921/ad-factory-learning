@@ -92,3 +92,18 @@ a,button,summary,[role="button"],.card.clickable,label[for]{touch-action:manipul
  .v8-compact-index .section-head h2{font-size:20px}
  .v8-compact-index .filterbar.component-searchbar{margin:2px 0 19px}
 }
+
+/* V8 knowledge expansion: additive styles for deeper lesson/component guidance. */
+.knowledge-expansion{margin-top:18px;padding:15px 17px;border:1px solid var(--line);border-radius:14px;background:#fbfcff}
+.knowledge-expansion>summary{cursor:pointer;font-size:14px;font-weight:750;color:var(--ink2);list-style-position:inside}
+.knowledge-expansion[open]>summary{margin-bottom:14px}
+.knowledge-block{margin-top:14px}
+.knowledge-block h3{font-size:13px;margin-bottom:7px;color:var(--ink2)}
+.knowledge-block p{font-size:13px;line-height:1.75;color:var(--ink2)}
+.knowledge-bullets{margin:0;padding-left:20px;color:var(--ink2);font-size:13px;line-height:1.8}
+.knowledge-links,.related-knowledge{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:15px;padding-top:12px;border-top:1px solid var(--line);font-size:12px}
+.knowledge-links strong,.related-knowledge strong{color:var(--muted);font-weight:700;margin-right:3px}
+.knowledge-links a,.related-knowledge a{display:inline-flex;align-items:center;min-height:32px;padding:5px 9px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--blue);font-weight:650}
+.related-knowledge>div{display:flex;flex-wrap:wrap;gap:7px}
+.knowledge-links a:focus-visible,.related-knowledge a:focus-visible{outline:3px solid #a8bdff;outline-offset:2px}
+@media(max-width:760px){.knowledge-expansion{padding:13px}.knowledge-links a,.related-knowledge a{min-height:40px}}

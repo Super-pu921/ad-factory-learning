@@ -1,5 +1,5 @@
 /* V8 offline: production root assets only, preview folders remain untouched. */
-const CACHE='ad-factory-learning-v8-20261031';
+const CACHE='ad-factory-learning-v8-knowledge-20261031';
 const ASSETS=['./','./index.html','./styles.css','./app.js','./demos.js','./data.json','./manifest.webmanifest','./icon-192.png','./icon-512.png','./apple-touch-icon.png'];
 const ASSET_PATHS=new Set(ASSETS.map(p=>new URL(p,self.registration.scope).pathname));
 self.addEventListener('install',e=>{
