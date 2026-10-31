@@ -54,7 +54,10 @@ assert.equal(p2.getFilteredOrders().length,4);
 // Combined filters.
 p2.resetForTests();
 p2.setQuery("示例客户A");
+p2.setQuery("");
+p2.setStatus("生产中");
 p2.setStatus("待生产");
+p2.setQuery("示例客户A");
 assert.equal(p2.getFilteredOrders().length,2);
 assert.deepEqual(Array.from(p2.getState().completedSteps),[1,2,3]);
 assert.ok(p2.getFilteredOrders().every(o=>o.customer==="示例客户A"&&o.status==="待生产"));
