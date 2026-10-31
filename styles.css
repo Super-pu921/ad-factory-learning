@@ -140,3 +140,36 @@ a,button,summary,[role="button"],.card.clickable,label[for]{touch-action:manipul
 .mission-success strong{font-size:21px;color:var(--good)}
 .mission-success p{font-size:13px;line-height:1.7;color:var(--ink2);margin:12px 0 20px}
 @media(max-width:760px){.mission-grid{grid-template-columns:minmax(0,1fr)}.mission-shell{padding:16px}.mission-tile{padding:15px}.mission-actions>.btn{min-height:44px}.mission-fixture{overflow-wrap:anywhere}}
+
+/* P2.1 isolated order-list practice; existing V8 component styles unchanged. */
+.orderlab-page{min-width:0}
+.orderlab-page .card{min-width:0}
+.orderlab-lesson,.orderlab-workspace{margin-top:18px;padding:20px}
+.orderlab-steps{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:17px}
+.orderlab-steps span{display:grid;place-items:center;border-radius:50%;border:1px solid var(--line);color:var(--muted);font-size:12px;font-weight:750;width:30px;height:30px}
+.orderlab-steps span.current{background:var(--blue-soft);color:var(--blue);border-color:#aec5ff}
+.orderlab-steps span.done{background:var(--good-bg);color:var(--good)}
+.orderlab-lesson h2{font-size:19px;margin:9px 0}
+.orderlab-actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:17px}
+.orderlab-feedback{font-size:13px;line-height:1.7;margin-top:15px;padding:11px;border-radius:10px;background:#f1f6ff;color:#33548b}
+.orderlab-feedback.needs-attention{background:var(--red-bg);color:var(--red)}
+.orderlab-toolbar{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr) auto;gap:12px;align-items:end;margin-bottom:18px}
+.orderlab-toolbar .mission-field{min-width:0}
+.orderlab-toolbar .field{width:100%;min-width:0;font-size:16px}
+.orderlab-table-wrap{width:100%;overflow-x:auto;max-width:100%}
+.orderlab-table{border-collapse:collapse;width:100%;min-width:450px;font-size:13px}
+.orderlab-table th,.orderlab-table td{padding:12px 10px;text-align:left;border-bottom:1px solid var(--line)}
+.orderlab-table th{color:var(--muted);font-size:12px}
+.orderlab-table td:first-child{font-weight:750;white-space:nowrap}
+.orderlab-status{display:inline-flex;padding:4px 9px;border-radius:8px;background:#f1f5fb;white-space:nowrap}
+.orderlab-empty{text-align:center!important;color:var(--muted);padding:28px 10px!important}
+.orderlab-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:14px}
+.orderlab-page-controls{display:flex;gap:7px}
+.orderlab-notice{margin-top:16px;line-height:1.7}
+.orderlab-dialog{position:fixed;top:0;bottom:0;left:auto;right:0;margin:0 0 0 auto;height:100dvh;max-height:100dvh;width:min(420px,100vw);max-width:100vw;border:0;border-radius:18px 0 0 18px;padding:24px;box-shadow:-8px 0 30px #18233230}
+.orderlab-dialog::backdrop{background:#12203980}
+.orderlab-dialog h2{font-size:20px;margin-bottom:9px}
+.orderlab-dialog .info-list{margin:20px 0}
+.orderlab-complete strong{font-size:20px;color:var(--good)}
+.orderlab-complete p{color:var(--ink2);font-size:13px;line-height:1.7;margin:12px 0}
+@media(max-width:760px){.orderlab-lesson,.orderlab-workspace{padding:14px}.orderlab-toolbar{grid-template-columns:minmax(0,1fr)}.orderlab-toolbar>.btn{min-height:44px}.orderlab-dialog{width:100%;border-radius:0;padding:20px}.orderlab-table{min-width:420px}.orderlab-page .orderlab-lesson h2{font-size:17px}}
