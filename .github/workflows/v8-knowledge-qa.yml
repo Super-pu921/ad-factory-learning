@@ -1,0 +1,53 @@
+name: V8 Knowledge QA
+on:
+  push:
+    branches:
+      - v8-knowledge-upgrade-2026-10-31
+  pull_request:
+    paths:
+      - "data.json"
+      - "app.js"
+      - "styles.css"
+      - "demos.js"
+      - "scripts/validate-v8-knowledge.mjs"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  static-validation:
+    name: Node syntax and knowledge integrity
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out exact revision
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Check application JavaScript
+        run: |
+          node --check app.js
+          node --check demos.js
+          node --check sw.js
+      - name: Validate V8 knowledge structure
+        run: node scripts/validate-v8-knowledge.mjs
+      - name: Verify QA baseline boundaries
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import {readFileSync} from 'node:fs';
+          import assert from 'node:assert/strict';
+          const app=readFileSync('app.js','utf8');
+          const d=JSON.parse(readFileSync('data.json','utf8'));
+          assert.match(app, /const STORAGE='adFactoryLearning\.v8\.production'/);
+          assert.match(app, /const OFFICIAL_STORAGE='adFactoryLearning\.v2'/);
+          assert.equal(d.lessons.length,90);
+          assert.equal(d.components.length,88);
+          assert.equal(d.scenes.length,6);
+          assert.equal(d.lessons.filter(l=>l.deepDive).length,35);
+          assert.ok(d.sources.length>=31);
+          console.log('V8 production baseline preserved and knowledge upgrade validated');
+          NODE
