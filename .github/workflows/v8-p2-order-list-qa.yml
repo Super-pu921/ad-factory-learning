@@ -1,0 +1,63 @@
+name: V8 P2.1 Order List QA
+
+on:
+  push:
+    branches:
+      - v8-p2-1-order-list-2026-10-31
+  pull_request:
+    paths:
+      - "app.js"
+      - "p2.js"
+      - "index.html"
+      - "styles.css"
+      - "sw.js"
+      - "scripts/test-p2-order-list.mjs"
+      - ".github/workflows/v8-p2-order-list-qa.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  p2-order-list:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Validate JavaScript syntax
+        run: |
+          node --check app.js
+          node --check demos.js
+          node --check missions.js
+          node --check p2.js
+          node --check sw.js
+      - name: Validate existing V8 knowledge baseline
+        run: node scripts/validate-v8-knowledge.mjs
+      - name: Run existing P0 practice tests
+        run: node scripts/test-v8-missions.mjs
+      - name: Run P2.1 order-list tests
+        run: node scripts/test-p2-order-list.mjs
+      - name: Confirm V8 baseline and P2.1 integration
+        run: |
+          node --input-type=module <<'NODE'
+          import {readFileSync} from 'node:fs';
+          import assert from 'node:assert/strict';
+          const d=JSON.parse(readFileSync('data.json','utf8'));
+          assert.equal(d.lessons.length,90);
+          assert.equal(d.components.length,88);
+          assert.equal(d.scenes.length,6);
+          const a=readFileSync('app.js','utf8');
+          assert.ok(a.includes("window.V8P2.renderOrderList()"));
+          assert.ok(a.includes("window.V8P2?.handleClick(e)"));
+          assert.ok(a.includes("window.V8P2?.handleInput(e)"));
+          const i=readFileSync('index.html','utf8');
+          assert.ok(i.includes('src="./p2.js"'));
+          const sw=readFileSync('sw.js','utf8');
+          assert.ok(sw.includes("'./p2.js'"));
+          const p=readFileSync('p2.js','utf8');
+          assert.ok(p.includes("adFactoryLearning.v8.practice.p2.order-list"));
+          console.log('P2.1 route, assets, isolated storage and 90/88/6 baseline intact');
+          NODE
