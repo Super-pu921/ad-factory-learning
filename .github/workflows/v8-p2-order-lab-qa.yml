@@ -49,7 +49,7 @@ jobs:
           assert.ok(fs.readFileSync('index.html','utf8').includes('./order-lab.js'));
           const sw=fs.readFileSync('sw.js','utf8');
           for(const name of ["'./missions.js'","'./order-lab.js'"])assert.ok(sw.includes(name),'Missing precache: '+name);
-          assert.ok(sw.includes('ad-factory-learning-v8-p21-20261031'));
+          assert.match(sw,/const CACHE='ad-factory-learning-v8-[^']+'/);
           console.log('V8 baseline and integration maintained');
           NODE
 

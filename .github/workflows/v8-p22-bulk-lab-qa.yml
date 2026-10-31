@@ -1,0 +1,67 @@
+name: V8 P2.2 Bulk Safety QA
+on:
+  push:
+    branches:
+      - v8-p22-bulk-safety-20261031
+  pull_request:
+    paths:
+      - 'app.js'
+      - 'index.html'
+      - 'styles.css'
+      - 'bulk-lab.js'
+      - 'sw.js'
+      - 'scripts/test-v8-bulk-lab.mjs'
+      - 'scripts/test-v8-bulk-lab-browser.mjs'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  node:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax and all learning regression tests
+        run: |
+          node --check app.js
+          node --check sw.js
+          node --check bulk-lab.js
+          node scripts/test-v8-bulk-lab.mjs
+          node scripts/test-v8-missions.mjs
+          node scripts/test-v8-order-lab.mjs
+          node scripts/validate-v8-knowledge.mjs
+      - name: Preserve data, routes and cache
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import fs from 'node:fs';
+          const db=JSON.parse(fs.readFileSync('data.json','utf8'));
+          assert.deepEqual([db.lessons.length,db.components.length,db.scenes.length],[90,88,6]);
+          const app=fs.readFileSync('app.js','utf8'),idx=fs.readFileSync('index.html','utf8'),sw=fs.readFileSync('sw.js','utf8');
+          assert.ok(app.includes("const STORAGE='adFactoryLearning.v8.production'"));
+          assert.ok(app.includes('window.V8BulkLab.page()'));
+          assert.ok(idx.includes('src="./bulk-lab.js"'));
+          for(const asset of ["'./bulk-lab.js'","'./order-lab.js'","'./missions.js'"])assert.ok(sw.includes(asset));
+          console.log('P2.2 integration, original data and offline assets validated');
+          NODE
+  browser:
+    needs: node
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Chromium and WebKit
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium webkit
+      - name: Run interactive browser QA
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/p22-http.log 2>&1 &
+          sleep 2
+          node scripts/test-v8-bulk-lab-browser.mjs
