@@ -11,6 +11,7 @@
 1. `data.json`
    - 为 88 个组件补充统一的知识结构：行为机制、关键状态、键盘交互、无障碍、移动端策略、验收测试点。
    - 为所有 90 门课程建立关联组件；相关课程、组件与 6 个 ERP 场景可以相互跳转。
+   - 课程和组件的扩展知识可通过组件搜索与全局搜索查找。
    - 为核心课程增加深入拓展、工作步骤、实操任务、常见误区和参考资料。
    - 增加 W3C、MDN、Dexie、OWASP 等官方参考；只链接并原创概述，不复制第三方长篇内容或示例源码。
    - 将元数据标记为 V8 正式知识扩展版，不再使用预览标记。
@@ -35,7 +36,7 @@
 - WCAG 2.2：焦点可见、焦点不被遮挡、目标尺寸、标签和错误识别。
 - MDN：HTML Constraint Validation、IndexedDB、Web Storage、CSS Grid、HTTP。
 - Dexie：数据库版本声明、schema upgrade 和升级事务。
-- OWASP：默认拒绝、服务端授权和最小权限。
+- OWASP：默认拒绝、服务端授权、密钥管理和安全日志。
 - React、TypeScript、Vite 与 Git 官方资料：对应课程的技术概念和工作流。
 
 本学习工作台自身仍是原生 HTML/CSS/JavaScript + JSON 的静态项目；React、TypeScript、Vite、Dexie 等内容是课程用于解释其他 ERP 项目技术的知识，不代表本工作台新增了这些依赖。
