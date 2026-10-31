@@ -47,3 +47,23 @@ jobs:
           assert.ok(fs.readFileSync('index.html','utf8').includes('./order-lab.js'));
           console.log('V8 baseline and integration maintained');
           NODE
+
+  browser:
+    name: Chromium interactive QA (375px / 390px / 1440px)
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Playwright
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Test real browser interactions
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/v8-orderlab-http.log 2>&1 &
+          sleep 2
+          node scripts/test-v8-order-lab-browser.mjs
