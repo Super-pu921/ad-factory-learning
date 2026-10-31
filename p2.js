@@ -32,7 +32,7 @@ function load(){
  try{
   const v=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');
   if(!v||typeof v!=='object')return copy(DEFAULT);
-  const raw=Array.isArray(v.completedSteps)?new Set(v.completedSteps.filter(n=>Number.isInteger(n)&&n>=1&&n<=6))):new Set();
+  const raw=Array.isArray(v.completedSteps)?new Set(v.completedSteps.filter(n=>Number.isInteger(n)&&n>=1&&n<=6)):new Set();
   const completedSteps=[];for(let n=1;n<=6&&raw.has(n);n++)completedSteps.push(n);
   return {query:typeof v.query==='string'?v.query.slice(0,80):'',status:STATUSES.includes(v.status)?v.status:'all',page:Number.isInteger(v.page)&&v.page>0?v.page:1,completedSteps,feedback:typeof v.feedback==='string'?v.feedback.slice(0,240):DEFAULT.feedback};
  }catch(e){return copy(DEFAULT);}
