@@ -67,3 +67,23 @@ jobs:
           python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/v8-orderlab-http.log 2>&1 &
           sleep 2
           node scripts/test-v8-order-lab-browser.mjs
+
+  webkit:
+    name: WebKit mobile Safari-compatible QA (iPhone simulation)
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Playwright WebKit
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps webkit
+      - name: Run WebKit mobile and desktop smoke tests
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/v8-orderlab-webkit-http.log 2>&1 &
+          sleep 2
+          node scripts/test-v8-order-lab-webkit.mjs
