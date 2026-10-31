@@ -43,6 +43,10 @@ try{
   await check(await dialog.isVisible(),'drawer visible');
   await check((await dialog.innerText()).includes('S-1008'),'drawer shows selected order');
   await page.getByRole('button',{name:'关闭详情'}).click();
+  await page.locator('#orderLabRoot h2').getByText('已完成全部六步').waitFor({state:'visible',timeout:5000}).catch(async e=>{
+    const state=await page.evaluate(()=>({record:localStorage.getItem('adFactoryLearning.v8.order-lab'),dialogOpen:!!document.querySelector('dialog[open]'),body:document.getElementById('orderLabRoot')?.innerText.slice(0,600)}));
+    throw new Error('detail close did not complete: '+JSON.stringify(state)+'; '+String(e));
+  });
   await check((await page.locator('#orderLabRoot').innerText()).includes('已完成全部六步'),'all 6 steps completed');
   await page.reload({waitUntil:'domcontentloaded'});
   await page.waitForSelector('#orderLabRoot');
