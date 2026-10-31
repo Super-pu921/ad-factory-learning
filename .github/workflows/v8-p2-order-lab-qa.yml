@@ -1,0 +1,95 @@
+name: V8 P2.1 Order Lab QA
+on:
+  push:
+    branches:
+      - v8-p2-order-lab-20261031
+  pull_request:
+    paths:
+      - 'app.js'
+      - 'index.html'
+      - 'styles.css'
+      - 'order-lab.js'
+      - 'scripts/test-v8-order-lab.mjs'
+      - 'scripts/test-v8-p21-offline.mjs'
+      - 'sw.js'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check scripts
+        run: |
+          node --check app.js
+          node --check order-lab.js
+          node --check demos.js
+          node --check missions.js
+          node --check sw.js
+      - name: P2.1 full workflow regression
+        run: |
+          node scripts/test-v8-order-lab.mjs
+          node scripts/test-v8-missions.mjs
+          node scripts/validate-v8-knowledge.mjs
+      - name: Baseline counts and storage boundaries
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import fs from 'node:fs';
+          const d=JSON.parse(fs.readFileSync('data.json','utf8'));
+          assert.deepEqual([d.lessons.length,d.components.length,d.scenes.length],[90,88,6]);
+          const app=fs.readFileSync('app.js','utf8');
+          assert.ok(app.includes("const STORAGE='adFactoryLearning.v8.production'"));
+          assert.ok(app.includes("window.V8OrderLab.page()"));
+          assert.ok(fs.readFileSync('index.html','utf8').includes('./order-lab.js'));
+          const sw=fs.readFileSync('sw.js','utf8');
+          for(const name of ["'./missions.js'","'./order-lab.js'"])assert.ok(sw.includes(name),'Missing precache: '+name);
+          assert.ok(sw.includes('ad-factory-learning-v8-p21-20261031'));
+          console.log('V8 baseline and integration maintained');
+          NODE
+
+  browser:
+    name: Chromium interactive QA (375px / 390px / 1440px)
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Playwright
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Test real browser interactions
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/v8-orderlab-http.log 2>&1 &
+          sleep 2
+          node scripts/test-v8-order-lab-browser.mjs
+          node scripts/test-v8-p21-offline.mjs
+
+  webkit:
+    name: WebKit mobile Safari-compatible QA (iPhone simulation)
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Playwright WebKit
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps webkit
+      - name: Run WebKit mobile and desktop smoke tests
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/v8-orderlab-webkit-http.log 2>&1 &
+          sleep 2
+          node scripts/test-v8-order-lab-webkit.mjs
