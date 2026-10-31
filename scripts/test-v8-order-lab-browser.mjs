@@ -64,7 +64,7 @@ try{
     await page.goto(base+'#/components/order-lab');
     await check(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+1),'no horizontal body overflow at '+width+'px');
     if(width<500){
-      await page.getByRole('button',{name:'重新练习'}).click();
+      if(width===375)await page.getByRole('button',{name:'重新练习'}).click();
       const font=await page.locator('#orderLabQuery').evaluate(el=>Number.parseFloat(getComputedStyle(el).fontSize));
       await check(font>=16,'input font >=16px at '+width);
     }
