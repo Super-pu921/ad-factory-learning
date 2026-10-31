@@ -1,0 +1,39 @@
+name: V8 P2.1 Order Lab QA
+
+on:
+  push:
+    branches:
+      - v8-p2-1-orders-lab-20261031
+  pull_request:
+    paths:
+      - "app.js"
+      - "order-lab.js"
+      - "styles.css"
+      - "index.html"
+      - "scripts/test-v8-order-lab.mjs"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  order-training:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax checks
+        run: |
+          node --check app.js
+          node --check order-lab.js
+          node --check demos.js
+          node --check missions.js
+      - name: Existing V8 baseline
+        run: |
+          node scripts/validate-v8-knowledge.mjs
+          node scripts/test-v8-missions.mjs
+      - name: P2.1 regression
+        run: node scripts/test-v8-order-lab.mjs
