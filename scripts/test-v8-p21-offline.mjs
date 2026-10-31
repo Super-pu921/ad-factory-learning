@@ -1,5 +1,10 @@
 import assert from 'node:assert/strict';
 import {chromium} from 'playwright';
+import {readFileSync} from 'node:fs';
+
+const swSource=readFileSync(new URL('../sw.js',import.meta.url),'utf8');
+const cacheName=swSource.match(/const CACHE='([^']+)'/)?.[1];
+assert.ok(cacheName?.startsWith('ad-factory-learning-v8-'),'Expected V8 offline cache name');
 
 const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
 const context=await browser.newContext({serviceWorkers:'allow'});
@@ -13,11 +18,11 @@ try {
     await navigator.serviceWorker.ready;
   });
   await page.waitForFunction(()=>navigator.serviceWorker.controller!==null,null,{timeout:15000});
-  const cached=await page.evaluate(async()=>{
-    const cache=await caches.open('ad-factory-learning-v8-p21-20261031');
+  const cached=await page.evaluate(async(cacheName)=>{
+    const cache=await caches.open(cacheName);
     const matches=await Promise.all(['./index.html','./app.js','./data.json','./missions.js','./order-lab.js'].map(p=>cache.match(p)));
     return matches.map(Boolean);
-  });
+  },cacheName);
   assert.ok(cached.every(Boolean),'Offline cache missing required V8 assets: '+JSON.stringify(cached));
   await context.setOffline(true);
   await page.reload({waitUntil:'domcontentloaded'});
