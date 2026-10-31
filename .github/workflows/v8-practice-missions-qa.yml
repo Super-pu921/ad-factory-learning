@@ -1,0 +1,54 @@
+name: V8 Practice Missions QA
+
+on:
+  push:
+    branches:
+      - v8-practice-labs-2026-10-31
+  pull_request:
+    paths:
+      - "app.js"
+      - "missions.js"
+      - "index.html"
+      - "styles.css"
+      - "scripts/test-v8-missions.mjs"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  practice-validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Validate JavaScript
+        run: |
+          node --check app.js
+          node --check demos.js
+          node --check missions.js
+          node --check sw.js
+      - name: Validate existing knowledge data
+        run: node scripts/validate-v8-knowledge.mjs
+      - name: Run all exercise fixtures and persistence checks
+        run: node scripts/test-v8-missions.mjs
+      - name: Confirm V8 baseline
+        run: |
+          node --input-type=module <<'NODE'
+          import {readFileSync} from 'node:fs';
+          import assert from 'node:assert/strict';
+          const d=JSON.parse(readFileSync('data.json','utf8'));
+          assert.equal(d.lessons.length,90);
+          assert.equal(d.components.length,88);
+          assert.equal(d.scenes.length,6);
+          const a=readFileSync('app.js','utf8');
+          assert.match(a,/const STORAGE='adFactoryLearning\.v8\.production'/);
+          assert.ok(a.includes('window.V8Missions.catalog()'));
+          assert.ok(a.includes('window.V8Missions.page(segments[2])'));
+          const i=readFileSync('index.html','utf8');
+          assert.ok(i.includes('src="./missions.js"'));
+          console.log('V8 baseline and practice integration intact');
+          NODE
