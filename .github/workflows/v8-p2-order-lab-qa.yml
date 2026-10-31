@@ -10,6 +10,8 @@ on:
       - 'styles.css'
       - 'order-lab.js'
       - 'scripts/test-v8-order-lab.mjs'
+      - 'scripts/test-v8-p21-offline.mjs'
+      - 'sw.js'
   workflow_dispatch:
 permissions:
   contents: read
@@ -45,6 +47,9 @@ jobs:
           assert.ok(app.includes("const STORAGE='adFactoryLearning.v8.production'"));
           assert.ok(app.includes("window.V8OrderLab.page()"));
           assert.ok(fs.readFileSync('index.html','utf8').includes('./order-lab.js'));
+          const sw=fs.readFileSync('sw.js','utf8');
+          for(const name of ["'./missions.js'","'./order-lab.js'"])assert.ok(sw.includes(name),'Missing precache: '+name);
+          assert.ok(sw.includes('ad-factory-learning-v8-p21-20261031'));
           console.log('V8 baseline and integration maintained');
           NODE
 
@@ -67,6 +72,7 @@ jobs:
           python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/v8-orderlab-http.log 2>&1 &
           sleep 2
           node scripts/test-v8-order-lab-browser.mjs
+          node scripts/test-v8-p21-offline.mjs
 
   webkit:
     name: WebKit mobile Safari-compatible QA (iPhone simulation)
