@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f8fafc">
+  <meta name="description" content="软件开发学习工作台 V8 全知识版：90课、88组件、6个ERP场景。">
+  <title>V8 P2.1 订单列表实训 · 独立预览</title>
+  <link rel="icon" type="image/png" href="../icon-192.png">
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <noscript><div class="noscript">本网站需要 JavaScript。请使用浏览器打开 GitHub Pages HTTPS 地址，不要使用文件预览。</div></noscript>
+  <div class="shell" id="shell">
+    <aside class="sidebar" aria-label="主导航">
+      <a href="#/home" aria-label="返回总览" class="brand"><span class="brand-icon">K</span><span><strong>开发学习工作台</strong><small>KNOWLEDGE STUDIO</small></span></a>
+      <div class="side-label">工作空间</div>
+      <nav class="side-nav" id="sideNav">
+        <a href="#/learn" data-nav="learn"><span class="nav-ico">▤</span>学习</a>
+        <a href="#/components" data-nav="components"><span class="nav-ico">◫</span>组件</a>
+        <a href="#/practice" data-nav="practice"><span class="nav-ico">▧</span>实战</a>
+        <a href="#/me" data-nav="me"><span class="nav-ico">◎</span>我的</a>
+      </nav>
+      <div class="side-spacer"></div>
+      
+    </aside>
+    <div class="workspace">
+      <header class="topbar"><div class="top-left"><a class="mobile-logo" href="#/home">K<span> 学习工作台</span></a><span class="top-mark">P2.1 QA</span></div><div class="top-right"><button id="globalSearch" class="top-search" type="button" aria-label="全局搜索"><span class="search-mark">⌕</span><span>搜索课程、组件与场景</span><kbd>/</kbd></button><button id="topFavorite" class="circle-btn" type="button" title="我的收藏" aria-label="我的收藏">☆</button></div></header>
+      <main id="view" tabindex="-1" aria-live="off"></main>
+    </div>
+    <nav class="bottom-nav" aria-label="手机主导航" id="bottomNav">
+      <a href="#/learn" data-nav="learn"><span>▤</span>学习</a>
+      <a href="#/components" data-nav="components"><span>◫</span>组件</a>
+      <a href="#/practice" data-nav="practice"><span>▧</span>实战</a>
+      <a href="#/me" data-nav="me"><span>◎</span>我的</a>
+    </nav>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div id="overlayRoot"></div>
+  <script src="./demos.js" defer></script>
+  <script src="./missions.js" defer></script>
+  <script src="./order-lab.js" defer></script>
+  <script src="./app.js" defer></script>
+</body>
+</html>
