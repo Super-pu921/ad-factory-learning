@@ -29,7 +29,7 @@ try {
  ok((await page.locator('#bulklabSelected').innerText())==='5',label+': deselected one');
  await page.getByRole('button',{name:'批量归档（模拟）'}).click();
  const dialog=page.locator('.bulklab-dialog');ok(await dialog.isVisible(),label+': confirm modal shown');
- await page.getByRole('button',{name:'取消',exact:true}).click();await checkStage(page,5);
+ await page.getByRole('button',{name:'取消',exact:true}).click();await page.waitForFunction(()=>document.querySelector('#bulklabRoot .micro')?.textContent?.includes('第 5/6 步'),null,{timeout:5000});await checkStage(page,5);
  ok((await page.locator('#bulklabArchived').innerText())==='0',label+': cancel did not mutate');
  await page.getByRole('button',{name:'批量归档（模拟）'}).click();
  await page.locator('#bulklabPhrase').fill('确认归档 6');
