@@ -10,7 +10,7 @@ assert.match(idx,/customer-order-lab\.js/);
 assert.match(idx,/src="\.\/app\.js"/);
 assert.match(idx,/href="\.\/styles\.css"/);
 assert.doesNotMatch(idx,/serviceWorker|manifest\.webmanifest|src="\.\/sw\.js"/,"QA must never register a Service Worker");
-for(const file of ["styles.css","data.json","demos.js","customer-order-lab.js"]){
+for(const file of ["styles.css","data.json","demos.js"]){
  assert.equal(read(dir+file),read(file),"QA copy must match development branch source "+file);
 }
 const transformations={
@@ -18,6 +18,7 @@ const transformations={
  "missions.js":[["const STORAGE='adFactoryLearning.v8.practice.missions';","const STORAGE='adFactoryLearning.v8.practice.missions.p24.qa';"]],
  "order-lab.js":[['const STORAGE="adFactoryLearning.v8.order-lab";','const STORAGE="adFactoryLearning.v8.order-lab.p24.qa";']],
  "bulk-lab.js":[['const KEY="adFactoryLearning.v8.bulk-lab";','const KEY="adFactoryLearning.v8.bulk-lab.p24.qa";']],
+ "customer-order-lab.js":[['const qa=location.pathname.includes("/v8-p24-qa/");','const qa=true; // QA copy always uses an isolated database, regardless of extracted folder name.']],
  "transaction-lab.js":[['const DB_NAME="adFactoryLearning.v8.transaction-lab";','const DB_NAME="adFactoryLearning.v8.transaction-lab.p24.qa";'],['const PROGRESS="adFactoryLearning.v8.transaction-lab.progress";','const PROGRESS="adFactoryLearning.v8.transaction-lab.progress.p24.qa";']]
 };
 for(const [name,items] of Object.entries(transformations)){
