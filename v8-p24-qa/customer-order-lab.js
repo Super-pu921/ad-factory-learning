@@ -1,6 +1,6 @@
 (function createCustomerOrderLab(){
 "use strict";
-const qa=location.pathname.includes("/v8-p24-qa/");
+const qa=true; // QA copy always uses an isolated database, regardless of extracted folder name.
 const DB="adFactoryLearning.v8.customer-order-lab"+(qa?".qa":"");
 const PROGRESS=DB+".progress";
 const titles=["建立虚构客户","拒绝不存在的客户引用","拒绝非法报价数量","建立有效教学报价","查询客户与报价关系","模拟事务失败与回滚","原子事务生成订单","重复转单与刷新恢复"];
