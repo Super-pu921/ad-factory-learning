@@ -14,7 +14,7 @@ for(const file of ["styles.css","data.json","demos.js","customer-order-lab.js"])
  assert.equal(read(dir+file),read(file),"QA copy must match development branch source "+file);
 }
 const transformations={
- "app.js":[["const STORAGE='adFactoryLearning.v8.production';","const STORAGE='adFactoryLearning.v8.p24.qa';"],["const OFFICIAL_STORAGE='adFactoryLearning.v2';","const OFFICIAL_STORAGE='adFactoryLearning.v2.p24-qa-disabled';"]],
+ "app.js":[["const STORAGE='adFactoryLearning.v8.production';","const STORAGE='adFactoryLearning.v8.p24.qa';"],["const OFFICIAL_STORAGE='adFactoryLearning.v2';","const OFFICIAL_STORAGE='adFactoryLearning.v2.p24-qa-disabled';"],["document.title=type==='home'?'学习工作台 V8 · 知识扩展版':($('#view h1')?.textContent||'学习工作台')+' · V8 正式版';","document.title=type==='home'?'学习工作台 V8 · P2.4 QA 预览':($('#view h1')?.textContent||'学习工作台')+' · V8 P2.4 QA 预览';"]],
  "missions.js":[["const STORAGE='adFactoryLearning.v8.practice.missions';","const STORAGE='adFactoryLearning.v8.practice.missions.p24.qa';"]],
  "order-lab.js":[['const STORAGE="adFactoryLearning.v8.order-lab";','const STORAGE="adFactoryLearning.v8.order-lab.p24.qa";']],
  "bulk-lab.js":[['const KEY="adFactoryLearning.v8.bulk-lab";','const KEY="adFactoryLearning.v8.bulk-lab.p24.qa";']],
