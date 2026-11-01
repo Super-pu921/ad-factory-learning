@@ -12,6 +12,8 @@ on:
       - 'sw.js'
       - 'scripts/test-v8-customer-order-lab.mjs'
       - 'scripts/test-v8-customer-order-lab-browser.mjs'
+      - 'scripts/test-v8-p24-qa.mjs'
+      - 'v8-p24-qa/**'
   workflow_dispatch:
 permissions:
   contents: read
@@ -34,12 +36,16 @@ jobs:
           node --check order-lab.js
           node --check bulk-lab.js
           node --check transaction-lab.js
+          node --check v8-p24-qa/app.js
+          node --check v8-p24-qa/customer-order-lab.js
+          node --check v8-p24-qa/transaction-lab.js
           node scripts/validate-v8-knowledge.mjs
           node scripts/test-v8-missions.mjs
           node scripts/test-v8-order-lab.mjs
           node scripts/test-v8-bulk-lab.mjs
           node scripts/test-v8-transaction-lab.mjs
           node scripts/test-v8-customer-order-lab.mjs
+          node scripts/test-v8-p24-qa.mjs
   browser:
     needs: node
     runs-on: ubuntu-latest
@@ -59,3 +65,10 @@ jobs:
           sleep 2
           node scripts/test-v8-transaction-lab-browser.mjs
           node scripts/test-v8-customer-order-lab-browser.mjs
+          P24_TEST_URL='http://127.0.0.1:8765/v8-p24-qa/index.html#/components/customer-order-lab' node scripts/test-v8-customer-order-lab-browser.mjs
+      - name: Upload independent QA preview for manual review
+        uses: actions/upload-artifact@v4
+        with:
+          name: v8-p24-qa-preview
+          path: v8-p24-qa/
+          retention-days: 14
