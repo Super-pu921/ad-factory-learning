@@ -1,0 +1,61 @@
+name: V8 P2.4 Customer Quote Order Lab QA
+on:
+  push:
+    branches:
+      - v8-p24-customer-order-lab-20261101
+  pull_request:
+    paths:
+      - 'customer-order-lab.js'
+      - 'app.js'
+      - 'index.html'
+      - 'styles.css'
+      - 'sw.js'
+      - 'scripts/test-v8-customer-order-lab.mjs'
+      - 'scripts/test-v8-customer-order-lab-browser.mjs'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  node:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax and baseline regression
+        run: |
+          node --check app.js
+          node --check customer-order-lab.js
+          node --check sw.js
+          node --check demos.js
+          node --check missions.js
+          node --check order-lab.js
+          node --check bulk-lab.js
+          node --check transaction-lab.js
+          node scripts/validate-v8-knowledge.mjs
+          node scripts/test-v8-missions.mjs
+          node scripts/test-v8-order-lab.mjs
+          node scripts/test-v8-bulk-lab.mjs
+          node scripts/test-v8-transaction-lab.mjs
+          node scripts/test-v8-customer-order-lab.mjs
+  browser:
+    needs: node
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Chromium and WebKit
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium webkit
+      - name: Validate IndexedDB commit rollback reload and legacy isolation
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/p24-http.log 2>&1 &
+          sleep 2
+          node scripts/test-v8-transaction-lab-browser.mjs
+          node scripts/test-v8-customer-order-lab-browser.mjs
