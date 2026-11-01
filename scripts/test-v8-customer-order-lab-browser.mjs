@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import {chromium,webkit} from "playwright";
 const url=process.env.P24_TEST_URL||"http://127.0.0.1:8765/index.html#/components/customer-order-lab";
-const isQA=url.includes("/v8-p24-qa/");
+const isQA=Boolean(process.env.P24_TEST_URL);
 const oldKeys=["adFactoryLearning.v8.production","adFactoryLearning.v8.practice.missions","adFactoryLearning.v8.order-lab","adFactoryLearning.v8.bulk-lab","adFactoryLearning.v8.transaction-lab.progress"];
 let checks=0;
 const verify=(condition,message)=>{assert.ok(condition,message);checks++;};
