@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import {chromium,webkit} from "playwright";
-const url="http://127.0.0.1:8765/index.html#/components/customer-order-lab";
+const url=process.env.P24_TEST_URL||"http://127.0.0.1:8765/index.html#/components/customer-order-lab";
+const isQA=url.includes("/v8-p24-qa/");
 const oldKeys=["adFactoryLearning.v8.production","adFactoryLearning.v8.practice.missions","adFactoryLearning.v8.order-lab","adFactoryLearning.v8.bulk-lab","adFactoryLearning.v8.transaction-lab.progress"];
 let checks=0;
 const verify=(condition,message)=>{assert.ok(condition,message);checks++;};
@@ -12,6 +13,22 @@ async function run(engine,label){
   page.on("pageerror",e=>errors.push(String(e)));
   await page.goto(url,{waitUntil:"domcontentloaded"});
   await page.locator("#cqolabRoot .cqolab-stats").waitFor({timeout:20000});
+  if(isQA){
+   verify((await page.title()).includes("P2.4")&&await page.getByText("P2.4 独立 QA 预览",{exact:false}).count()>0,label+": visible independent QA banner");
+   const keys=await page.evaluate(()=>({
+    customer:window.V8CustomerOrderLab.storage,
+    missions:window.V8Missions.storageKey,
+    order:window.V8OrderLab.storageKey,
+    bulk:window.V8BulkLab.storageKey,
+    transaction:window.V8TransactionLab.storage
+   }));
+   verify(keys.customer.database==="adFactoryLearning.v8.customer-order-lab.qa"&&keys.customer.progress==="adFactoryLearning.v8.customer-order-lab.qa.progress",label+": P2.4 QA IndexedDB and progress names");
+   verify(keys.missions==="adFactoryLearning.v8.practice.missions.p24.qa",label+": original missions isolated");
+   verify(keys.order==="adFactoryLearning.v8.order-lab.p24.qa",label+": order lab isolated");
+   verify(keys.bulk==="adFactoryLearning.v8.bulk-lab.p24.qa",label+": bulk lab isolated");
+   verify(keys.transaction.database==="adFactoryLearning.v8.transaction-lab.p24.qa"&&keys.transaction.progress==="adFactoryLearning.v8.transaction-lab.progress.p24.qa",label+": transaction lab isolated");
+   verify((await page.evaluate(async()=>navigator.serviceWorker?((await navigator.serviceWorker.getRegistrations()).length):0))===0,label+": QA registers no Service Worker");
+  }
   const stage=async n=>{await page.waitForFunction(x=>document.querySelector("#cqolabRoot .micro")?.textContent.includes("第 "+x+" / 8 步"),n,{timeout:12000});};
   const snap=()=>page.evaluate(()=>window.V8CustomerOrderLab.snapshot());
   const status=async(c,q,o,message)=>{
@@ -78,4 +95,4 @@ async function run(engine,label){
 }
 await run(chromium,"Chromium");
 await run(webkit,"WebKit");
-console.log("P2.4 real IndexedDB browser checks OK: "+checks+" assertions.");
+console.log("P2.4 "+(isQA?"QA preview":"development root")+" real IndexedDB browser checks OK: "+checks+" assertions.");
