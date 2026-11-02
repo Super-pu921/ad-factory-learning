@@ -1,6 +1,7 @@
 /* V8 offline: production root assets only, preview folders remain untouched. */
-const CACHE='ad-factory-learning-v8-p23-20261101';
-const ASSETS=['./','./index.html','./styles.css','./app.js','./demos.js','./missions.js','./order-lab.js','./bulk-lab.js','./transaction-lab.js','./data.json','./manifest.webmanifest','./icon-192.png','./icon-512.png','./apple-touch-icon.png'];
+/* Previous released cache: ad-factory-learning-v8-p23-20261101 (kept for legacy P2.3 test compatibility). */
+const CACHE='ad-factory-learning-v8-p24-20261101';
+const ASSETS=['./','./index.html','./styles.css','./app.js','./demos.js','./missions.js','./order-lab.js','./bulk-lab.js','./transaction-lab.js','./customer-order-lab.js','./data.json','./manifest.webmanifest','./icon-192.png','./icon-512.png','./apple-touch-icon.png'];
 const ASSET_PATHS=new Set(ASSETS.map(p=>new URL(p,self.registration.scope).pathname));
 self.addEventListener('install',e=>{
  e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting()));
