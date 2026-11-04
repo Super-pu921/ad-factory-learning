@@ -1,0 +1,49 @@
+name: V8 Readonly Foundation QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/*migration*.mjs'
+      - 'scripts/*legacy-catalog*.mjs'
+      - 'scripts/*knowledge-catalog*.mjs'
+      - 'knowledge-catalog/**'
+      - '.github/workflows/v8-readonly-foundation-qa.yml'
+  pull_request:
+    paths:
+      - 'scripts/*migration*.mjs'
+      - 'scripts/*legacy-catalog*.mjs'
+      - 'scripts/*knowledge-catalog*.mjs'
+      - 'knowledge-catalog/**'
+      - '.github/workflows/v8-readonly-foundation-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  static-and-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax, readonly tools and original regression
+        run: |
+          node --check scripts/migration-audit-core.mjs
+          node --check scripts/audit-v8-migration.mjs
+          node --check scripts/test-v8-migration.mjs
+          node --check scripts/v8-legacy-catalog-view.mjs
+          node --check scripts/test-v8-legacy-catalog-view.mjs
+          node --check scripts/build-v8-knowledge-catalog.mjs
+          node --check scripts/test-v8-knowledge-catalog.mjs
+          node scripts/audit-v8-migration.mjs
+          node scripts/test-v8-migration.mjs
+          node scripts/test-v8-legacy-catalog-view.mjs
+          node scripts/test-v8-knowledge-catalog.mjs
+          node scripts/validate-v8-knowledge.mjs
+          node scripts/test-v8-missions.mjs
+          node scripts/test-v8-order-lab.mjs
+          node scripts/test-v8-bulk-lab.mjs
+          node scripts/test-v8-transaction-lab.mjs
+          node scripts/test-v8-customer-order-lab.mjs
+          git diff --exit-code
