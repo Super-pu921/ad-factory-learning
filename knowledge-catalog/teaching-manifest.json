@@ -3,75 +3,75 @@
   "scope": "INDEPENDENT_TEACHING_CONTENT",
   "statistics": {
     "originalDirectoryEntries": 840,
-    "teachingTopics": 33,
-    "layeredUnits": 99,
+    "teachingTopics": 49,
+    "layeredUnits": 147,
     "coveredDomains": 16,
     "formalMigratedCourses": 0
   },
   "domains": [
     {
       "id": "D01",
-      "teachingTopics": 3
+      "teachingTopics": 4
     },
     {
       "id": "D02",
-      "teachingTopics": 2
+      "teachingTopics": 3
     },
     {
       "id": "D03",
-      "teachingTopics": 2
+      "teachingTopics": 3
     },
     {
       "id": "D04",
-      "teachingTopics": 2
+      "teachingTopics": 3
     },
     {
       "id": "D05",
-      "teachingTopics": 2
+      "teachingTopics": 3
     },
     {
       "id": "D06",
-      "teachingTopics": 2
+      "teachingTopics": 3
     },
     {
       "id": "D07",
-      "teachingTopics": 2
+      "teachingTopics": 3
     },
     {
       "id": "D08",
-      "teachingTopics": 2
+      "teachingTopics": 3
     },
     {
       "id": "D09",
-      "teachingTopics": 2
+      "teachingTopics": 3
     },
     {
       "id": "D10",
-      "teachingTopics": 2
+      "teachingTopics": 3
     },
     {
       "id": "D11",
-      "teachingTopics": 2
+      "teachingTopics": 3
     },
     {
       "id": "D12",
-      "teachingTopics": 2
+      "teachingTopics": 3
     },
     {
       "id": "D13",
-      "teachingTopics": 2
+      "teachingTopics": 3
     },
     {
       "id": "D14",
-      "teachingTopics": 2
+      "teachingTopics": 3
     },
     {
       "id": "D15",
-      "teachingTopics": 2
+      "teachingTopics": 3
     },
     {
       "id": "D16",
-      "teachingTopics": 2
+      "teachingTopics": 3
     }
   ],
   "topics": [
@@ -1943,6 +1943,918 @@
           "level": "L3",
           "difficulty": "E2",
           "title": "设计教学搜索反馈",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "knowledgeId": "K-D01-013",
+      "domain": "D01",
+      "title": "Badge 状态徽标",
+      "version": "1",
+      "contentSha256": "0159c4fc28753450053c7dd771735bd298be1831bcfc8122f241b6b95520deed",
+      "units": [
+        {
+          "id": "directory:K-D01-013:L1",
+          "level": "L1",
+          "difficulty": "E1",
+          "title": "区分数量与展示",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        },
+        {
+          "id": "directory:K-D01-013:L2",
+          "level": "L2",
+          "difficulty": "E2",
+          "title": "验证零和非法值",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        },
+        {
+          "id": "directory:K-D01-013:L3",
+          "level": "L3",
+          "difficulty": "E2",
+          "title": "呈现教学通知",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "knowledgeId": "K-D02-009",
+      "domain": "D02",
+      "title": "Aspect Ratio 比例容器",
+      "version": "1",
+      "contentSha256": "0c3fd72178e8da011a1e9538a76b296e505c7366f0b47ff5dfb7776766aa94e8",
+      "units": [
+        {
+          "id": "directory:K-D02-009:L1",
+          "level": "L1",
+          "difficulty": "E1",
+          "title": "认识比例与尺寸",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        },
+        {
+          "id": "directory:K-D02-009:L2",
+          "level": "L2",
+          "difficulty": "E2",
+          "title": "核对响应式约束",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        },
+        {
+          "id": "directory:K-D02-009:L3",
+          "level": "L3",
+          "difficulty": "E2",
+          "title": "规划教学预览位",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "knowledgeId": "K-D03-001",
+      "domain": "D03",
+      "title": "Breadcrumb 面包屑",
+      "version": "1",
+      "contentSha256": "eb41fb1a3fd6c028f2ad5a1585311cc54cac77822697d44b97c89c6c131091a0",
+      "units": [
+        {
+          "id": "directory:K-D03-001:L1",
+          "level": "L1",
+          "difficulty": "E1",
+          "title": "读取层级位置",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        },
+        {
+          "id": "directory:K-D03-001:L2",
+          "level": "L2",
+          "difficulty": "E2",
+          "title": "验证路径前缀",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        },
+        {
+          "id": "directory:K-D03-001:L3",
+          "level": "L3",
+          "difficulty": "E2",
+          "title": "组织教学任务定位",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "knowledgeId": "K-D04-014",
+      "domain": "D04",
+      "title": "Checkbox Group 复选框组",
+      "version": "1",
+      "contentSha256": "6b88996f89bc6e0ca9a0d869c11b791f062625dd431e682a7e208a8936f43748",
+      "units": [
+        {
+          "id": "directory:K-D04-014:L1",
+          "level": "L1",
+          "difficulty": "E1",
+          "title": "完成独立多选",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        },
+        {
+          "id": "directory:K-D04-014:L2",
+          "level": "L2",
+          "difficulty": "E2",
+          "title": "检查集合与提交",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        },
+        {
+          "id": "directory:K-D04-014:L3",
+          "level": "L3",
+          "difficulty": "E2",
+          "title": "核对教学工序清单",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "knowledgeId": "K-D05-006",
+      "domain": "D05",
+      "title": "Timeline 时间线",
+      "version": "1",
+      "contentSha256": "d612fb9806d54ad49914063ef2e7e58357515b30cd967b9063ee99d7fb09afd0",
+      "units": [
+        {
+          "id": "directory:K-D05-006:L1",
+          "level": "L1",
+          "difficulty": "E1",
+          "title": "读取事件先后",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        },
+        {
+          "id": "directory:K-D05-006:L2",
+          "level": "L2",
+          "difficulty": "E2",
+          "title": "验证同刻与倒序",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        },
+        {
+          "id": "directory:K-D05-006:L3",
+          "level": "L3",
+          "difficulty": "E2",
+          "title": "解释教学工序记录",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "knowledgeId": "K-D06-023",
+      "domain": "D06",
+      "title": "Retry Panel 重试面板",
+      "version": "1",
+      "contentSha256": "5a821b6675d6c08aeb0a6a2c41165b424c16b3973e16a47e718bbbf3388b72cc",
+      "units": [
+        {
+          "id": "directory:K-D06-023:L1",
+          "level": "L1",
+          "difficulty": "E1",
+          "title": "认识失败与重试",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        },
+        {
+          "id": "directory:K-D06-023:L2",
+          "level": "L2",
+          "difficulty": "E2",
+          "title": "检查重复和上限",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        },
+        {
+          "id": "directory:K-D06-023:L3",
+          "level": "L3",
+          "difficulty": "E2",
+          "title": "说明教学恢复能力",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "knowledgeId": "K-D07-013",
+      "domain": "D07",
+      "title": "Tooltip 提示框",
+      "version": "1",
+      "contentSha256": "76d2489bf1f4a97f92a1d7a43217f758f1af0cb0400b87b8496928d2e67a4fc5",
+      "units": [
+        {
+          "id": "directory:K-D07-013:L1",
+          "level": "L1",
+          "difficulty": "E1",
+          "title": "通过焦点读取说明",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        },
+        {
+          "id": "directory:K-D07-013:L2",
+          "level": "L2",
+          "difficulty": "E2",
+          "title": "验证退出与生命周期",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        },
+        {
+          "id": "directory:K-D07-013:L3",
+          "level": "L3",
+          "difficulty": "E2",
+          "title": "设计教学术语帮助",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "knowledgeId": "K-D08-055",
+      "domain": "D08",
+      "title": "CSV Import Preview CSV 导入预览",
+      "version": "1",
+      "contentSha256": "1161d5cf4c21d10b9eb8729e4bfe6a132b6a46e50fd52d19f7ad8938dca8681a",
+      "units": [
+        {
+          "id": "directory:K-D08-055:L1",
+          "level": "L1",
+          "difficulty": "E1",
+          "title": "核对解析后的行列",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        },
+        {
+          "id": "directory:K-D08-055:L2",
+          "level": "L2",
+          "difficulty": "E2",
+          "title": "验证异常与安全显示",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        },
+        {
+          "id": "directory:K-D08-055:L3",
+          "level": "L3",
+          "difficulty": "E2",
+          "title": "制作教学导入预检",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "knowledgeId": "K-D09-009",
+      "domain": "D09",
+      "title": "Donut Chart 环形图",
+      "version": "1",
+      "contentSha256": "1c6bfc83b7990ac8d9e89cfd890c20597cb43c67e4a087e60f0b984ce57ff496",
+      "units": [
+        {
+          "id": "directory:K-D09-009:L1",
+          "level": "L1",
+          "difficulty": "E1",
+          "title": "读取组成比例",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        },
+        {
+          "id": "directory:K-D09-009:L2",
+          "level": "L2",
+          "difficulty": "E2",
+          "title": "处理零总量",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        },
+        {
+          "id": "directory:K-D09-009:L3",
+          "level": "L3",
+          "difficulty": "E2",
+          "title": "展示教学数量组成",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "knowledgeId": "K-D10-017",
+      "domain": "D10",
+      "title": "GeoJSON Viewer 地理数据查看器",
+      "version": "1",
+      "contentSha256": "0805ef91bc3a85b1f793f1a0b6fe08b7908e837602898082a6d5f10a9c60d6f0",
+      "units": [
+        {
+          "id": "directory:K-D10-017:L1",
+          "level": "L1",
+          "difficulty": "E1",
+          "title": "辨认点集合结构",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        },
+        {
+          "id": "directory:K-D10-017:L2",
+          "level": "L2",
+          "difficulty": "E2",
+          "title": "验证受支持子集",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        },
+        {
+          "id": "directory:K-D10-017:L3",
+          "level": "L3",
+          "difficulty": "E2",
+          "title": "检查教学配送点位",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "knowledgeId": "K-D11-004",
+      "domain": "D11",
+      "title": "Zoom / Pan 缩放与平移",
+      "version": "1",
+      "contentSha256": "32ddcb22adc9d3529ab40cce1b528df61995ecf5b8eed3f720b2258b446dd8ab",
+      "units": [
+        {
+          "id": "directory:K-D11-004:L1",
+          "level": "L1",
+          "difficulty": "E1",
+          "title": "区分源坐标和视口",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        },
+        {
+          "id": "directory:K-D11-004:L2",
+          "level": "L2",
+          "difficulty": "E2",
+          "title": "核对变换次序",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        },
+        {
+          "id": "directory:K-D11-004:L3",
+          "level": "L3",
+          "difficulty": "E2",
+          "title": "解释教学画布视口",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "knowledgeId": "K-D12-008",
+      "domain": "D12",
+      "title": "Step Wizard 分步向导",
+      "version": "1",
+      "contentSha256": "38dc358e0956f6a1b2d8b0b39e9fe0019eea1f0fa409d26b69d23af65e05b4db",
+      "units": [
+        {
+          "id": "directory:K-D12-008:L1",
+          "level": "L1",
+          "difficulty": "E1",
+          "title": "按步骤收集输入",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        },
+        {
+          "id": "directory:K-D12-008:L2",
+          "level": "L2",
+          "difficulty": "E2",
+          "title": "验证错误与返回",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        },
+        {
+          "id": "directory:K-D12-008:L3",
+          "level": "L3",
+          "difficulty": "E2",
+          "title": "核对教学工单草稿",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "knowledgeId": "K-D13-017",
+      "domain": "D13",
+      "title": "Comment Resolution 评论解决",
+      "version": "1",
+      "contentSha256": "95a1d90bc407fdc64f6f1195541d2f3a446f7e4493bde12ff401982f94b2152f",
+      "units": [
+        {
+          "id": "directory:K-D13-017:L1",
+          "level": "L1",
+          "difficulty": "E1",
+          "title": "区分解决与删除",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        },
+        {
+          "id": "directory:K-D13-017:L2",
+          "level": "L2",
+          "difficulty": "E2",
+          "title": "核对状态与筛选",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        },
+        {
+          "id": "directory:K-D13-017:L3",
+          "level": "L3",
+          "difficulty": "E2",
+          "title": "组织教学审阅意见",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "knowledgeId": "K-D14-013",
+      "domain": "D14",
+      "title": "Structured Output 结构化输出",
+      "version": "1",
+      "contentSha256": "b9c01bf654670c9ef452dc0460acdd164d4a17adef3df3733dad20ec54e8b0e2",
+      "units": [
+        {
+          "id": "directory:K-D14-013:L1",
+          "level": "L1",
+          "difficulty": "E1",
+          "title": "区分字段与类型",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        },
+        {
+          "id": "directory:K-D14-013:L2",
+          "level": "L2",
+          "difficulty": "E2",
+          "title": "拒绝意外结构",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        },
+        {
+          "id": "directory:K-D14-013:L3",
+          "level": "L3",
+          "difficulty": "E3",
+          "title": "审查教学结果边界",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "knowledgeId": "K-D15-015",
+      "domain": "D15",
+      "title": "Reduced Motion 减少动态效果",
+      "version": "1",
+      "contentSha256": "524202629db2e78a14d1c2b0add73792c68446f3392887e83aab4a6e98d0cbcb",
+      "units": [
+        {
+          "id": "directory:K-D15-015:L1",
+          "level": "L1",
+          "difficulty": "E1",
+          "title": "比较运动与静止",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        },
+        {
+          "id": "directory:K-D15-015:L2",
+          "level": "L2",
+          "difficulty": "E2",
+          "title": "核对偏好来源",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        },
+        {
+          "id": "directory:K-D15-015:L3",
+          "level": "L3",
+          "difficulty": "E2",
+          "title": "设计教学动效替代",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "knowledgeId": "K-D16-006",
+      "domain": "D16",
+      "title": "Request Cancellation 请求取消",
+      "version": "1",
+      "contentSha256": "d4d96f2b87318036ebf93cc5f6fac7b7c963aa2c90ab1165fa37bdbf4ad662c2",
+      "units": [
+        {
+          "id": "directory:K-D16-006:L1",
+          "level": "L1",
+          "difficulty": "E1",
+          "title": "观察等待和取消",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        },
+        {
+          "id": "directory:K-D16-006:L2",
+          "level": "L2",
+          "difficulty": "E2",
+          "title": "验证竞态与清理",
+          "blockRefs": [
+            {
+              "id": "principle",
+              "version": "1"
+            },
+            {
+              "id": "mechanism",
+              "version": "1"
+            }
+          ]
+        },
+        {
+          "id": "directory:K-D16-006:L3",
+          "level": "L3",
+          "difficulty": "E3",
+          "title": "界定教学取消承诺",
           "blockRefs": [
             {
               "id": "principle",

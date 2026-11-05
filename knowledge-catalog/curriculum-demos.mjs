@@ -273,6 +273,83 @@ export function renderCurriculumDemo(lesson,unit,{node,button}) {
       input.addEventListener('input',()=>{debouncer.run(input.value.trim());ok(`等待安静 300 ms · 已执行 ${calls} 次`);});
       add('取消待执行搜索',()=>{debouncer.cancel();ok(`已取消 · 已执行 ${calls} 次`);});dispose=()=>debouncer.dispose();panel.textContent=names.join(' · ');ok('尚未执行 · 四个本地教学名称');break;
     }
+    case 'badge': {
+      const count=field('教学通知数量','120'),cap=select('徽标显示上限',[[9,'9+'],[99,'99+']]);cap.value='99';const badge=node('span','teaching-badge');badge.setAttribute('role','img');panel.append(badge);
+      const refresh=()=>{const state=model.badgeCount(number(count),Number(cap.value));badge.textContent=state.text;badge.setAttribute('aria-label',state.label);ok(`实际 ${number(count)} 条 · 显示 ${state.text}`);};run('更新教学徽标',refresh);refresh();break;
+    }
+    case 'aspect': {
+      const ratio=select('容器比例',[['16,9','16:9'],['4,3','4:3'],['1,1','1:1']]),width=select('实验容器宽度',[[160,'160 px'],[240,'240 px']]),box=node('div','aspect-experiment','无外部图片的教学占位');panel.append(box);
+      const refresh=()=>{const [w,h]=ratio.value.split(',').map(Number);box.style.aspectRatio=model.aspectRatio(w,h);box.style.width=`${width.value}px`;ok(`比例 ${w}:${h} · 目标宽度 ${width.value}px，受可用空间限制`);};for(const input of [ratio,width])input.addEventListener('change',refresh);refresh();break;
+    }
+    case 'breadcrumb': {
+      const depth=select('教学路径深度',[[1,'1 · 教学中心'],[2,'2 · 排版任务'],[3,'3 · 任务详情']]);depth.value='3';
+      const refresh=()=>{const path=model.breadcrumbPath(Number(depth.value)),nav=node('nav'),list=node('ol','breadcrumb-demo');nav.setAttribute('aria-label','教学面包屑');path.forEach((text,index)=>{const item=node('li');if(index===path.length-1){item.textContent=text;item.setAttribute('aria-current','page');}else item.append(button(text,()=>{depth.value=String(index+1);refresh();}));list.append(item);});nav.append(list);panel.replaceChildren(nav);ok(`当前教学位置：${path.at(-1)} · 未改变实际路由`);};depth.addEventListener('change',refresh);refresh();break;
+    }
+    case 'checks': {
+      const entries=[['print','印刷'],['cut','切割'],['pack','包装']],inputs=entries.map(([id,label])=>({id,input:field(`选择${label}`,'','checkbox')}));
+      const refresh=()=>{const selected=model.selectedOperations(inputs.filter(item=>item.input.checked).map(item=>item.id));panel.textContent=`已选 ${selected.length}/3：${selected.join(', ')||'无'}`;};
+      inputs.forEach(item=>item.input.addEventListener('change',refresh));add('全选教学工序',()=>{inputs.forEach(item=>{item.input.checked=true;});refresh();});add('清空教学工序',()=>{inputs.forEach(item=>{item.input.checked=false;});refresh();});
+      run('核对教学选择',()=>{const selected=model.selectedOperations(inputs.filter(item=>item.input.checked).map(item=>item.id));if(!selected.length)throw new Error('至少选择一个教学工序');ok(`仅核对：${selected.join(', ')} · 没有执行批处理`);});refresh();ok('尚未提交选择');break;
+    }
+    case 'timeline': {
+      const base=Date.UTC(2026,0,1,8),events=[{id:'T-01',at:base,text:'教学任务创建'},{id:'T-02',at:base+600000,text:'教学排版完成'}];let serial=3;
+      const descending=field('时间倒序','','checkbox'),minute=field('新增事件分钟偏移','5');
+      const refresh=()=>{const list=node('ol');for(const event of model.timelineEvents(events,descending.checked))list.append(node('li','',`${new Date(event.at).toISOString()} · ${event.id} · ${event.text}`));panel.replaceChildren(list);ok(`${events.length} 条虚构教学事件 · UTC 时间`);};
+      add('添加教学事件',()=>{const offset=number(minute);if(!Number.isInteger(offset)||offset<0||offset>60||events.length>=20)throw new Error('分钟偏移须为 0–60 整数，最多 20 条事件');events.push({id:`T-${String(serial++).padStart(2,'0')}`,at:base+offset*60000,text:'新增教学事件'});refresh();});descending.addEventListener('change',refresh);refresh();break;
+    }
+    case 'retry': {
+      const fail=field('模拟教学失败','','checkbox');fail.checked=true;let state={phase:'idle',attempt:0},timer=null;
+      const refresh=()=>{start.disabled=state.phase==='loading'||state.phase==='success'||state.attempt>=5;reset.disabled=state.phase==='loading';ok(`教学任务 ${state.phase} · 已尝试 ${state.attempt}/5 次`);};
+      const start=add('执行或重试教学任务',()=>{state=model.retryTransition(state,'start');const shouldFail=fail.checked;refresh();timer=setTimeout(()=>{timer=null;state=model.retryTransition(state,shouldFail?'fail':'succeed');refresh();},300);});
+      const reset=add('重置重试实验',()=>{state=model.retryTransition(state,'reset');refresh();});dispose=()=>clearTimeout(timer);refresh();break;
+    }
+    case 'tooltip': {
+      const anchor=node('div','popover-anchor'),trigger=button('聚焦查看术语说明',()=>{}),tip=node('div','teaching-popover','出血：此处只展示教学定义。');tip.id=`${unit.id}-tooltip`;tip.setAttribute('role','tooltip');trigger.setAttribute('aria-describedby',tip.id);let hovered=false,focused=false,dismissed=false;
+      const refresh=()=>{tip.hidden=!model.tooltipVisible(hovered,focused,dismissed);ok(tip.hidden?'术语提示已隐藏':'术语提示可见');};
+      trigger.addEventListener('pointerenter',()=>{hovered=true;dismissed=false;refresh();});anchor.addEventListener('pointerleave',()=>{hovered=false;if(!focused)dismissed=false;refresh();});trigger.addEventListener('focus',()=>{focused=true;dismissed=false;refresh();});trigger.addEventListener('blur',()=>{focused=false;if(!hovered)dismissed=false;refresh();});
+      const escape=event=>{if(event.key==='Escape'&&!tip.hidden){event.preventDefault();event.stopPropagation();dismissed=true;refresh();}};document.addEventListener('keydown',escape,true);dispose=()=>document.removeEventListener('keydown',escape,true);anchor.append(trigger,tip);panel.append(anchor);refresh();break;
+    }
+    case 'csv': {
+      const label=node('label','experiment-field','教学 CSV 文本'),input=node('textarea');input.value='id,qty\nA,2\n"B,教学",3';label.append(input);controls.append(label);
+      run('预览教学 CSV',()=>{const rows=model.previewCsv(input.value),list=node('ol');for(const row of rows)list.append(node('li','',`${row.id} · 数量 ${row.qty}`));panel.replaceChildren(list);ok(`${rows.length} 行教学预览 · 尚未导入`);});ok('只解析主动键入的文本，不读取文件');break;
+    }
+    case 'donut': {
+      const input=field('占比教学数量','2,3');
+      const refresh=()=>{const segments=model.donutSegments(input.value),svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 100 100');svg.setAttribute('class','teaching-donut');svg.setAttribute('role','img');svg.setAttribute('aria-label','教学数量占比环形图');let offset=0;
+        const circle=(color,percent,from)=>{const c=document.createElementNS(svg.namespaceURI,'circle');for(const [key,value] of Object.entries({cx:50,cy:50,r:34,fill:'none',stroke:color,'stroke-width':14,pathLength:100,'stroke-dasharray':`${percent} ${100-percent}`,'stroke-dashoffset':-from,transform:'rotate(-90 50 50)'}))c.setAttribute(key,String(value));svg.append(c);};circle('#e1e8f4',100,0);
+        const colors=['#315dd0','#b75d32','#248267','#8c57ad','#876400','#3f7d9e'];segments.forEach((item,index)=>{if(item.percent)circle(colors[index],item.percent,offset);offset+=item.percent;});const list=node('ol');segments.forEach(item=>list.append(node('li','',`数量 ${item.value} · ${item.percent.toFixed(2)}%`)));panel.replaceChildren(svg,list);ok(segments.every(item=>!item.value)?'总量为零，没有可定义的占比':'按总量计算占比，文字数据可复核');};run('绘制教学环形图',refresh);refresh();break;
+    }
+    case 'geojson': {
+      const label=node('label','experiment-field','教学 GeoJSON'),input=node('textarea');input.value='{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[0,0]},"properties":{"name":"教学点"}}]}';label.append(input);controls.append(label);
+      run('预览教学点集合',()=>{const points=model.geojsonPoints(input.value),plane=node('div','coordinate-plane'),list=node('ol');for(const point of points){const marker=node('span','coordinate-marker','●');marker.style.left=`${point.x}%`;marker.style.top=`${point.y}%`;plane.append(marker);list.append(node('li','',`${point.name} · 经度 ${point.lon} · 纬度 ${point.lat}`));}panel.replaceChildren(plane,list);ok(`${points.length} 个教学 Point · 无实际底图或文件读取`);});ok('仅接受限量二维 Point 集合');break;
+    }
+    case 'viewport': {
+      const zoom=select('视口缩放倍数',[[0.5,'0.5×'],[1,'1×'],[2,'2×']]);zoom.value='1';const dx=field('水平平移','0'),dy=field('垂直平移','0');
+      const refresh=()=>{const point=model.viewportPoint(25,30,Number(zoom.value),number(dx),number(dy)),plane=node('div','coordinate-plane'),marker=node('span','coordinate-marker','◆');marker.style.left=`${point.x}%`;marker.style.top=`${point.y}%`;plane.append(marker);panel.replaceChildren(plane);ok(`原点 25,30 → 视口 ${point.x},${point.y} · 超出框的图形会裁切`);};run('更新教学视口',refresh);refresh();break;
+    }
+    case 'wizard': {
+      let step=0;const code=field('向导教学编号','JOB-01'),quantity=field('向导教学数量','2');
+      const refresh=()=>{code.parentElement.hidden=step!==0;quantity.parentElement.hidden=step!==1;previous.disabled=step===0;next.disabled=step===2;panel.textContent=step===2?`内存预览：${code.value.trim()} · 数量 ${number(quantity)}`:`正在编辑第 ${step+1} 步`;ok(`第 ${step+1}/3 步 · 未保存订单或学习记录`);};
+      const previous=add('向导上一步',()=>{step--;refresh();}),next=add('校验并到下一步',()=>{step=model.wizardAdvance(step,{code:code.value,quantity:number(quantity)});refresh();});refresh();break;
+    }
+    case 'resolution': {
+      let state='OPEN';const onlyOpen=field('仅显示未解决评论','','checkbox');
+      const refresh=()=>{panel.replaceChildren(...(onlyOpen.checked&&state==='RESOLVED'?[node('p','','暂无未解决教学评论')]:[node('p','','教学甲：核对材料。'),node('p','','教学乙：已补充教学说明。')]));resolve.disabled=state==='RESOLVED';reopen.disabled=state==='OPEN';ok(`教学评论 ${state} · 原始两条评论保持`);};
+      const resolve=add('解决教学评论',()=>{state=model.resolveThread(state,'resolve');refresh();}),reopen=add('重新打开教学评论',()=>{state=model.resolveThread(state,'reopen');refresh();});onlyOpen.addEventListener('change',refresh);refresh();break;
+    }
+    case 'structured': {
+      const label=node('label','experiment-field','教学结构化输出'),input=node('textarea');input.value='{"material":"板材","qty":2,"rush":false}';label.append(input);controls.append(label);const preview=node('pre');panel.append(preview);
+      run('核对教学输出结构',()=>{const value=model.validateStructuredQuote(input.value);preview.textContent=JSON.stringify(value,null,2);ok('三个字段结构通过 · 无模型调用或业务提交');});ok('尚未校验教学数据');break;
+    }
+    case 'motion': {
+      const preference=select('本实验动态偏好',[['system','跟随系统'],['reduce','减少动态'],['full','完整动态']]),media=matchMedia('(prefers-reduced-motion: reduce)'),track=node('div','motion-track'),dot=node('span','motion-dot','●');track.append(dot);panel.append(track);
+      const refresh=()=>{const reduced=model.motionPreference(media.matches,preference.value);dot.classList.toggle('motion-dot-running',!reduced);ok(`${reduced?'减少动态：圆点静止':'完整动态：圆点缓慢移动'} · 仅影响本实验`);};preference.addEventListener('change',refresh);media.addEventListener('change',refresh);dispose=()=>media.removeEventListener('change',refresh);refresh();break;
+    }
+    case 'cancellation': {
+      let controller=null,disposed=false;
+      const start=add('启动可取消教学任务',()=>{controller=new AbortController();const active=controller;start.disabled=true;cancel.disabled=false;ok('教学任务等待中（600 ms，无网络）');model.waitForDemo(600,{signal:active.signal}).then(value=>{if(!disposed)ok(`${value} · 教学任务完成`);},error=>{if(!disposed){output.classList.toggle('error',error.name!=='AbortError');output.textContent=error.name==='AbortError'?'教学任务已取消，可重新启动':error.message;}}).finally(()=>{if(!disposed&&controller===active){controller=null;start.disabled=false;cancel.disabled=true;}});});
+      const cancel=add('取消教学任务',()=>controller?.abort());cancel.disabled=true;dispose=()=>{disposed=true;controller?.abort();};ok('尚未启动，不执行真实请求');break;
+    }
     default:throw new Error('未知教学实验');
   }
   root.append(controls,panel,output,node('p','subtle',lesson.limits));

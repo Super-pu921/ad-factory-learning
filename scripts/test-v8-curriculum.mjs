@@ -1,14 +1,15 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
+import {getEventListeners} from 'node:events';
 import {curriculum} from '../knowledge-catalog/curriculum.mjs';
 import * as model from '../knowledge-catalog/curriculum-models.mjs';
 import {buildTeachingManifest} from './build-v8-teaching-manifest.mjs';
 
 const catalog=JSON.parse(readFileSync(new URL('../knowledge-catalog/catalog.json',import.meta.url),'utf8'));
-assert.equal(curriculum.length,32);assert.equal(new Set(curriculum.map(lesson=>lesson.domain)).size,16);
-assert.equal(new Set(curriculum.map(lesson=>lesson.knowledgeId)).size,32);
-assert.equal(new Set(curriculum.flatMap(lesson=>lesson.units.map(unit=>unit.id))).size,96);
+assert.equal(curriculum.length,48);assert.equal(new Set(curriculum.map(lesson=>lesson.domain)).size,16);
+assert.equal(new Set(curriculum.map(lesson=>lesson.knowledgeId)).size,48);
+assert.equal(new Set(curriculum.flatMap(lesson=>lesson.units.map(unit=>unit.id))).size,144);
 for(const lesson of curriculum) {
   const source=catalog.entries.find(entry=>entry.id===lesson.knowledgeId);
   assert.equal(source?.name,lesson.title);assert.equal(source.canonicalId,source.id);
@@ -25,8 +26,8 @@ for(const lesson of curriculum) {
 assert.throws(()=>{curriculum[0].units[0].blockRefs[0].version='latest';},TypeError);
 const manifest=buildTeachingManifest();
 assert.deepEqual(manifest,JSON.parse(readFileSync(new URL('../knowledge-catalog/teaching-manifest.json',import.meta.url),'utf8')));
-assert.deepEqual(manifest.statistics,{originalDirectoryEntries:840,teachingTopics:33,layeredUnits:99,coveredDomains:16,formalMigratedCourses:0});
-assert.ok(manifest.domains.every(domain=>domain.teachingTopics>=2));
+assert.deepEqual(manifest.statistics,{originalDirectoryEntries:840,teachingTopics:49,layeredUnits:147,coveredDomains:16,formalMigratedCourses:0});
+assert.ok(manifest.domains.every(domain=>domain.teachingTopics>=3));
 assert.equal(manifest.productionMigration,'BLOCKED');assert.equal(manifest.progressPersistence,'NONE');
 
 assert.equal(model.gridTracks(2),'repeat(2, minmax(0, 1fr))');assert.throws(()=>model.gridTracks(0));
@@ -77,9 +78,37 @@ const fake={set(fn,delay){const id=++serial;timers.set(id,{fn,at:clock+delay});r
 const advance=ms=>{clock+=ms;for(const [id,timer] of [...timers])if(timer.at<=clock){timers.delete(id);timer.fn();}};
 const debounce=model.createDebouncer(value=>calls.push(value),300,fake);debounce.run('old');advance(200);debounce.run('new');advance(299);assert.deepEqual(calls,[]);advance(1);assert.deepEqual(calls,['new']);
 debounce.run('cancelled');debounce.cancel();advance(300);assert.deepEqual(calls,['new']);debounce.run('disposed');debounce.dispose();advance(300);debounce.run('closed');advance(300);assert.deepEqual(calls,['new']);assert.equal(timers.size,0);
+assert.deepEqual(model.badgeCount(120),{text:'99+',label:'120 条教学通知'});assert.equal(model.badgeCount(0).text,'0');assert.throws(()=>model.badgeCount(-1));
+assert.equal(model.aspectRatio(16,9),'16 / 9');assert.throws(()=>model.aspectRatio(0,9));
+assert.deepEqual(model.breadcrumbPath(2),['教学中心','排版任务']);assert.throws(()=>model.breadcrumbPath(4));
+assert.deepEqual(model.selectedOperations(['pack','print']),['print','pack']);assert.deepEqual(model.selectedOperations([]),[]);assert.throws(()=>model.selectedOperations(['print','print']));assert.throws(()=>model.selectedOperations(['unknown']));
+const events=[{id:'B',at:1,text:'second'},{id:'A',at:1,text:'first'},{id:'C',at:2,text:'last'}],savedEvents=structuredClone(events);
+assert.deepEqual(model.timelineEvents(events).map(event=>event.id),['A','B','C']);assert.equal(model.timelineEvents(events,true)[0].id,'C');assert.deepEqual(events,savedEvents);assert.throws(()=>model.timelineEvents([{id:'x',at:NaN,text:'x'}]));
+let retry={phase:'idle',attempt:0};for(let attempt=1;attempt<=5;attempt++){retry=model.retryTransition(retry,'start');assert.equal(retry.attempt,attempt);assert.throws(()=>model.retryTransition(retry,'start'));assert.throws(()=>model.retryTransition(retry,'reset'));retry=model.retryTransition(retry,'fail');}assert.throws(()=>model.retryTransition(retry,'start'));assert.deepEqual(model.retryTransition(retry,'reset'),{phase:'idle',attempt:0});
+assert.equal(model.retryTransition({phase:'loading',attempt:1},'succeed').phase,'success');
+assert.equal(model.tooltipVisible(true,false,false),true);assert.equal(model.tooltipVisible(false,true,false),true);assert.equal(model.tooltipVisible(true,true,true),false);assert.throws(()=>model.tooltipVisible(1,false,false));
+assert.deepEqual(model.previewCsv('\uFEFFid,qty\r\n"A, B",2\r\n"C""D",3\r\n'),[{id:'A, B',qty:2},{id:'C"D',qty:3}]);
+assert.equal(model.previewCsv('id,qty\n"A\nB",2')[0].id,'A\nB');assert.deepEqual(model.previewCsv('id,qty\n'),[]);
+assert.equal(model.previewCsv('id,qty\n=1+1,2')[0].id,'=1+1','formulas remain text, never evaluated');
+for(const csv of ['','id,wrong\nA,2','id,qty\nA,0','id,qty\nA,101','id,qty\nA,2\nA,3','id,qty\n"A,2','id,qty\n"A"x,2','id,qty\nA"B,2','id,qty\rA,2','id,qty\nA,1,2','id,qty\n'+Array.from({length:21},(_,i)=>`A${i},1`).join('\n'),'x'.repeat(2001)])assert.throws(()=>model.previewCsv(csv),csv.slice(0,40));
+assert.deepEqual(model.donutSegments('2,3'),[{value:2,percent:40},{value:3,percent:60}]);assert.deepEqual(model.donutSegments('0,0'),[{value:0,percent:0},{value:0,percent:0}]);
+const geo=(coordinates,name='teaching')=>JSON.stringify({type:'FeatureCollection',features:[{type:'Feature',geometry:{type:'Point',coordinates},properties:{name}}]});
+assert.deepEqual(model.geojsonPoints(geo([0,0]))[0],{name:'teaching',lon:0,lat:0,x:50,y:50});assert.equal(model.geojsonPoints(geo([180,90]))[0].x,100);assert.deepEqual(model.geojsonPoints('{"type":"FeatureCollection","features":[]}'),[]);
+assert.equal(model.geojsonPoints(geo([0,0],'<img src=x>'))[0].name,'<img src=x>');
+for(const raw of [geo([181,0]),geo(['1',0]),geo([1,2,3]),geo([0,0],1),'{"type":"FeatureCollection","features":[null]}','{"type":"Point","coordinates":[0,0]}',geo([0,0]).replace('Point','LineString'),'x'.repeat(3001)])assert.throws(()=>model.geojsonPoints(raw));
+assert.deepEqual(model.viewportPoint(25,30,2,10,-10),{x:60,y:50});assert.deepEqual(model.viewportPoint(25,30,0.5,-30,0),{x:-17.5,y:15});assert.throws(()=>model.viewportPoint(25,30,3,0,0));
+assert.equal(model.wizardAdvance(0,{code:'JOB-01',quantity:0}),1);assert.throws(()=>model.wizardAdvance(1,{code:'JOB-01',quantity:0}));assert.equal(model.wizardAdvance(1,{code:'JOB-01',quantity:100}),2);assert.throws(()=>model.wizardAdvance(1,{code:'bad',quantity:2}));assert.throws(()=>model.wizardAdvance(2,{code:'JOB-01',quantity:2}));
+assert.equal(model.resolveThread('OPEN','resolve'),'RESOLVED');assert.equal(model.resolveThread('RESOLVED','reopen'),'OPEN');assert.throws(()=>model.resolveThread('RESOLVED','resolve'));
+assert.deepEqual(model.validateStructuredQuote('{"material":"板材","qty":2,"rush":false}'),{material:'板材',qty:2,rush:false});
+for(const raw of ['[]','null','{"material":"板材","qty":"2","rush":false}','{"material":"板材","qty":0,"rush":false}','{"material":"板材","qty":2,"rush":false,"extra":1}','{"material":"板材","qty":2,"rush":"false"}'])assert.throws(()=>model.validateStructuredQuote(raw));
+assert.equal(model.motionPreference(true,'system'),true);assert.equal(model.motionPreference(true,'full'),false);assert.equal(model.motionPreference(false,'reduce'),true);assert.throws(()=>model.motionPreference(false,'unknown'));
+const abortController=new AbortController(),pendingWait=model.waitForDemo(600,{signal:abortController.signal}),rejection=assert.rejects(pendingWait,{name:'AbortError'});abortController.abort();await rejection;assert.equal(getEventListeners(abortController.signal,'abort').length,0);
+await assert.rejects(model.waitForDemo(10,{signal:abortController.signal}),{name:'AbortError'});
+const doneController=new AbortController();assert.equal(await model.waitForDemo(1,{signal:doneController.signal}),'教学响应');assert.equal(getEventListeners(doneController.signal,'abort').length,0);doneController.abort();assert.throws(()=>model.waitForDemo(0));
+const independent=[{level:'L1',difficulty:'E1'},{level:'L2',difficulty:'E2'}];assert.deepEqual(model.matchingTeachingUnits(independent,'L1','E2'),[]);assert.deepEqual(model.matchingTeachingUnits(independent,'L2','E2'),[independent[1]]);assert.deepEqual(model.matchingTeachingUnits([]),[]);assert.throws(()=>model.matchingTeachingUnits(independent,'L4'));
 for(const path of ['curriculum.mjs','curriculum-models.mjs','curriculum-demos.mjs']) {
   const source=readFileSync(new URL('../knowledge-catalog/'+path,import.meta.url),'utf8');
   assert.doesNotMatch(source,/\b(?:localStorage|sessionStorage|indexedDB)\s*[.[]/);
   assert.doesNotMatch(source,/\.innerHTML\s*=|\beval\s*\(|\bnew Function\s*\(/);
 }
-console.log('Curriculum OK: D01-D16, 32 batch topics / 96 units; total 33 topics / 99 units; all 32 examples executed, pinned content, input/empty/negative cases, immutable state and deterministic timer cleanup verified. Migration BLOCKED.');
+console.log('Curriculum OK: D01-D16, 48 batch topics / 144 units; total 49 topics / 147 units; all 48 code examples executed; pinned content, parser trust boundaries, independent level/difficulty filters, state errors, cancellation and timer cleanup verified. Migration BLOCKED.');

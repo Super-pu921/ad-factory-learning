@@ -171,6 +171,66 @@ The original directory/Button browser regression remains separate. Browser
 results are release evidence only when actually executed and recorded; the CI
 workflow runs Node checks, not the browser suite.
 
+## D01–D16 teaching batch 3 and independent teaching filters
+
+Batch 3 adds **16 topics / 48 layered units**, bringing the directory to
+**49 topics / 147 units**. Each D01–D16 domain now has at least three authored
+topics; D01 also retains the original Button pilot. The previous 33 topics
+retain their exact content versions and hashes. This is authored teaching
+coverage, not a count of migrated Course entities or a completed full catalog.
+
+| Domain | New topic | Original knowledge ID |
+| --- | --- | --- |
+| D01 | Badge | K-D01-013 |
+| D02 | Aspect Ratio | K-D02-009 |
+| D03 | Breadcrumb | K-D03-001 |
+| D04 | Checkbox Group | K-D04-014 |
+| D05 | Timeline | K-D05-006 |
+| D06 | Retry Panel | K-D06-023 |
+| D07 | Tooltip | K-D07-013 |
+| D08 | CSV Import Preview | K-D08-055 |
+| D09 | Donut Chart | K-D09-009 |
+| D10 | GeoJSON Viewer | K-D10-017 |
+| D11 | Zoom / Pan | K-D11-004 |
+| D12 | Step Wizard | K-D12-008 |
+| D13 | Comment Resolution | K-D13-017 |
+| D14 | Structured Output | K-D14-013 |
+| D15 | Reduced Motion | K-D15-015 |
+| D16 | Request Cancellation | K-D16-006 |
+
+The directory can filter by L1/L2/L3 and E1–E5 independently, together with
+domain, text and available-teaching filters. Level and difficulty must match
+the **same unit**; matching L1 in one unit and E2 in another is insufficient.
+Selecting a filtered topic opens its first matching unit. Untaught entries
+cannot match an authored teaching level or difficulty. No new filter or
+learning state is persisted, and no new difficulty is inferred for original
+directory entries. Original directory statuses remain source facts.
+
+CSV preview reads only manually entered text and implements a bounded
+two-column `id,qty` teaching contract with quoted commas/newlines, doubled
+quotes, LF/CRLF, unique IDs and integer quantities. It imports nothing and
+executes no spreadsheet formulas. GeoJSON preview supports only up to five
+two-dimensional Point features in a FeatureCollection; it uses a coordinate
+sketch without real tiles, files or map services. Neither is a universal
+importer or complete format implementation.
+
+Retry and cancellation use local timers. Busy attempts cannot duplicate,
+retries are capped at five and pending work is cancelled on disposal. Cancelling
+the local simulation does not promise server rollback. Tooltip document
+listeners are removed when its unit is left. Reduced-motion behavior is scoped
+to one experiment and respects system preference unless explicitly overridden
+within that experiment; it does not change the OS or assert whole-site WCAG
+compliance. The wizard previews a memory-only draft; comment resolution and
+structured-output examples use fictional data without accounts, AI services,
+production writes or progress associations.
+
+The full authored batch browser suite now covers **48 topics × 3 layers × 4
+browser/viewport contexts = 576 unit scenarios**, plus independent filter
+intersections, empty results, filtered unit navigation, deep links and disposal.
+The original directory/Button regression remains separate. Only recorded actual
+executions establish PASS; neither this scope description nor CI's Node-only
+checks establish browser or real-device acceptance on their own.
+
 ## Run
 
 Use an existing Node 22 executable by absolute path. No package installation is
@@ -227,9 +287,9 @@ created. No candidate IDs are promoted to permanent model identities.
 | P1 repository/storage inventory | Static repository verified; P1.3 incomplete | Original computer record backup, actual IDs and record associations; no browser/profile accessed by these tools |
 | P2 formal mapping | Source structure and candidate consistency tooling implemented | Frozen PRD/technical-design originals; target organization, ID/version rules, evidence-backed legacy-to-knowledge mappings and resource semantics |
 | P3 compatibility | Offline immutable legacy view implemented | Approved target contract, production read authority/failure policy, tested integration and rollback; no production switch exists |
-| P4 teaching standard sample | 33 topics / 99 independent layered units with pinned content | Formal target Course/Unit integration skipped while originals are missing |
+| P4 teaching standard sample | 49 topics / 147 independent layered units with pinned content | Formal target Course/Unit integration skipped while originals are missing |
 | P5 domain pilot | Representative teaching experiments in all sixteen domains | Entire domain curricula and production compatibility are not claimed complete |
-| P6 D01–D16 expansion | Two batches add 32 topics / 96 units, plus the Button pilot; unit-level share/review links | Remaining concepts are not marked authored or accepted merely because their entries exist |
+| P6 D01–D16 expansion | Three batches add 48 topics / 144 units, plus the Button pilot; unit links and independent level/difficulty filters | Remaining concepts are not marked authored or accepted merely because their entries exist |
 | P7 D17 | Candidate only | Official scope and knowledge IDs; no D17 formal IDs invented, G10 remains in D14 |
 | P8 full acceptance/release | Foundation checks only | All content, compatibility, personal-record protection, backup, rollback and release gates; current static release is not P1–P8 completion |
 
