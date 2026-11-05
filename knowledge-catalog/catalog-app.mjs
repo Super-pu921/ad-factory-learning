@@ -1,4 +1,6 @@
 import {buttonPilot,calculateDemoQuote,createSubmissionGate} from './button-pilot.mjs';
+import {curriculum,curriculumById} from './curriculum.mjs';
+import {renderCurriculumDemo} from './curriculum-demos.mjs';
 
 const domainNames=['基础控件与视觉元素','页面布局与响应式','导航与页面组织','表单与数据输入','数据展示与高级数据表格','状态与系统反馈','弹层、浮层与复杂交互','文件、媒体与专业编辑器','图表与专业数据可视化','地图与地理可视化','流程图、节点与画布编辑','企业业务组件与工作流','多人协作与实时交互','AI / Agent 专题','无障碍、国际化与主题','工程化交互与系统运行模式'];
 const candidateNames=[['G01','浏览器运行与渲染'],['G02','Web 网络与通信'],['G03','数据库与数据建模'],['G04','前端框架运行原理'],['G05','CSS 与视觉渲染工程'],['G06','图形学与计算'],['G07','软件架构与设计模式'],['G08','开发工具链与协作工程'],['G09','云基础设施与部署运维'],['G11','数据结构与算法'],['G12','操作系统与计算机组成'],['G13','编程语言与类型系统'],['G14','数学与数据计算基础']];
@@ -13,7 +15,8 @@ const button = (text,action,className='') => {
   const element=node('button',className,text);element.type='button';
   element.addEventListener('click',action);return element;
 };
-let catalog,byId,domain='all',limit=40;
+let catalog,byId,domain='all',limit=40,disposeExperiment=()=>{};
+const hasTeaching=id=>id===buttonPilot.knowledgeId||curriculumById.has(id);
 
 function renderDomains() {
   const options=[{id:'all',name:'全部领域',entries:catalog.entries.length},...catalog.domains.map((item,index)=>({...item,name:domainNames[index]}))];
@@ -25,7 +28,8 @@ function renderDomains() {
     });
     control.dataset.domain=item.id;
     control.setAttribute('aria-pressed',String(domain===item.id));
-    control.append(node('span','domain-count',String(item.entries)));
+    const taught=catalog.entries.filter(entry=>(item.id==='all'||entry.domain===item.id)&&hasTeaching(entry.id)).length;
+    control.append(node('span','domain-count',`${item.entries} · 教学 ${taught}`));
     return control;
   }));
 }
@@ -33,7 +37,8 @@ function renderDomains() {
 function renderResults() {
   const query=$('catalogSearch').value.trim().toLocaleLowerCase();
   const results=catalog.entries.filter(entry=>(domain==='all'||entry.domain===domain)&&
-    (!query||[entry.id,entry.name,entry.topics].some(value=>value.toLocaleLowerCase().includes(query))));
+    (!$('teachingOnly').checked||hasTeaching(entry.id))&&
+    (!query||[entry.id,entry.name,entry.topics,...(curriculumById.get(entry.id)?.units.map(unit=>unit.objective)||[])].some(value=>value.toLocaleLowerCase().includes(query))));
   const shown=results.slice(0,limit);
   $('resultCount').textContent=`${results.length} 个目录入口${results.length>shown.length?` · 已显示 ${shown.length} 个`:''}`;
   $('catalogResults').replaceChildren(...shown.map(entry=>{
@@ -42,6 +47,7 @@ function renderResults() {
     const tags=node('div','tags');tags.append(node('span','tag',entry.type));
     if(entry.canonicalId!==entry.id) tags.append(node('span','tag','历史别名'));
     if(entry.id===buttonPilot.knowledgeId) tags.append(node('span','tag sample','教学样板 · L1 / L2 / L3'));
+    else if(curriculumById.has(entry.id))tags.append(node('span','tag sample','分层教学 · L1 / L2 / L3'));
     article.append(tags);return article;
   }));
   if(!shown.length) $('catalogResults').append(node('p','empty','没有匹配条目。可清除搜索或选择其他领域。'));
@@ -115,6 +121,7 @@ function renderUnit(unit,container) {
 }
 
 function renderDetail() {
+  disposeExperiment();disposeExperiment=()=>{};
   let id;
   try{id=decodeURIComponent(location.hash.slice(1));}catch{return;}
   if(!id) return;
@@ -137,6 +144,25 @@ function renderDetail() {
       };
       for(const unit of buttonPilot.units) tabs.append(button(`${unit.level} · ${unit.difficulty} · ${unit.title}`,()=>select(unit)));
       body.append(tabs,content);select(buttonPilot.units[0]);
+    } else if(curriculumById.has(entry.id)) {
+      const lesson=curriculumById.get(entry.id),tabs=node('div','unit-tabs'),content=node('div');
+      body.append(node('p','subtle','分层教学 · 各单元目标与验收独立，交互仅在内存运行。'));
+      tabs.setAttribute('aria-label','选择教学层级');
+      const select=unit=>{
+        disposeExperiment();disposeExperiment=()=>{};
+        [...tabs.children].forEach((control,index)=>control.setAttribute('aria-pressed',String(lesson.units[index]===unit)));
+        content.replaceChildren(section('学习目标',unit.objective));
+        for(const ref of unit.blockRefs){const block=lesson.blocks[ref.id];content.append(section(block.title,block.body));}
+        const experiment=renderCurriculumDemo(lesson,unit,{node,button});disposeExperiment=experiment.dispose;content.append(experiment.element);
+        const code=node('div');code.append(node('p','','浏览器控制台可运行下列 JavaScript；无第三方依赖。可复制代码至当前目录页面控制台，预期输出见下方。'),node('pre','',lesson.code),node('p','',`预期输出：${lesson.expected}`));
+        const implementation=node('a','inline-link','查看完整交互实现');implementation.href='./curriculum-demos.mjs';implementation.target='_blank';implementation.rel='noopener';code.append(implementation);
+        content.append(section('代码与运行',code),section('动手练习',unit.exercise));
+        const checks=node('ol');unit.acceptance.forEach(check=>checks.append(node('li','',check)));
+        content.append(section('验收条件',checks),section('常见误区',unit.pitfall),section('小结',unit.summary));
+        if(lesson.references.length){const refs=node('ul');for(const [label,url] of lesson.references){const li=node('li'),link=node('a','',label);link.href=url;link.target='_blank';link.rel='noopener';li.append(link);refs.append(li);}content.append(section('延伸资料',refs));}
+      };
+      for(const unit of lesson.units)tabs.append(button(`${unit.level} · ${unit.difficulty} · ${unit.title}`,()=>select(unit)));
+      body.append(tabs,content);select(lesson.units[0]);
     } else if(entry.canonicalId===entry.id) body.append(node('p','subtle','当前已收录目录主题，完整教学内容待建设。'));
   }
   if(!$('entryDialog').open) $('entryDialog').showModal();
@@ -144,11 +170,16 @@ function renderDetail() {
 
 $('searchForm').addEventListener('submit',event=>event.preventDefault());
 $('catalogSearch').addEventListener('input',()=>{limit=40;renderResults();});
+$('teachingOnly').addEventListener('change',()=>{limit=40;renderResults();});
 $('clearSearch').addEventListener('click',()=>{$('catalogSearch').value='';limit=40;renderResults();$('catalogSearch').focus();});
 $('showMore').addEventListener('click',()=>{limit+=40;renderResults();});
-$('closeDialog').addEventListener('click',()=>$('entryDialog').close());
-$('entryDialog').addEventListener('close',()=>{if(location.hash)history.replaceState(null,'',location.pathname+location.search);});
-window.addEventListener('hashchange',()=>{if(catalog) {if(location.hash)renderDetail();else $('entryDialog').close();}});
+function clearDetailRoute() {
+  disposeExperiment();disposeExperiment=()=>{};
+  if(location.hash)history.replaceState(null,'',location.pathname+location.search);
+}
+$('closeDialog').addEventListener('click',()=>{clearDetailRoute();$('entryDialog').close();});
+$('entryDialog').addEventListener('cancel',event=>{if(event.target===$('entryDialog'))clearDetailRoute();});
+window.addEventListener('hashchange',()=>{if(catalog) {if(location.hash)renderDetail();else {disposeExperiment();disposeExperiment=()=>{};$('entryDialog').close();}}});
 
 try {
   const response=await fetch('./catalog.json',{cache:'no-store'});
@@ -157,6 +188,7 @@ try {
   if(!Array.isArray(catalog.entries)||catalog.entries.length!==840)throw new Error('目录结构不完整');
   byId=new Map(catalog.entries.map(entry=>[entry.id,entry]));
   $('summary').textContent=`16 个领域 · ${catalog.entries.length} 个原始入口 · ${catalog.statistics.preliminaryCanonicalConcepts} 个初步概念`;
+  $('teachingCoverage').textContent=`已有教学：${curriculum.length+1} 个主题 · ${curriculum.reduce((count,lesson)=>count+lesson.units.length,buttonPilot.units.length)} 个分层单元`;
   candidateNames.forEach(([key,name])=>$('d17List').append(node('li','',`${key} · ${name}`)));
   renderDomains();renderResults();renderDetail();
 } catch(error) {

@@ -11,11 +11,12 @@
   <a class="skip" href="#catalogResults">跳到知识条目</a>
   <header class="top"><a href="../index.html#/components" class="brand">K <span>学习工作台</span></a><a href="../index.html#/learn">返回原有课程 ↗</a></header>
   <main>
-    <section class="intro"><p class="eyebrow">V8 KNOWLEDGE DIRECTORY</p><h1>知识目录</h1><p id="summary">正在读取目录…</p><a class="sample-link" href="#K-D01-001">开始 Button 教学样板 →</a></section>
+    <section class="intro"><p class="eyebrow">V8 KNOWLEDGE DIRECTORY</p><h1>知识目录</h1><p id="summary">正在读取目录…</p><p id="teachingCoverage"></p><a class="sample-link" href="#K-D01-001">开始 Button 教学样板 →</a></section>
     <div class="workspace">
       <aside><h2>知识领域</h2><nav id="domains" aria-label="按知识领域筛选"></nav></aside>
       <section class="catalog" aria-label="知识条目">
         <form id="searchForm" class="searchbar" role="search"><label for="catalogSearch">搜索目录</label><div class="search-controls"><input id="catalogSearch" type="search" autocomplete="off" placeholder="名称、知识 ID 或主题"><button type="button" id="clearSearch">清除</button></div></form>
+        <label class="teaching-filter"><input id="teachingOnly" type="checkbox">只看已有教学</label>
         <p id="resultCount" role="status" aria-live="polite"></p>
         <div id="catalogResults" class="entry-grid" tabindex="-1"></div>
         <button type="button" id="showMore" hidden>加载更多</button>

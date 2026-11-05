@@ -51,6 +51,59 @@ The directory import's `authoredCourses: 0` still refers to formal Course
 entities; the newly authored sample does not invent a migrated Course or
 associate original progress with any sample unit.
 
+## D01–D16 teaching batch 1
+
+The authored catalog now has **17 teaching topics / 51 layered units**: the
+original Button sample plus sixteen additional topics, one in each D01–D16
+domain. `teaching-manifest.json` records their exact content hashes, unit levels,
+difficulties and pinned content references. It is reproducible with
+`scripts/build-v8-teaching-manifest.mjs`; it does not change the original
+840-entry source catalog or invent formal migrated Course entities.
+
+| Domain | New topic | Original knowledge ID |
+| --- | --- | --- |
+| D01 | Icon Button | K-D01-002 |
+| D02 | Grid Layout | K-D02-004 |
+| D03 | Tabs | K-D03-007 |
+| D04 | Text Input | K-D04-001 |
+| D05 | Table | K-D05-022 |
+| D06 | Toast | K-D06-004 |
+| D07 | Modal | K-D07-001 |
+| D08 | File Picker | K-D08-001 |
+| D09 | Bar Chart | K-D09-001 |
+| D10 | Map Marker | K-D10-002 |
+| D11 | Flowchart | K-D11-033 |
+| D12 | Approval Flow | K-D12-006 |
+| D13 | CRDT | K-D13-034 |
+| D14 | Tool Call Card | K-D14-043 |
+| D15 | Color Contrast | K-D15-021 |
+| D16 | Undo / Redo | K-D16-059 |
+
+Each new topic has three independently authored objectives, exercises,
+acceptance conditions, pitfalls and summaries, plus shared/version-pinned
+principle/mechanism blocks and a runnable code example. All sixteen code
+examples execute against the actual teaching mechanisms during Node tests.
+The directory adds an available-teaching filter, per-domain teaching counts
+and search across the new objectives.
+
+All 48 new units have topic-specific browser controls and negative cases.
+Reusable experiment mechanisms serve the three levels; the teaching goals and
+acceptance conditions differ. This is content reuse, not a claim that each
+layer is a different production application. Code references link to the full
+interaction implementation, with W3C/MDN/research references where applicable.
+
+Boundary examples: the map is a coordinate sketch, not a tile or distance
+service; CRDT replicas are simulated in one page; the tool card runs only an
+allowlisted local sum, not a real model/MCP tool; approval roles are parameters,
+not authenticated identities; file selection reads metadata only and never
+reads file text or uploads data. These limits are visible in the lessons.
+The contrast check concerns opaque six-digit sRGB colors and one text pair,
+not whole-site WCAG compliance. No arbitrary code from user input is executed.
+
+This is a verified authored batch across all sixteen domains, **not all 833
+preliminary concepts or 840 directory entries completed as courses**. Remaining
+curriculum and formal migration states are reported separately.
+
 The browser regression uses existing Playwright in isolated contexts and
 synthetic sentinel storage. Chromium and WebKit, at desktop and 390px mobile
 viewports, exercised the entry link, domain/search/alias behavior, keyboard
@@ -69,6 +122,7 @@ required and the default system Node need not change.
 & $node22 scripts/test-v8-legacy-catalog-view.mjs
 & $node22 scripts/test-v8-knowledge-catalog.mjs
 & $node22 scripts/test-v8-knowledge-pilot.mjs
+& $node22 scripts/test-v8-curriculum.mjs
 & $node22 scripts/build-v8-knowledge-catalog.mjs
 ```
 
@@ -113,9 +167,9 @@ created. No candidate IDs are promoted to permanent model identities.
 | P1 repository/storage inventory | Static repository verified; P1.3 incomplete | Original computer record backup, actual IDs and record associations; no browser/profile accessed by these tools |
 | P2 formal mapping | Source structure and candidate consistency tooling implemented | Frozen PRD/technical-design originals; target organization, ID/version rules, evidence-backed legacy-to-knowledge mappings and resource semantics |
 | P3 compatibility | Offline immutable legacy view implemented | Approved target contract, production read authority/failure policy, tested integration and rollback; no production switch exists |
-| P4 teaching standard sample | Button sample implemented and browser-tested in three layers | Formal target Course/Unit integration skipped while originals are missing |
-| P5 domain pilot | One D01 knowledge sample exercised | Wider domain teaching and production compatibility are not claimed complete |
-| P6 D01–D16 expansion | 840-entry directory imported and searchable | Full authored curriculum and verified links remain incomplete; directory entries are not completed lessons |
+| P4 teaching standard sample | 17 topics / 51 independent layered units with pinned content | Formal target Course/Unit integration skipped while originals are missing |
+| P5 domain pilot | Representative teaching experiments in all sixteen domains | Entire domain curricula and production compatibility are not claimed complete |
+| P6 D01–D16 expansion | Batch 1 adds 16 topics / 48 units to the searchable directory | Remaining concepts are not marked authored or accepted merely because their entries exist |
 | P7 D17 | Candidate only | Official scope and knowledge IDs; no D17 formal IDs invented, G10 remains in D14 |
 | P8 full acceptance/release | Foundation checks only | All content, compatibility, personal-record protection, backup, rollback and release gates; current static release is not P1–P8 completion |
 

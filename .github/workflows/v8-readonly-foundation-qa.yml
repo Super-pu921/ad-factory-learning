@@ -8,6 +8,8 @@ on:
       - 'scripts/*knowledge-catalog*.mjs'
       - 'scripts/*knowledge-pilot*.mjs'
       - 'scripts/*knowledge-browser*.mjs'
+      - 'scripts/*curriculum*.mjs'
+      - 'scripts/*teaching-manifest*.mjs'
       - 'index.html'
       - 'knowledge-catalog/**'
       - '.github/workflows/v8-readonly-foundation-qa.yml'
@@ -18,6 +20,8 @@ on:
       - 'scripts/*knowledge-catalog*.mjs'
       - 'scripts/*knowledge-pilot*.mjs'
       - 'scripts/*knowledge-browser*.mjs'
+      - 'scripts/*curriculum*.mjs'
+      - 'scripts/*teaching-manifest*.mjs'
       - 'index.html'
       - 'knowledge-catalog/**'
       - '.github/workflows/v8-readonly-foundation-qa.yml'
@@ -46,11 +50,18 @@ jobs:
           node --check knowledge-catalog/button-pilot.mjs
           node --check scripts/test-v8-knowledge-pilot.mjs
           node --check scripts/test-v8-knowledge-browser.mjs
+          node --check knowledge-catalog/curriculum.mjs
+          node --check knowledge-catalog/curriculum-models.mjs
+          node --check knowledge-catalog/curriculum-demos.mjs
+          node --check scripts/build-v8-teaching-manifest.mjs
+          node --check scripts/test-v8-curriculum.mjs
+          node --check scripts/test-v8-curriculum-browser.mjs
           node scripts/audit-v8-migration.mjs
           node scripts/test-v8-migration.mjs
           node scripts/test-v8-legacy-catalog-view.mjs
           node scripts/test-v8-knowledge-catalog.mjs
           node scripts/test-v8-knowledge-pilot.mjs
+          node scripts/test-v8-curriculum.mjs
           node scripts/validate-v8-knowledge.mjs
           node scripts/test-v8-missions.mjs
           node scripts/test-v8-order-lab.mjs
