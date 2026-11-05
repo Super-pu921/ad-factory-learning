@@ -37,6 +37,7 @@ function renderDomains() {
 }
 
 function renderResults() {
+  if(!catalog)return;
   const query=$('catalogSearch').value.trim().toLocaleLowerCase();
   const level=$('levelFilter').value,difficulty=$('difficultyFilter').value,filterUnits=level!=='all'||difficulty!=='all';
   const matches=id=>matchingTeachingUnits(teachingUnits(id),level,difficulty);

@@ -234,7 +234,12 @@ for(const [engine,name] of [[chromium,'chromium'],[webkit,'webkit']]) {
       await context.addInitScript(()=>{localStorage.setItem('adFactoryLearning.v8.production','synthetic-main-sentinel');localStorage.setItem('adFactoryLearning.v8.order-lab','synthetic-lab-sentinel');});
       const page=await context.newPage(),errors=[],writes=[];page.setDefaultTimeout(12000);
       page.on('pageerror',error=>errors.push(error.message));page.on('request',request=>{if(request.method()!=='GET')writes.push(request.method()+' '+request.url());});
-      await page.goto(base);await page.getByText('已有教学：49 个主题 · 147 个分层单元',{exact:true}).waitFor();
+      let releaseCatalog;const heldCatalog=new Promise(resolve=>{releaseCatalog=resolve;});
+      await page.route('**/catalog.json',async route=>{await heldCatalog;await route.continue();});
+      const catalogRequested=page.waitForRequest('**/catalog.json');await page.goto(base,{waitUntil:'domcontentloaded'});await catalogRequested;
+      await page.getByLabel('教学层级',{exact:true}).selectOption('L3');await page.getByLabel('教学难度',{exact:true}).selectOption('E3');releaseCatalog();
+      await page.getByText('已有教学：49 个主题 · 147 个分层单元',{exact:true}).waitFor();assert.ok(await page.locator('.entry').count()>0,'queued filters apply after slow catalog load');assert.deepEqual(errors,[],'early filter changes must not throw');await page.unroute('**/catalog.json');
+      await page.getByLabel('教学层级',{exact:true}).selectOption('all');await page.getByLabel('教学难度',{exact:true}).selectOption('all');
       await page.getByLabel('只看已有教学').check();assert.equal(await page.locator('.entry').count(),40);await page.getByRole('button',{name:'加载更多',exact:true}).click();assert.equal(await page.locator('.entry').count(),49);
       await page.getByLabel('教学层级',{exact:true}).selectOption('L1');await page.getByLabel('教学难度',{exact:true}).selectOption('E2');await page.locator('#catalogSearch').fill('K-D01-001');assert.equal(await page.locator('.entry').count(),0,'level and difficulty must match the same unit');
       await page.getByLabel('教学层级',{exact:true}).selectOption('L2');assert.equal(await page.locator('.entry').count(),1);await page.locator('.entry h3 button').click();await page.locator('.unit-tabs>button[aria-pressed=true]').filter({hasText:'L2'}).waitFor();assert.equal(new URL(page.url()).hash,'#K-D01-001/L2');await page.getByRole('button',{name:'关闭知识详情',exact:true}).click();

@@ -205,6 +205,8 @@ Selecting a filtered topic opens its first matching unit. Untaught entries
 cannot match an authored teaching level or difficulty. No new filter or
 learning state is persisted, and no new difficulty is inferred for original
 directory entries. Original directory statuses remain source facts.
+Filter input made while the static catalog is still loading is retained and
+applied when loading completes; it does not attempt to render an absent source.
 
 CSV preview reads only manually entered text and implements a bounded
 two-column `id,qty` teaching contract with quoted commas/newlines, doubled
