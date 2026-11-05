@@ -148,8 +148,10 @@ continuously removes repeated phase approval, but cannot supply missing facts.
 The existing `app.js`, `data.json`, `styles.css`, `sw.js`, old labs,
 QA directories, storage keys and default read/write behavior are unchanged.
 `index.html` gains only a top-bar link to the new directory.
-The new tools do not import application initialization scripts, open a browser,
-read a user profile, execute a Demo or access localStorage/IndexedDB.
+The offline foundation modules do not import application initialization scripts,
+open a browser, read a user profile or access localStorage/IndexedDB. The separate
+directory UI reads only its static catalog; its user-triggered teaching demos run
+in memory. Browser verification runs in isolated synthetic contexts.
 The original default completion markers are never interpreted as demonstrated
 knowledge mastery. No double-write, user identity or replacement reading path
 is introduced.
@@ -159,9 +161,9 @@ remain NOT_RUN; T10 and production migration remain BLOCKED. New preflight unit
 tests do not change these migration-test states. Existing asymmetric relations
 and resource warnings are retained for review.
 
-Publishing this foundation makes the offline tools and original directory
-assets available through the existing repository/Pages chain; it does not
-activate a new production interface or migrate users. Any release identifier,
+Publishing this release exposes the directory, sample, offline tools and source
+assets through the existing repository/Pages chain. It does not replace the
+old course reading authority or migrate users. Any release identifier,
 CI result and Pages deployment must be reported from actual remote evidence.
 Rollback, if necessary, should use a scoped revert of this release after
 checking later changes; never reset or clean user work, overwrite backups,
