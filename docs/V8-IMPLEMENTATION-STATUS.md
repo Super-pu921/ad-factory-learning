@@ -233,6 +233,70 @@ The original directory/Button regression remains separate. Only recorded actual
 executions establish PASS; neither this scope description nor CI's Node-only
 checks establish browser or real-device acceptance on their own.
 
+## D01–D16 teaching batch 4 and shareable filter state
+
+Batch 4 adds **16 topics / 48 layered units**, bringing authored coverage to
+**65 topics / 195 units**. Every domain has at least four teaching topics;
+D01 also retains the original Button pilot. The previous 49 topic objects,
+unit metadata, content hashes and versions are preserved.
+
+| Domain | New topic | Original knowledge ID |
+| --- | --- | --- |
+| D01 | Rating | K-D01-017 |
+| D02 | Box | K-D02-002 |
+| D03 | Accordion | K-D03-018 |
+| D04 | Radio Group | K-D04-016 |
+| D05 | Comparison | K-D05-005 |
+| D06 | Empty State | K-D06-009 |
+| D07 | Focus Restoration | K-D07-030 |
+| D08 | File Metadata | K-D08-017 |
+| D09 | Scatter Plot | K-D09-010 |
+| D10 | Feature Inspector | K-D10-018 |
+| D11 | Multi Selection | K-D11-006 |
+| D12 | Advanced Filter | K-D12-004 |
+| D13 | Edit Lock | K-D13-029 |
+| D14 | Prompt Variables | K-D14-012 |
+| D15 | Date Formatting | K-D15-030 |
+| D16 | Request Timeout | K-D16-016 |
+
+All units keep independent objectives, exercises, three acceptance conditions,
+pitfalls and summaries with pinned content references. The 64 batch-topic code
+examples actually execute during Node tests. Reused experiments cover different
+teaching goals without being presented as separate production applications.
+
+The catalog now records directory filter state in its own URL using `domain`,
+`q`, `level`, `difficulty` and `teaching` parameters. The current-filter link
+can be copied/shared, refresh restores the conditions, and browser back/forward
+restores same-document filter state. A reset action returns to the full
+directory. Default and unsupported parameter values are omitted; search text is
+bounded to 100 UTF-16 code units. Query strings remain inert text. Unit deep
+links preserve the directory filters. This uses browser navigation state only;
+no localStorage, IndexedDB, progress state or original-course reading path is
+introduced. Ordinary changes replace the current history entry rather than
+adding one per keystroke.
+
+The new examples keep explicit limits: ratings are not mastery or real reviews;
+the box calculation excludes margins; comparison reports separate fictional
+price/time deltas without an overall purchase recommendation; metadata comes
+from manually entered fictional fields and reads no file. The scatter plot
+does not infer causality. Point inspection and object selection preserve source
+identity/geometry. Advanced task filtering is local AND logic. Edit locks use a
+manually advanced teaching clock and provide no distributed mutual exclusion
+or real identity verification. Prompt variables perform one allowlisted text
+replacement without recursion, code evaluation, model calls or a general prompt
+injection defense. Date formatting uses strict canonical UTC input years
+1900–2100 and explicit
+display timezones without changing OS settings. Timeout uses cancellable local
+timers and makes no claim of server-side rollback.
+
+The authored batch browser suite covers **64 topics × 3 layers × 4 browser/
+viewport contexts = 768 unit scenarios**, plus filter URL round trips,
+refresh/back-forward/reset, malformed parameters, slow-load input, deep links,
+keyboard focus and synthetic-storage preservation. The original directory and
+Button suite remains separate. Only recorded actual checks establish PASS;
+this static release does not complete the remaining curriculum, migration or
+P1–P8 acceptance requirements.
+
 ## Run
 
 Use an existing Node 22 executable by absolute path. No package installation is
@@ -289,9 +353,9 @@ created. No candidate IDs are promoted to permanent model identities.
 | P1 repository/storage inventory | Static repository verified; P1.3 incomplete | Original computer record backup, actual IDs and record associations; no browser/profile accessed by these tools |
 | P2 formal mapping | Source structure and candidate consistency tooling implemented | Frozen PRD/technical-design originals; target organization, ID/version rules, evidence-backed legacy-to-knowledge mappings and resource semantics |
 | P3 compatibility | Offline immutable legacy view implemented | Approved target contract, production read authority/failure policy, tested integration and rollback; no production switch exists |
-| P4 teaching standard sample | 49 topics / 147 independent layered units with pinned content | Formal target Course/Unit integration skipped while originals are missing |
+| P4 teaching standard sample | 65 topics / 195 independent layered units with pinned content | Formal target Course/Unit integration skipped while originals are missing |
 | P5 domain pilot | Representative teaching experiments in all sixteen domains | Entire domain curricula and production compatibility are not claimed complete |
-| P6 D01–D16 expansion | Three batches add 48 topics / 144 units, plus the Button pilot; unit links and independent level/difficulty filters | Remaining concepts are not marked authored or accepted merely because their entries exist |
+| P6 D01–D16 expansion | Four batches add 64 topics / 192 units, plus the Button pilot; unit links, independent filters and shareable filter URLs | Remaining concepts are not marked authored or accepted merely because their entries exist |
 | P7 D17 | Candidate only | Official scope and knowledge IDs; no D17 formal IDs invented, G10 remains in D14 |
 | P8 full acceptance/release | Foundation checks only | All content, compatibility, personal-record protection, backup, rollback and release gates; current static release is not P1–P8 completion |
 

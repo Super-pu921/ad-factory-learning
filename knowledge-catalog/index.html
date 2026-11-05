@@ -18,6 +18,7 @@
         <form id="searchForm" class="searchbar" role="search"><label for="catalogSearch">搜索目录</label><div class="search-controls"><input id="catalogSearch" type="search" autocomplete="off" placeholder="名称、知识 ID 或主题"><button type="button" id="clearSearch">清除</button></div></form>
         <label class="teaching-filter"><input id="teachingOnly" type="checkbox">只看已有教学</label>
         <div class="teaching-selects"><div><label for="levelFilter">教学层级</label><select id="levelFilter"><option value="all">全部层级</option><option value="L1">L1 基础知识</option><option value="L2">L2 工程实现</option><option value="L3">L3 系统应用</option></select></div><div><label for="difficultyFilter">教学难度</label><select id="difficultyFilter"><option value="all">全部难度</option><option value="E1">E1</option><option value="E2">E2</option><option value="E3">E3</option><option value="E4">E4</option><option value="E5">E5</option></select></div></div>
+        <div class="filter-actions"><a id="filterLink" class="inline-link" href="./">当前筛选链接</a><button id="resetFilters" type="button">重置筛选</button></div>
         <p id="resultCount" role="status" aria-live="polite"></p>
         <div id="catalogResults" class="entry-grid" tabindex="-1"></div>
         <button type="button" id="showMore" hidden>加载更多</button>

@@ -7,9 +7,9 @@ import * as model from '../knowledge-catalog/curriculum-models.mjs';
 import {buildTeachingManifest} from './build-v8-teaching-manifest.mjs';
 
 const catalog=JSON.parse(readFileSync(new URL('../knowledge-catalog/catalog.json',import.meta.url),'utf8'));
-assert.equal(curriculum.length,48);assert.equal(new Set(curriculum.map(lesson=>lesson.domain)).size,16);
-assert.equal(new Set(curriculum.map(lesson=>lesson.knowledgeId)).size,48);
-assert.equal(new Set(curriculum.flatMap(lesson=>lesson.units.map(unit=>unit.id))).size,144);
+assert.equal(curriculum.length,64);assert.equal(new Set(curriculum.map(lesson=>lesson.domain)).size,16);
+assert.equal(new Set(curriculum.map(lesson=>lesson.knowledgeId)).size,64);
+assert.equal(new Set(curriculum.flatMap(lesson=>lesson.units.map(unit=>unit.id))).size,192);
 for(const lesson of curriculum) {
   const source=catalog.entries.find(entry=>entry.id===lesson.knowledgeId);
   assert.equal(source?.name,lesson.title);assert.equal(source.canonicalId,source.id);
@@ -26,8 +26,8 @@ for(const lesson of curriculum) {
 assert.throws(()=>{curriculum[0].units[0].blockRefs[0].version='latest';},TypeError);
 const manifest=buildTeachingManifest();
 assert.deepEqual(manifest,JSON.parse(readFileSync(new URL('../knowledge-catalog/teaching-manifest.json',import.meta.url),'utf8')));
-assert.deepEqual(manifest.statistics,{originalDirectoryEntries:840,teachingTopics:49,layeredUnits:147,coveredDomains:16,formalMigratedCourses:0});
-assert.ok(manifest.domains.every(domain=>domain.teachingTopics>=3));
+assert.deepEqual(manifest.statistics,{originalDirectoryEntries:840,teachingTopics:65,layeredUnits:195,coveredDomains:16,formalMigratedCourses:0});
+assert.ok(manifest.domains.every(domain=>domain.teachingTopics>=4));
 assert.equal(manifest.productionMigration,'BLOCKED');assert.equal(manifest.progressPersistence,'NONE');
 
 assert.equal(model.gridTracks(2),'repeat(2, minmax(0, 1fr))');assert.throws(()=>model.gridTracks(0));
@@ -106,9 +106,27 @@ const abortController=new AbortController(),pendingWait=model.waitForDemo(600,{s
 await assert.rejects(model.waitForDemo(10,{signal:abortController.signal}),{name:'AbortError'});
 const doneController=new AbortController();assert.equal(await model.waitForDemo(1,{signal:doneController.signal}),'教学响应');assert.equal(getEventListeners(doneController.signal,'abort').length,0);doneController.abort();assert.throws(()=>model.waitForDemo(0));
 const independent=[{level:'L1',difficulty:'E1'},{level:'L2',difficulty:'E2'}];assert.deepEqual(model.matchingTeachingUnits(independent,'L1','E2'),[]);assert.deepEqual(model.matchingTeachingUnits(independent,'L2','E2'),[independent[1]]);assert.deepEqual(model.matchingTeachingUnits([]),[]);assert.throws(()=>model.matchingTeachingUnits(independent,'L4'));
+assert.deepEqual(model.ratingState(0),{value:0,label:'尚未评分'});assert.equal(model.ratingState(5).value,5);assert.throws(()=>model.ratingState(1.5));
+assert.deepEqual(model.boxMetrics(120,12,2,'content-box'),{content:120,outer:148});assert.deepEqual(model.boxMetrics(120,12,2,'border-box'),{content:92,outer:120});assert.throws(()=>model.boxMetrics(120,-1,2,'content-box'));
+assert.deepEqual(model.accordionNext(['materials'],'process',true),['process']);assert.deepEqual(model.accordionNext(['materials'],'materials'),[]);assert.throws(()=>model.accordionNext(['materials','materials'],'process'));
+assert.equal(model.selectMaterial('paper'),'纸张');assert.throws(()=>model.selectMaterial(''));assert.throws(()=>model.selectMaterial('__proto__'));
+const qa={id:'A',cents:10000,days:3},qb={id:'B',cents:12000,days:1};assert.deepEqual(model.compareQuotes(qa,qb),{priceDelta:-2000,daysDelta:2});assert.equal(model.compareQuotes(qb,qa).priceDelta,2000);assert.throws(()=>model.compareQuotes(qa,qa));
+assert.equal(model.emptyMessage(0,0,''),'尚无教学数据');assert.equal(model.emptyMessage(3,0,'x'),'没有匹配教学结果');assert.throws(()=>model.emptyMessage(1,2,''));
+assert.equal(model.focusReturnTarget(false,true),'fallback');assert.equal(model.focusReturnTarget(false,false),null);assert.equal(model.focusReturnTarget(true,true),'trigger');
+assert.deepEqual(model.describeMetadata({name:'.env',size:0,type:''}),{name:'.env',kib:'0.00',extension:'无扩展名',mime:'未声明'});assert.equal(model.describeMetadata({name:'DEMO.CSV',size:1024,type:'text/csv'}).extension,'csv');assert.throws(()=>model.describeMetadata({name:'a.csv',size:-1,type:''}));
+assert.deepEqual(model.scatterPoints('10:20,10:20'),[{x:10,y:20},{x:10,y:20}]);for(const value of ['', '101:0', '-1:0','1:2,','1:2:3'])assert.throws(()=>model.scatterPoints(value));
+const features=[{id:'P1',name:'fake',coordinates:[0,0]}],inspected=model.inspectFeature(features,'P1');inspected.coordinates[0]=100;assert.equal(features[0].coordinates[0],0);assert.throws(()=>model.inspectFeature(features,'missing'));
+assert.deepEqual(model.objectSelection(['A'],'toggle','B'),['A','B']);assert.deepEqual(model.objectSelection(['A'],'toggle','A'),[]);assert.deepEqual(model.objectSelection(['A'],'clear'),[]);assert.throws(()=>model.objectSelection(['A','A'],'all'));
+const tasks=[{id:'1',title:'排版',status:'TODO',qty:2},{id:'2',title:'切割',status:'DONE',qty:5}];assert.equal(model.filterTasks(tasks,{query:'排',status:'DONE'}).length,0);assert.equal(model.filterTasks(tasks,{minQty:3})[0].id,'2');const view=model.filterTasks(tasks);view[0].qty=99;assert.equal(tasks[0].qty,2);assert.throws(()=>model.filterTasks(tasks,{minQty:-1}));
+const lockA=model.editLock({owner:null,expiresAt:0},'acquire','A',0);assert.throws(()=>model.editLock(lockA,'acquire','B',999));assert.throws(()=>model.editLock(lockA,'release','B',1));assert.equal(model.editLock(lockA,'acquire','B',1000).owner,'B');assert.deepEqual(model.editLock(lockA,'tick','B',1000),{owner:null,expiresAt:0});assert.equal(lockA.owner,'A');
+assert.equal(model.renderPrompt('{{name}}:{{qty}}',{name:'<b>text</b>',qty:2}),'<b>text</b>:2');assert.equal(model.renderPrompt('{{name}}',{name:'{{qty}}',qty:2}),'{{qty}}');for(const template of ['{{unknown}}','{{name','{{constructor}}'])assert.throws(()=>model.renderPrompt(template,{name:'A',qty:2}));
+assert.equal(model.formatTeachingDate('2026-01-01T00:00:00.000Z','zh-CN','Asia/Shanghai').hour,'08');const ny=model.formatTeachingDate('2026-01-01T00:00:00.000Z','en-GB','America/New_York');assert.equal(ny.day,'31');assert.equal(ny.year,'2025');for(const date of ['2026-02-30T00:00:00.000Z','2026-01-01',''])assert.throws(()=>model.formatTeachingDate(date));
+for(const date of ['0000-01-01T00:00:00.000Z','2200-01-01T00:00:00.000Z'])assert.throws(()=>model.formatTeachingDate(date),/1900–2100/);
+assert.equal(await model.withDemoTimeout(1,100),'教学响应');await assert.rejects(model.withDemoTimeout(100,1),{name:'TimeoutError'});const timeoutController=new AbortController(),timeoutWait=model.withDemoTimeout(600,800,{signal:timeoutController.signal}),timeoutRejection=assert.rejects(timeoutWait,{name:'AbortError'});timeoutController.abort();await timeoutRejection;assert.equal(getEventListeners(timeoutController.signal,'abort').length,0);await assert.rejects(model.withDemoTimeout(0,1));
+const filterState={domain:'D02',query:'盒 & # <img>',level:'L2',difficulty:'E2',teachingOnly:true},encoded=model.catalogFilterParams(filterState);assert.deepEqual(model.parseCatalogFilters('?'+encoded),filterState);assert.equal(model.catalogFilterParams({}),'');assert.equal(model.parseCatalogFilters('?domain=D99&level=L9&difficulty=E9&teaching=true').domain,'all');assert.equal(model.parseCatalogFilters('?q='+('x'.repeat(200))).query.length,100);assert.equal(model.parseCatalogFilters('?q=%3Cimg%3E').query,'<img>');
 for(const path of ['curriculum.mjs','curriculum-models.mjs','curriculum-demos.mjs']) {
   const source=readFileSync(new URL('../knowledge-catalog/'+path,import.meta.url),'utf8');
   assert.doesNotMatch(source,/\b(?:localStorage|sessionStorage|indexedDB)\s*[.[]/);
   assert.doesNotMatch(source,/\.innerHTML\s*=|\beval\s*\(|\bnew Function\s*\(/);
 }
-console.log('Curriculum OK: D01-D16, 48 batch topics / 144 units; total 49 topics / 147 units; all 48 code examples executed; pinned content, parser trust boundaries, independent level/difficulty filters, state errors, cancellation and timer cleanup verified. Migration BLOCKED.');
+console.log('Curriculum OK: D01-D16, 64 batch topics / 192 units; total 65 topics / 195 units; all 64 code examples executed; pinned content, immutable selections, strict dates/templates, timeout cleanup and filter URL round trips verified. Migration BLOCKED.');

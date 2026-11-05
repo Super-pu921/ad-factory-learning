@@ -220,6 +220,55 @@ async function exercise(page,kind,level) {
     case 'cancellation': {
       await click('启动可取消教学任务');await contains('等待中');await click('取消教学任务');await contains('已取消');await click('启动可取消教学任务');await contains('教学任务完成');assert.equal(await root.getByRole('button',{name:'取消教学任务',exact:true}).isDisabled(),true);break;
     }
+    case 'rating': {
+      await root.getByLabel('3 星',{exact:true}).check();await contains('3 星教学评分');const first=root.getByLabel('1 星',{exact:true});await first.check();await first.focus();await page.keyboard.press('ArrowRight');await contains('2 星教学评分');await click('清除教学评分');await contains('尚未评分');assert.equal(await root.locator('input:checked').count(),0);break;
+    }
+    case 'box': {
+      await contains('外宽 148px');assert.equal(Math.round((await root.locator('.box-experiment').boundingBox()).width),148);await root.getByLabel('盒模型计算方式').selectOption('border-box');await click('计算教学盒模型');await contains('内容宽 92px');assert.equal(Math.round((await root.locator('.box-experiment').boundingBox()).width),120);await fill('盒模型内边距','-1');await click('计算教学盒模型');await contains('内边距 0–20');assert.equal(Math.round((await root.locator('.box-experiment').boundingBox()).width),120);break;
+    }
+    case 'accordion': {
+      await click('材料说明');await click('工序说明');await contains('已展开 2 个');await root.getByLabel('只展开一个教学区块').check();await contains('已展开 1 个');await click('工序说明');assert.equal(await root.getByRole('button',{name:'材料说明',exact:true}).getAttribute('aria-expanded'),'false');assert.equal(await root.getByRole('button',{name:'工序说明',exact:true}).getAttribute('aria-expanded'),'true');break;
+    }
+    case 'radio': {
+      await click('核对教学材料');await contains('请选择一项');await root.getByLabel('板材',{exact:true}).check();await root.getByLabel('纸张',{exact:true}).check();await click('核对教学材料');await contains('教学单选：纸张');assert.equal(await root.locator('input:checked').count(),1);await click('清除单选草稿');assert.equal(await root.locator('input:checked').count(),0);break;
+    }
+    case 'comparison': {
+      await contains('金额 -2000 分');await root.getByLabel('右侧教学方案').selectOption('Q1');await click('比较教学方案');await contains('两个不同');await root.getByLabel('右侧教学方案').selectOption('Q3');await click('比较教学方案');await contains('金额 0 分');break;
+    }
+    case 'empty': {
+      await fill('空状态教学搜索','missing');await contains('没有匹配');await root.getByLabel('使用初始空集合').check();await contains('尚无教学数据');await click('清空教学搜索');await contains('尚无教学数据');await click('恢复教学示例数据');await contains('找到 3 条');break;
+    }
+    case 'focus': {
+      await click('打开焦点恢复实验');await root.locator('dialog').getByRole('button',{name:'关闭焦点实验',exact:true}).click();await contains('回到原触发器');assert.equal(await root.getByRole('button',{name:'打开焦点恢复实验',exact:true}).evaluate(element=>element===document.activeElement),true);
+      await root.getByLabel('关闭时禁用原触发器').check();await click('打开焦点恢复实验');await page.keyboard.press('Escape');await contains('回退位置');assert.equal(await root.getByRole('button',{name:'焦点回退位置',exact:true}).evaluate(element=>element===document.activeElement),true);assert.equal(await page.locator('#entryDialog').evaluate(element=>element.open),true);await root.getByLabel('关闭时禁用原触发器').uncheck();break;
+    }
+    case 'metadata': {
+      await fill('虚构文件字节数','1024');await click('查看教学元数据');await contains('1.00 KiB');await fill('虚构文件字节数','-1');await click('查看教学元数据');await contains('0–10 MiB');assert.ok((await root.locator('dl').textContent()).includes('1.00'));break;
+    }
+    case 'scatter': {
+      await fill('教学散点坐标','10:20,10:20');await click('绘制教学散点');await contains('2 个教学点');assert.equal(await root.locator('circle').count(),2);assert.equal(await root.locator('circle').first().getAttribute('cy'),'80');await fill('教学散点坐标','101:20');await click('绘制教学散点');await contains('0–100');assert.equal(await root.locator('circle').count(),2);break;
+    }
+    case 'inspector': {
+      const marker=root.getByRole('button',{name:'检查 P2',exact:true});await marker.click();await contains('已检查 P2');assert.equal(await marker.getAttribute('aria-pressed'),'true');await root.getByLabel('教学要素 ID').selectOption('missing');await click('检查教学要素');await contains('ID 不存在');assert.equal(await marker.getAttribute('aria-pressed'),'true');break;
+    }
+    case 'selection': {
+      await click('教学对象 A');await click('教学对象 B');await contains('已选 2/3');await click('教学对象 A');await contains('已选 1/3：B');await click('全选教学对象');assert.equal(await root.locator('button[aria-pressed=true]').count(),3);await click('清除教学选择');await contains('已选 0/3');assert.equal(await root.getByRole('button',{name:/教学对象 [ABC]$/}).count(),3);break;
+    }
+    case 'advanced': {
+      await fill('任务标题条件','排版');await root.getByLabel('任务状态条件').selectOption('DONE');await click('应用教学组合条件');await contains('1 条匹配');assert.ok((await root.locator('ol li').textContent()).includes('J3'));await fill('最小教学数量','-1');await click('应用教学组合条件');await contains('0–100');assert.equal(await root.locator('ol li').count(),1);await click('清空教学组合条件');await contains('4 条匹配');break;
+    }
+    case 'lock': {
+      await click('获取教学编辑锁');await contains('持锁 A');await root.getByLabel('模拟编辑成员').selectOption('B');await click('获取教学编辑锁');await contains('其他教学成员');await click('推进教学时钟一秒');await contains('持锁 无');await click('获取教学编辑锁');await contains('持锁 B');await click('释放教学编辑锁');await contains('持锁 无');break;
+    }
+    case 'prompt': {
+      await click('生成教学提示文本');await contains('白名单变量');const before=await root.locator('.experiment-panel').textContent();await fill('教学提示词模板','{{constructor}}');await click('生成教学提示文本');await contains('只允许 name');assert.equal(await root.locator('.experiment-panel').textContent(),before);await fill('教学提示词模板','{{name}}');await fill('教学名称变量','<img src=x>');await click('生成教学提示文本');assert.equal(await root.locator('.experiment-panel').textContent(),'<img src=x>');assert.equal(await root.locator('img').count(),0);break;
+    }
+    case 'date': {
+      await root.getByLabel('日期展示时区').selectOption('Asia/Shanghai');await click('格式化教学日期');await contains('2026-01-01 08:00');await root.getByLabel('日期展示时区').selectOption('America/New_York');await click('格式化教学日期');await contains('2025-12-31 19:00');await fill('规范 UTC 教学时间','2026-02-30T00:00:00.000Z');await click('格式化教学日期');await contains('日期无效');break;
+    }
+    case 'timeout': {
+      await click('执行教学超时实验');assert.equal(await root.getByRole('button',{name:'执行教学超时实验',exact:true}).isDisabled(),true);await contains('TimeoutError');await root.getByLabel('模拟处理时间').selectOption('100');await click('执行教学超时实验');await contains('阈值内完成');break;
+    }
     default:throw new Error(`Unexercised demo: ${kind}`);
   }
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true,'viewport overflow');
@@ -238,13 +287,19 @@ for(const [engine,name] of [[chromium,'chromium'],[webkit,'webkit']]) {
       await page.route('**/catalog.json',async route=>{await heldCatalog;await route.continue();});
       const catalogRequested=page.waitForRequest('**/catalog.json');await page.goto(base,{waitUntil:'domcontentloaded'});await catalogRequested;
       await page.getByLabel('教学层级',{exact:true}).selectOption('L3');await page.getByLabel('教学难度',{exact:true}).selectOption('E3');releaseCatalog();
-      await page.getByText('已有教学：49 个主题 · 147 个分层单元',{exact:true}).waitFor();assert.ok(await page.locator('.entry').count()>0,'queued filters apply after slow catalog load');assert.deepEqual(errors,[],'early filter changes must not throw');await page.unroute('**/catalog.json');
+      await page.getByText('已有教学：65 个主题 · 195 个分层单元',{exact:true}).waitFor();assert.ok(await page.locator('.entry').count()>0,'queued filters apply after slow catalog load');assert.deepEqual(errors,[],'early filter changes must not throw');await page.unroute('**/catalog.json');
       await page.getByLabel('教学层级',{exact:true}).selectOption('all');await page.getByLabel('教学难度',{exact:true}).selectOption('all');
-      await page.getByLabel('只看已有教学').check();assert.equal(await page.locator('.entry').count(),40);await page.getByRole('button',{name:'加载更多',exact:true}).click();assert.equal(await page.locator('.entry').count(),49);
+      await page.getByLabel('只看已有教学').check();assert.equal(await page.locator('.entry').count(),40);await page.getByRole('button',{name:'加载更多',exact:true}).click();assert.equal(await page.locator('.entry').count(),65);
       await page.getByLabel('教学层级',{exact:true}).selectOption('L1');await page.getByLabel('教学难度',{exact:true}).selectOption('E2');await page.locator('#catalogSearch').fill('K-D01-001');assert.equal(await page.locator('.entry').count(),0,'level and difficulty must match the same unit');
       await page.getByLabel('教学层级',{exact:true}).selectOption('L2');assert.equal(await page.locator('.entry').count(),1);await page.locator('.entry h3 button').click();await page.locator('.unit-tabs>button[aria-pressed=true]').filter({hasText:'L2'}).waitFor();assert.equal(new URL(page.url()).hash,'#K-D01-001/L2');await page.getByRole('button',{name:'关闭知识详情',exact:true}).click();
       await page.getByRole('button',{name:'清除',exact:true}).click();await page.getByLabel('教学难度',{exact:true}).selectOption('E5');assert.equal(await page.locator('.entry').count(),0);
-      await page.getByLabel('教学层级',{exact:true}).selectOption('all');await page.getByLabel('教学难度',{exact:true}).selectOption('all');await page.getByRole('button',{name:'加载更多',exact:true}).click();assert.equal(await page.locator('.entry').count(),49);
+      await page.getByLabel('教学层级',{exact:true}).selectOption('all');await page.getByLabel('教学难度',{exact:true}).selectOption('all');await page.getByRole('button',{name:'加载更多',exact:true}).click();assert.equal(await page.locator('.entry').count(),65);
+      await page.getByRole('button',{name:/D02 · 页面布局/}).click();await page.getByLabel('教学层级',{exact:true}).selectOption('L2');await page.getByLabel('教学难度',{exact:true}).selectOption('E2');await page.locator('#catalogSearch').fill('Box');assert.equal(await page.locator('.entry').count(),1);
+      const shared=new URL(await page.locator('#filterLink').getAttribute('href'),base);assert.equal(shared.searchParams.get('domain'),'D02');assert.equal(shared.searchParams.get('q'),'Box');assert.equal(shared.searchParams.get('teaching'),'1');
+      await page.reload();await page.getByText('已有教学：65 个主题 · 195 个分层单元',{exact:true}).waitFor();assert.equal(await page.locator('#catalogSearch').inputValue(),'Box');assert.equal(await page.locator('#levelFilter').inputValue(),'L2');assert.equal(await page.locator('#difficultyFilter').inputValue(),'E2');assert.equal(await page.getByLabel('只看已有教学').isChecked(),true);assert.equal(await page.locator('.entry').count(),1);
+      await page.locator('.entry h3 button').click();assert.equal(new URL(page.url()).hash,'#K-D02-002/L2');await page.getByRole('button',{name:'关闭知识详情',exact:true}).click();await page.getByRole('button',{name:'重置筛选',exact:true}).click();await page.getByRole('button',{name:/D01 · 基础控件/}).click();assert.equal(await page.locator('.entry').count(),22);
+      await page.goBack();await page.waitForFunction(()=>document.getElementById('catalogSearch').value==='Box');assert.equal(await page.locator('.entry').count(),1);await page.goForward();await page.waitForFunction(()=>document.querySelector('#domains button[aria-pressed=true]').dataset.domain==='D01');assert.equal(await page.locator('.entry').count(),22);
+      await page.getByRole('button',{name:'重置筛选',exact:true}).click();assert.equal(new URL(page.url()).search,'');await page.getByLabel('只看已有教学').check();await page.getByRole('button',{name:'加载更多',exact:true}).click();assert.equal(await page.locator('.entry').count(),65);
       for(const lesson of curriculum) {
         await page.evaluate(id=>{location.hash=id;},lesson.knowledgeId);
         await page.waitForFunction(id=>document.getElementById('detailId').textContent===id,lesson.knowledgeId);
@@ -255,7 +310,7 @@ for(const [engine,name] of [[chromium,'chromium'],[webkit,'webkit']]) {
           assert.ok((await page.locator('#detailBody').textContent()).includes(lesson.units[index].objective));
           await exercise(page,lesson.kind,index);
         }
-        if(evidence&&['donut','csv','geojson','motion'].includes(lesson.kind))await page.screenshot({path:`${evidence}/${name}-${width}-${lesson.kind}.png`});
+        if(evidence&&['box','scatter','advanced','date'].includes(lesson.kind))await page.screenshot({path:`${evidence}/${name}-${width}-${lesson.kind}.png`});
         await page.getByRole('button',{name:'关闭知识详情',exact:true}).click();await page.locator('#entryDialog').waitFor({state:'hidden'});
       }
       for(const [id,layer] of [['K-D01-001','L2'],['K-D08-045','L3']]) {
@@ -271,10 +326,11 @@ for(const [engine,name] of [[chromium,'chromium'],[webkit,'webkit']]) {
       await page.goto(`${base}#K-D07-013/L2`);await page.getByRole('button',{name:'聚焦查看术语说明',exact:true}).focus();await page.getByRole('tooltip').waitFor({state:'visible'});
       await page.evaluate(()=>{location.hash='K-D04-003/L2';});await page.locator('[data-demo=number]').waitFor();await page.keyboard.press('Escape');await page.locator('#entryDialog').waitFor({state:'hidden'});
       assert.equal(new URL(page.url()).hash,'','disposed tooltip must not capture Escape in another lesson');
+      await page.goto(`${base}?domain=D99&level=L9&difficulty=E9&q=%3Cimg%20src=x%3E`);await page.getByText('已有教学：65 个主题 · 195 个分层单元',{exact:true}).waitFor();assert.equal(await page.locator('#levelFilter').inputValue(),'all');assert.equal(await page.locator('#difficultyFilter').inputValue(),'all');assert.equal(await page.locator('#catalogSearch').inputValue(),'<img src=x>');assert.equal(await page.locator('img').count(),0);await page.getByRole('button',{name:'重置筛选',exact:true}).click();
       const state=await page.evaluate(()=>({...localStorage}));assert.deepEqual(state,{'adFactoryLearning.v8.production':'synthetic-main-sentinel','adFactoryLearning.v8.order-lab':'synthetic-lab-sentinel'});
       assert.deepEqual(errors,[]);assert.deepEqual(writes,[]);
       if(evidence)await page.screenshot({path:`${evidence}/${name}-${width}-teaching.png`});
-      await context.close();console.log(`${name} ${width}: 48 topics × 3 layers, actual controls/negative cases, independent level/difficulty filters, deep links/reload, viewport and synthetic storage preservation PASS`);
+      await context.close();console.log(`${name} ${width}: 64 topics × 3 layers, controls/negative cases, filter URL sharing/refresh/back-forward/reset, slow-load/deep links, viewport and synthetic storage preservation PASS`);
     }
   } finally {await browser.close();}
 }

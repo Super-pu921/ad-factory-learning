@@ -350,6 +350,77 @@ export function renderCurriculumDemo(lesson,unit,{node,button}) {
       const start=add('启动可取消教学任务',()=>{controller=new AbortController();const active=controller;start.disabled=true;cancel.disabled=false;ok('教学任务等待中（600 ms，无网络）');model.waitForDemo(600,{signal:active.signal}).then(value=>{if(!disposed)ok(`${value} · 教学任务完成`);},error=>{if(!disposed){output.classList.toggle('error',error.name!=='AbortError');output.textContent=error.name==='AbortError'?'教学任务已取消，可重新启动':error.message;}}).finally(()=>{if(!disposed&&controller===active){controller=null;start.disabled=false;cancel.disabled=true;}});});
       const cancel=add('取消教学任务',()=>controller?.abort());cancel.disabled=true;dispose=()=>{disposed=true;controller?.abort();};ok('尚未启动，不执行真实请求');break;
     }
+    case 'rating': {
+      let value=0;const group=node('fieldset'),legend=node('legend','','教学评分');group.append(legend);const inputs=[];
+      for(let score=1;score<=5;score++){const label=node('label','rating-option'),input=node('input');input.type='radio';input.name=`${unit.id}-rating`;input.value=String(score);label.append(input,node('span','',`${score} 星`));input.addEventListener('change',()=>{value=score;refresh();});inputs.push(input);group.append(label);}panel.append(group);
+      const refresh=()=>{const state=model.ratingState(value);inputs.forEach(input=>{input.checked=Number(input.value)===value;});ok(state.label);};add('清除教学评分',()=>{value=0;refresh();});refresh();break;
+    }
+    case 'box': {
+      const width=field('盒模型声明宽度','120'),padding=field('盒模型内边距','12'),border=field('盒模型边框','2'),sizing=select('盒模型计算方式',[['content-box','content-box'],['border-box','border-box']]),box=node('div','box-experiment','内容');panel.append(box);
+      const refresh=()=>{const result=model.boxMetrics(number(width),number(padding),number(border),sizing.value);Object.assign(box.style,{boxSizing:sizing.value,width:`${number(width)}px`,padding:`${number(padding)}px`,borderWidth:`${number(border)}px`});ok(`内容宽 ${result.content}px · 外宽 ${result.outer}px`);};run('计算教学盒模型',refresh);refresh();break;
+    }
+    case 'accordion': {
+      let open=[];const exclusive=field('只展开一个教学区块','','checkbox'),parts=[];
+      const refresh=()=>{parts.forEach(part=>{const shown=open.includes(part.id);part.control.setAttribute('aria-expanded',String(shown));part.content.hidden=!shown;});ok(`已展开 ${open.length} 个教学区块`);};
+      for(const [id,title,text] of [['materials','材料说明','虚构教学材料：板材两张。'],['process','工序说明','虚构教学工序：排版、切割、检查。']]){const heading=node('h5'),control=button(title,()=>{open=model.accordionNext(open,id,exclusive.checked);refresh();}),content=node('div','accordion-content',text);content.id=`${unit.id}-${id}`;control.setAttribute('aria-controls',content.id);heading.append(control);panel.append(heading,content);parts.push({id,control,content});}
+      exclusive.addEventListener('change',()=>{if(exclusive.checked)open=open.slice(0,1);refresh();});refresh();break;
+    }
+    case 'radio': {
+      let value='';const group=node('fieldset');group.append(node('legend','','选择一项教学材料'));const inputs=[];
+      for(const [id,text] of [['board','板材'],['paper','纸张'],['film','膜材']]){const label=node('label','rating-option'),input=node('input');input.type='radio';input.name=`${unit.id}-material`;input.value=id;input.addEventListener('change',()=>{value=id;});label.append(input,node('span','',text));group.append(label);inputs.push(input);}panel.append(group);
+      run('核对教学材料',()=>ok(`教学单选：${model.selectMaterial(value)} · 未创建业务记录`));add('清除单选草稿',()=>{value='';inputs.forEach(input=>{input.checked=false;});ok('单选草稿已清空');});ok('尚未选择教学材料');break;
+    }
+    case 'comparison': {
+      const quotes=[{id:'Q1',cents:10000,days:3},{id:'Q2',cents:12000,days:1},{id:'Q3',cents:10000,days:3}],left=select('左侧教学方案',quotes.map(quote=>[quote.id,quote.id])),right=select('右侧教学方案',quotes.map(quote=>[quote.id,quote.id]));right.value='Q2';
+      const refresh=()=>{const a=quotes.find(q=>q.id===left.value),b=quotes.find(q=>q.id===right.value),result=model.compareQuotes(a,b),list=node('dl');for(const quote of [a,b])list.append(node('dt','',quote.id),node('dd','',`教学金额 ${(quote.cents/100).toFixed(2)} 元 · ${quote.days} 天`));panel.replaceChildren(list);ok(`左减右：金额 ${result.priceDelta} 分 · 时间 ${result.daysDelta} 天 · 无综合最优结论`);};run('比较教学方案',refresh);refresh();break;
+    }
+    case 'empty': {
+      const query=field('空状态教学搜索',''),empty=field('使用初始空集合','','checkbox'),source=['排版教学','切割教学','装配教学'];
+      const refresh=()=>{const rows=empty.checked?[]:source,view=rows.filter(text=>text.includes(query.value.trim()));panel.replaceChildren(...view.map(text=>node('p','',text)));ok(model.emptyMessage(rows.length,view.length,query.value));};query.addEventListener('input',refresh);empty.addEventListener('change',refresh);add('清空教学搜索',()=>{query.value='';refresh();});add('恢复教学示例数据',()=>{empty.checked=false;refresh();});refresh();break;
+    }
+    case 'focus': {
+      let disposed=false;const disable=field('关闭时禁用原触发器','','checkbox'),dialog=node('dialog','experiment-dialog'),trigger=add('打开焦点恢复实验',()=>dialog.showModal()),fallback=add('焦点回退位置',()=>{}),close=button('关闭焦点实验',()=>dialog.close());dialog.append(node('p','','这是本地焦点恢复实验，没有保存操作。'),close);root.append(dialog);
+      const finish=()=>{if(disposed)return;trigger.disabled=disable.checked;const target=model.focusReturnTarget(trigger.isConnected&&!trigger.disabled,fallback.isConnected&&!fallback.disabled);(target==='trigger'?trigger:fallback).focus();ok(target==='trigger'?'焦点已回到原触发器':'原触发器不可用，焦点已到回退位置');};dialog.addEventListener('close',finish);dialog.addEventListener('cancel',event=>event.stopPropagation());disable.addEventListener('change',()=>{if(!disable.checked)trigger.disabled=false;});dispose=()=>{disposed=true;if(dialog.open)dialog.close();};ok('打开后关闭，检查真实键盘焦点');break;
+    }
+    case 'metadata': {
+      const name=field('虚构文件名','demo.CSV'),size=field('虚构文件字节数','1234'),type=field('声明的 MIME 类型','text/csv');
+      const refresh=()=>{const result=model.describeMetadata({name:name.value,size:number(size),type:type.value}),list=node('dl');for(const [key,value] of Object.entries(result))list.append(node('dt','',key),node('dd','',value));panel.replaceChildren(list);ok(`元数据示例 ${result.kib} KiB · 没有读取文件正文`);};run('查看教学元数据',refresh);refresh();break;
+    }
+    case 'scatter': {
+      const input=field('教学散点坐标','10:20,50:80,80:40');
+      const refresh=()=>{const points=model.scatterPoints(input.value),svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','-5 -5 110 110');svg.setAttribute('class','teaching-scatter');svg.setAttribute('role','img');svg.setAttribute('aria-label','教学 X/Y 坐标散点图');const list=node('ol');for(const point of points){const circle=document.createElementNS(svg.namespaceURI,'circle');circle.setAttribute('cx',point.x);circle.setAttribute('cy',100-point.y);circle.setAttribute('r',3);circle.setAttribute('fill','#315dd0');svg.append(circle);list.append(node('li','',`X=${point.x} · Y=${point.y}`));}panel.replaceChildren(svg,node('p','','横轴 X、纵轴 Y，范围均为 0–100'),list);ok(`${points.length} 个教学点 · 不作因果推断`);};run('绘制教学散点',refresh);refresh();break;
+    }
+    case 'inspector': {
+      const features=[{id:'P1',name:'教学客户甲',coordinates:[0,0]},{id:'P2',name:'教学客户乙',coordinates:[90,45]},{id:'P3',name:'教学客户丙',coordinates:[-90,-45]}],selected=select('教学要素 ID',[...features.map(f=>[f.id,f.id]),['missing','缺失 ID（异常示例）']]),plane=node('div','coordinate-plane'),detail=node('div'),markers=[];
+      const refresh=()=>{const feature=model.inspectFeature(features,selected.value);detail.textContent=`${feature.id} · ${feature.name} · 经度 ${feature.coordinates[0]} · 纬度 ${feature.coordinates[1]}`;markers.forEach(({id,button})=>button.setAttribute('aria-pressed',String(id===feature.id)));ok(`已检查 ${feature.id} · 仅为虚构坐标示意`);};
+      for(const feature of features){const point=model.projectMarker(...feature.coordinates),marker=button('●',safe(()=>{selected.value=feature.id;refresh();}));marker.className='feature-marker';marker.setAttribute('aria-label',`检查 ${feature.id}`);marker.style.left=`${point.x}%`;marker.style.top=`${point.y}%`;plane.append(marker);markers.push({id:feature.id,button:marker});}panel.append(plane,detail);run('检查教学要素',refresh);refresh();break;
+    }
+    case 'selection': {
+      let selected=[];const objects=[];
+      const refresh=()=>{objects.forEach(({id,control})=>control.setAttribute('aria-pressed',String(selected.includes(id))));ok(`已选 ${selected.length}/3：${selected.join(', ')||'无'}`);};
+      for(const id of ['A','B','C']){const control=button(`教学对象 ${id}`,()=>{selected=model.objectSelection(selected,'toggle',id);refresh();});panel.append(control);objects.push({id,control});}add('全选教学对象',()=>{selected=model.objectSelection(selected,'all');refresh();});add('清除教学选择',()=>{selected=model.objectSelection(selected,'clear');refresh();});refresh();break;
+    }
+    case 'advanced': {
+      const rows=[{id:'J1',title:'排版教学',status:'TODO',qty:2},{id:'J2',title:'切割教学',status:'DONE',qty:5},{id:'J3',title:'排版复核',status:'DONE',qty:3},{id:'J4',title:'装配教学',status:'TODO',qty:1}],query=field('任务标题条件',''),status=select('任务状态条件',[['all','全部'],['TODO','TODO'],['DONE','DONE']]),min=field('最小教学数量','0');
+      const refresh=()=>{const view=model.filterTasks(rows,{query:query.value,status:status.value,minQty:number(min)}),list=node('ol');view.forEach(row=>list.append(node('li','',`${row.id} · ${row.title} · ${row.status} · ${row.qty}`)));panel.replaceChildren(list);ok(`${view.length} 条匹配教学任务`);};run('应用教学组合条件',refresh);add('清空教学组合条件',()=>{query.value='';status.value='all';min.value='0';refresh();});refresh();break;
+    }
+    case 'lock': {
+      let state={owner:null,expiresAt:0},now=0;const actor=select('模拟编辑成员',[['A','教学成员 A'],['B','教学成员 B']]);
+      const refresh=()=>ok(`教学时钟 ${now} ms · 持锁 ${state.owner||'无'} · 到期 ${state.expiresAt} ms`);
+      add('获取教学编辑锁',()=>{state=model.editLock(state,'acquire',actor.value,now);refresh();});add('释放教学编辑锁',()=>{state=model.editLock(state,'release',actor.value,now);refresh();});add('推进教学时钟一秒',()=>{if(now>=1000000)throw new Error('教学时钟已达上限');now+=1000;state=model.editLock(state,'tick',actor.value,now);refresh();});refresh();break;
+    }
+    case 'prompt': {
+      const label=node('label','experiment-field','教学提示词模板'),template=node('textarea');template.value='为 {{name}} 核对 {{qty}} 件教学材料。';label.append(template);controls.append(label);const name=field('教学名称变量','排版'),qty=field('教学数量变量','2');
+      run('生成教学提示文本',()=>{const result=model.renderPrompt(template.value,{name:name.value,qty:number(qty)});panel.textContent=result;ok('仅替换白名单变量，无模型或工具调用');});ok('尚未生成教学文本');break;
+    }
+    case 'date': {
+      const iso=field('规范 UTC 教学时间','2026-01-01T00:00:00.000Z'),locale=select('日期展示地区',[['zh-CN','中文'],['en-GB','英文（英国）']]),zone=select('日期展示时区',[['UTC','UTC'],['Asia/Shanghai','Asia/Shanghai'],['America/New_York','America/New_York']]);
+      const refresh=()=>{const value=model.formatTeachingDate(iso.value,locale.value,zone.value);panel.textContent=value.text;ok(`${value.year}-${value.month}-${value.day} ${value.hour}:${value.minute} · ${zone.value} · 原始 UTC 不变`);};run('格式化教学日期',refresh);refresh();break;
+    }
+    case 'timeout': {
+      const work=select('模拟处理时间',[[100,'100 ms'],[600,'600 ms']]),deadline=select('教学超时阈值',[[200,'200 ms'],[800,'800 ms']]);work.value='600';let controller=null,disposed=false;
+      const start=add('执行教学超时实验',()=>{controller=new AbortController();start.disabled=true;ok('教学任务等待中，无实际网络');model.withDemoTimeout(Number(work.value),Number(deadline.value),{signal:controller.signal}).then(value=>{if(!disposed)ok(`${value} · 阈值内完成`);},error=>{if(!disposed){output.classList.add('error');output.textContent=error.name==='TimeoutError'?'教学任务 TimeoutError · 不等同服务端回滚':error.message;}}).finally(()=>{if(!disposed){controller=null;start.disabled=false;}});});dispose=()=>{disposed=true;controller?.abort();};ok('等待时间与超时阈值分别配置');break;
+    }
     default:throw new Error('未知教学实验');
   }
   root.append(controls,panel,output,node('p','subtle',lesson.limits));

@@ -274,3 +274,101 @@ export function matchingTeachingUnits(units,level='all',difficulty='all') {
   if(!Array.isArray(units)||!['all','L1','L2','L3'].includes(level)||!['all','E1','E2','E3','E4','E5'].includes(difficulty))throw new Error('教学筛选参数无效');
   return units.filter(unit=>(level==='all'||unit.level===level)&&(difficulty==='all'||unit.difficulty===difficulty));
 }
+export function ratingState(value) {
+  if(!Number.isInteger(value)||value<0||value>5)throw new Error('教学评分须为 0–5 整数');
+  return {value,label:value?`${value} 星教学评分`:'尚未评分'};
+}
+export function boxMetrics(width,padding,border,sizing) {
+  if(!Number.isInteger(width)||width<60||width>160||!Number.isInteger(padding)||padding<0||padding>20||!Number.isInteger(border)||border<0||border>6||!['content-box','border-box'].includes(sizing))throw new Error('宽度 60–160，内边距 0–20，边框 0–6，均为整数');
+  const extra=2*(padding+border);
+  return {content:sizing==='content-box'?width:width-extra,outer:sizing==='content-box'?width+extra:width};
+}
+export function accordionNext(open,id,exclusive=false) {
+  const valid=['materials','process'];
+  if(!Array.isArray(open)||open.some(value=>!valid.includes(value))||new Set(open).size!==open.length||!valid.includes(id)||typeof exclusive!=='boolean')throw new Error('折叠项或模式无效');
+  return open.includes(id)?open.filter(value=>value!==id):exclusive?[id]:valid.filter(value=>value===id||open.includes(value));
+}
+export function selectMaterial(value) {
+  const names={board:'板材',paper:'纸张',film:'膜材'};
+  if(!Object.hasOwn(names,value))throw new Error('请选择一项教学材料');
+  return names[value];
+}
+export function compareQuotes(left,right) {
+  const valid=value=>value&&typeof value.id==='string'&&Number.isInteger(value.cents)&&value.cents>=0&&value.cents<=1000000&&Number.isInteger(value.days)&&value.days>=1&&value.days<=30;
+  if(!valid(left)||!valid(right)||left.id===right.id)throw new Error('选择两个不同的有效教学方案');
+  return {priceDelta:left.cents-right.cents,daysDelta:left.days-right.days};
+}
+export function emptyMessage(total,matched,query) {
+  if(!Number.isInteger(total)||total<0||!Number.isInteger(matched)||matched<0||matched>total||typeof query!=='string')throw new Error('集合统计无效');
+  return total===0?'尚无教学数据':matched===0?'没有匹配教学结果':`找到 ${matched} 条教学结果`;
+}
+export function focusReturnTarget(triggerAvailable,fallbackAvailable) {
+  if([triggerAvailable,fallbackAvailable].some(value=>typeof value!=='boolean'))throw new Error('焦点可用性须为布尔值');
+  return triggerAvailable?'trigger':fallbackAvailable?'fallback':null;
+}
+export function describeMetadata(file) {
+  if(!file||typeof file.name!=='string'||!file.name||file.name.length>100||/[\/\\\r\n]/.test(file.name)||!Number.isInteger(file.size)||file.size<0||file.size>10485760||typeof file.type!=='string'||file.type.length>80)throw new Error('填写文件名、0–10 MiB 整数字节和限长 MIME 文本');
+  const dot=file.name.lastIndexOf('.');return {name:file.name,kib:(file.size/1024).toFixed(2),extension:dot>0&&dot<file.name.length-1?file.name.slice(dot+1).toLowerCase():'无扩展名',mime:file.type||'未声明'};
+}
+export function scatterPoints(raw) {
+  if(typeof raw!=='string')throw new Error('输入 1–6 组 x:y 整数坐标，各值 0–100');
+  const tokens=raw.split(',');if(!tokens.length||tokens.length>6)throw new Error('输入 1–6 组 x:y 整数坐标，各值 0–100');
+  return tokens.map(token=>{const match=/^\s*(\d{1,3}):(\d{1,3})\s*$/.exec(token);if(!match||+match[1]>100||+match[2]>100)throw new Error('输入 1–6 组 x:y 整数坐标，各值 0–100');return {x:+match[1],y:+match[2]};});
+}
+export function inspectFeature(features,id) {
+  if(!Array.isArray(features)||features.some(feature=>!feature||typeof feature.id!=='string'||typeof feature.name!=='string'||!Array.isArray(feature.coordinates)||feature.coordinates.length!==2)||new Set(features.map(feature=>feature.id)).size!==features.length)throw new Error('教学要素集合无效');
+  const feature=features.find(item=>item.id===id);if(!feature)throw new Error('教学要素 ID 不存在');
+  projectMarker(...feature.coordinates);return {...feature,coordinates:[...feature.coordinates]};
+}
+export function objectSelection(current,action,id) {
+  const ids=['A','B','C'];if(!Array.isArray(current)||current.some(value=>!ids.includes(value))||new Set(current).size!==current.length)throw new Error('选择集合无效');
+  if(action==='all')return [...ids];if(action==='clear')return [];
+  if(action!=='toggle'||!ids.includes(id))throw new Error('教学选择操作无效');
+  return ids.filter(value=>value===id?!current.includes(value):current.includes(value));
+}
+export function filterTasks(rows,{query='',status='all',minQty=0}={}) {
+  if(!Array.isArray(rows)||typeof query!=='string'||query.length>20||!['all','TODO','DONE'].includes(status)||!Number.isInteger(minQty)||minQty<0||minQty>100)throw new Error('筛选文本最多 20 字，状态需有效，最小数量为 0–100 整数');
+  if(rows.some(row=>!row||typeof row.title!=='string'||!['TODO','DONE'].includes(row.status)||!Number.isInteger(row.qty)))throw new Error('教学任务数据无效');
+  return rows.filter(row=>row.title.includes(query.trim())&&(status==='all'||row.status===status)&&row.qty>=minQty).map(row=>({...row}));
+}
+export function editLock(state,action,actor,now) {
+  if(!state||![null,'A','B'].includes(state.owner)||!Number.isInteger(state.expiresAt)||state.expiresAt<0||!['A','B'].includes(actor)||!Number.isInteger(now)||now<0||now>1000000)throw new Error('教学锁或时钟无效');
+  const active=state.owner!==null&&now<state.expiresAt;
+  if(action==='tick')return active?{...state}:{owner:null,expiresAt:0};
+  if(action==='acquire'&&(!active||state.owner===actor))return {owner:actor,expiresAt:now+1000};
+  if(action==='release'&&active&&state.owner===actor)return {owner:null,expiresAt:0};
+  throw new Error('其他教学成员持锁或当前成员无权释放');
+}
+export function renderPrompt(template,vars) {
+  if(typeof template!=='string'||template.length>300||!vars||Object.keys(vars).length!==2||typeof vars.name!=='string'||!vars.name.trim()||vars.name.length>30||!Number.isInteger(vars.qty)||vars.qty<1||vars.qty>100)throw new Error('模板最多 300 字，名称 1–30 字，数量 1–100 整数');
+  const pattern=/\{\{\s*([a-zA-Z0-9_]+)\s*\}\}/g;
+  if(/\{\{|\}\}/.test(template.replace(pattern,'')))throw new Error('模板括号未匹配');
+  const result=template.replace(pattern,(_,key)=>{if(!['name','qty'].includes(key))throw new Error('只允许 name 和 qty 两个教学变量');return String(vars[key]);});
+  if(result.length>1000)throw new Error('模板结果过长');
+  return result;
+}
+export function formatTeachingDate(iso,locale='zh-CN',timeZone='UTC') {
+  if(typeof iso!=='string'||!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(iso)||!['zh-CN','en-GB'].includes(locale)||!['UTC','Asia/Shanghai','America/New_York'].includes(timeZone))throw new Error('使用带毫秒的规范 UTC 时间及提供的地区/时区');
+  const date=new Date(iso);if(!Number.isFinite(date.getTime())||date.toISOString()!==iso)throw new Error('日期无效或发生了隐式归一化');
+  if(date.getUTCFullYear()<1900||date.getUTCFullYear()>2100)throw new Error('教学日期限定为 1900–2100 年');
+  const formatter=new Intl.DateTimeFormat(locale,{timeZone,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'});
+  return {text:formatter.format(date),...Object.fromEntries(formatter.formatToParts(date).filter(part=>['year','month','day','hour','minute'].includes(part.type)).map(part=>[part.type,part.value]))};
+}
+export async function withDemoTimeout(workMs,timeoutMs,{signal}={}) {
+  if([workMs,timeoutMs].some(value=>!Number.isInteger(value)||value<1||value>1000))throw new Error('模拟任务和超时须为 1–1000 毫秒');
+  const controller=new AbortController(),relay=()=>controller.abort();
+  if(signal?.aborted)throw new DOMException('教学任务已取消','AbortError');
+  signal?.addEventListener('abort',relay,{once:true});
+  const timer=setTimeout(()=>controller.abort(new DOMException('教学等待超时','TimeoutError')),timeoutMs);
+  try{return await waitForDemo(workMs,{signal:controller.signal});}
+  catch(error){if(controller.signal.reason?.name==='TimeoutError')throw controller.signal.reason;throw error;}
+  finally{clearTimeout(timer);signal?.removeEventListener('abort',relay);}
+}
+export function parseCatalogFilters(search) {
+  const params=new URLSearchParams(search),domain=params.get('domain'),level=params.get('level'),difficulty=params.get('difficulty');
+  return {domain:/^D(?:0[1-9]|1[0-6])$/.test(domain||'')?domain:'all',query:(params.get('q')||'').trim().slice(0,100),level:['L1','L2','L3'].includes(level)?level:'all',difficulty:['E1','E2','E3','E4','E5'].includes(difficulty)?difficulty:'all',teachingOnly:params.get('teaching')==='1'};
+}
+export function catalogFilterParams(filters={}) {
+  const normalized=parseCatalogFilters(new URLSearchParams({domain:filters.domain,q:typeof filters.query==='string'?filters.query:'',level:filters.level,difficulty:filters.difficulty,teaching:filters.teachingOnly===true?'1':'0'})),params=new URLSearchParams();
+  if(normalized.domain!=='all')params.set('domain',normalized.domain);if(normalized.query)params.set('q',normalized.query);if(normalized.level!=='all')params.set('level',normalized.level);if(normalized.difficulty!=='all')params.set('difficulty',normalized.difficulty);if(normalized.teachingOnly)params.set('teaching','1');return params.toString();
+}
