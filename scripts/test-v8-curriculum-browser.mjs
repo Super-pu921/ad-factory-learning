@@ -91,6 +91,76 @@ async function exercise(page,kind,level) {
       await click('添加教学工序');await click('添加教学工序');await contains('3 个');await click('撤销工序');await contains('2 个');await click('重做工序');await contains('3 个');
       await click('撤销工序');await click('添加教学工序');assert.equal(await root.getByRole('button',{name:'重做工序',exact:true}).isDisabled(),true);break;
     }
+    case 'link': {
+      await fill('教学目标地址','javascript:alert(1)');await click('生成教学链接');await contains('HTTPS');assert.equal(await root.locator('.experiment-panel a').count(),0);
+      await fill('教学目标地址','https://example.org');await click('生成教学链接');assert.equal(await root.getByRole('link',{name:'打开教学外链（新窗口）'}).getAttribute('rel'),'noopener noreferrer');
+      await fill('教学目标地址','#K-D01-001/L2');await click('生成教学链接');assert.equal(await root.getByRole('link',{name:'前往指定教学单元'}).getAttribute('href'),'#K-D01-001/L2');break;
+    }
+    case 'flex': {
+      const cards=root.locator('.experiment-card');assert.equal(await cards.count(),4);
+      assert.ok(await cards.nth(2).evaluate((element)=>element.offsetTop)>await cards.first().evaluate(element=>element.offsetTop),'wrap must create multiple rows');
+      await root.getByLabel('允许换行').uncheck();assert.equal(await cards.nth(2).evaluate(element=>element.offsetTop),await cards.first().evaluate(element=>element.offsetTop));
+      await root.getByLabel('主轴方向').selectOption('column');assert.equal(await root.locator('.flex-experiment').evaluate(element=>getComputedStyle(element).flexDirection),'column');break;
+    }
+    case 'pagination': {
+      assert.equal(await root.locator('ol li').count(),5);for(let index=0;index<4;index++)await click('下一页');await contains('第 5/5 页');assert.equal(await root.locator('ol li').count(),3);
+      assert.equal(await root.getByRole('button',{name:'下一页',exact:true}).isDisabled(),true);await root.getByLabel('每页条数').selectOption('10');await contains('第 1/3 页');
+      await root.getByLabel('空集合').check();await contains('第 0/0 页');assert.equal(await root.locator('ol li').count(),0);break;
+    }
+    case 'number': {
+      await click('校验教学数字');await contains('已接受 -1.25');await fill('教学调整量','1.234');await click('校验教学数字');await contains('最多两位');assert.equal(await root.locator('.accepted-value').textContent(),'最后有效百分位：-125');
+      await fill('教学调整量','0');await click('校验教学数字');await contains('已接受 0.00');await fill('教学调整量','');await click('校验教学数字');await contains('最多两位');break;
+    }
+    case 'statistic': {
+      await contains('+20.00%');await fill('上期教学件数','0');await click('计算教学指标');await contains('无法计算');await fill('当期教学件数','-1');await click('计算教学指标');await contains('整数');break;
+    }
+    case 'progress': {
+      await click('推进教学步骤');await click('推进教学步骤');await contains('2/5 · 40%');await root.getByLabel('总量未知').check();assert.equal(await root.locator('progress').getAttribute('value'),null);await contains('总量未知');
+      await root.getByLabel('总量未知').uncheck();for(let index=0;index<3;index++)await click('推进教学步骤');await contains('教学计数完成');assert.equal(await root.getByRole('button',{name:'推进教学步骤',exact:true}).isDisabled(),true);await click('重置教学进度');await contains('0/5');break;
+    }
+    case 'popover': {
+      const trigger=root.getByRole('button',{name:'展开工序说明',exact:true});await trigger.click();assert.equal(await trigger.getAttribute('aria-expanded'),'true');await page.keyboard.press('Escape');await contains('说明已关闭');
+      assert.equal(await page.locator('#entryDialog').evaluate(element=>element.open),true);assert.equal(await trigger.evaluate(element=>element===document.activeElement),true);
+      await trigger.click();await root.getByRole('heading',{level:4}).click();assert.equal(await trigger.getAttribute('aria-expanded'),'false');break;
+    }
+    case 'json': {
+      await fill('教学 JSON','{"text":"<img src=x onerror=alert(1)>"}');await click('格式化教学 JSON');await contains('语法有效');assert.equal(await root.locator('img').count(),0);assert.ok((await root.locator('[data-json-preview]').textContent()).includes('<img'));
+      const before=await root.locator('[data-json-preview]').textContent();await fill('教学 JSON','{"qty":1,}');await click('格式化教学 JSON');await contains('语法无效');assert.equal(await root.locator('[data-json-preview]').textContent(),before);break;
+    }
+    case 'line': {
+      await fill('有序观测值','0');await click('绘制教学折线');assert.equal(await root.locator('circle').count(),1);assert.equal(await root.locator('circle').getAttribute('cx'),'50');
+      await fill('有序观测值','0,0');await click('绘制教学折线');assert.equal(await root.locator('circle').count(),2);await fill('有序观测值','-1');await click('绘制教学折线');await contains('0–1000');assert.equal(await root.locator('circle').count(),2);break;
+    }
+    case 'layers': {
+      await root.getByLabel('显示点位示意').uncheck();await contains('可见 2/3');assert.equal(await root.locator('[data-layer=point]').isVisible(),false);
+      await click('图层上移');assert.equal(await root.locator('[data-layer]').last().getAttribute('data-layer'),'route');await click('图层上移');assert.equal(await root.locator('[data-layer]').last().getAttribute('data-layer'),'route');
+      await root.getByLabel('显示点位示意').check();await contains('可见 3/3');break;
+    }
+    case 'snap': {
+      await contains('吸附 20,40');await fill('原始横坐标','25');await fill('原始纵坐标','35');await click('吸附教学点');await contains('吸附 30,40');
+      await fill('原始横坐标','101');await click('吸附教学点');await contains('坐标须为');assert.equal(await root.locator('.coordinate-marker').count(),2);break;
+    }
+    case 'kanban': {
+      await root.getByLabel('目标看板列').selectOption('DONE');await click('移动教学卡片');await contains('相邻');assert.ok((await root.locator('.teaching-board section').first().textContent()).includes('卡片 A'));
+      await root.getByLabel('目标看板列').selectOption('DOING');await click('移动教学卡片');await contains('A → DOING');assert.equal(await root.locator('.teaching-board section').nth(1).locator('p').count(),2);break;
+    }
+    case 'typing': {
+      await fill('本地模拟输入','教学');await contains('正在输入');await contains('暂无输入信号');await fill('本地模拟输入','教学二');await contains('正在输入');await click('清空模拟输入');await contains('暂无输入信号');break;
+    }
+    case 'branch': {
+      await click('追加教学续写');await contains('先建立分支');await click('从选中点建立分支');await contains('分支 2 条');await click('追加教学续写');await contains('分支 3 条');
+      assert.equal(await root.locator('.experiment-panel section').first().locator('li').count(),4);await fill('分支续写文本','');await click('追加教学续写');await contains('1–80');await click('从选中点建立分支');await contains('分支 2 条');break;
+    }
+    case 'locale': {
+      await root.getByLabel('显示地区').selectOption('de-DE');assert.equal(await root.locator('.experiment-panel').textContent(),'地区格式：1.234,50');await contains('123450');
+      await fill('规范十进制数','1,25');await click('格式化教学数字');await contains('十进制');assert.equal(await root.locator('.experiment-panel').textContent(),'地区格式：1.234,50');break;
+    }
+    case 'debounce': {
+      await fill('防抖教学搜索','排');await fill('防抖教学搜索','切割');await contains('已执行 1 次');assert.equal(await root.locator('.experiment-panel').textContent(),'切割教学');
+      await fill('防抖教学搜索','装配');await click('取消待执行搜索');await contains('已取消 · 已执行 1 次');await page.waitForTimeout(400);await contains('已取消 · 已执行 1 次');
+      await fill('防抖教学搜索','');await contains('已执行 2 次');assert.ok((await root.locator('.experiment-panel').textContent()).includes('检查教学'));break;
+    }
+    default:throw new Error(`Unexercised demo: ${kind}`);
   }
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true,'viewport overflow');
   assert.equal(await page.locator('#entryDialog').evaluate(element=>element.scrollWidth<=element.clientWidth+1),true,'detail overflow');
@@ -104,23 +174,35 @@ for(const [engine,name] of [[chromium,'chromium'],[webkit,'webkit']]) {
       await context.addInitScript(()=>{localStorage.setItem('adFactoryLearning.v8.production','synthetic-main-sentinel');localStorage.setItem('adFactoryLearning.v8.order-lab','synthetic-lab-sentinel');});
       const page=await context.newPage(),errors=[],writes=[];page.setDefaultTimeout(12000);
       page.on('pageerror',error=>errors.push(error.message));page.on('request',request=>{if(request.method()!=='GET')writes.push(request.method()+' '+request.url());});
-      await page.goto(base);await page.getByText('已有教学：17 个主题 · 51 个分层单元',{exact:true}).waitFor();
-      await page.getByLabel('只看已有教学').check();assert.equal(await page.locator('.entry').count(),17);
+      await page.goto(base);await page.getByText('已有教学：33 个主题 · 99 个分层单元',{exact:true}).waitFor();
+      await page.getByLabel('只看已有教学').check();assert.equal(await page.locator('.entry').count(),33);
       for(const lesson of curriculum) {
         await page.evaluate(id=>{location.hash=id;},lesson.knowledgeId);
         await page.waitForFunction(id=>document.getElementById('detailId').textContent===id,lesson.knowledgeId);
         for(let index=0;index<3;index++) {
           await page.locator('.unit-tabs>button').nth(index).click();
+          assert.equal(new URL(page.url()).hash,`#${lesson.knowledgeId}/L${index+1}`);
+          assert.equal(await page.getByRole('link',{name:`本单元直达链接 · L${index+1}`,exact:true}).getAttribute('href'),`#${lesson.knowledgeId}/L${index+1}`);
           assert.ok((await page.locator('#detailBody').textContent()).includes(lesson.units[index].objective));
           await exercise(page,lesson.kind,index);
         }
-        if(evidence&&['grid','counter'].includes(lesson.kind))await page.screenshot({path:`${evidence}/${name}-${width}-${lesson.kind}.png`});
+        if(evidence&&['line','kanban','locale'].includes(lesson.kind))await page.screenshot({path:`${evidence}/${name}-${width}-${lesson.kind}.png`});
         await page.getByRole('button',{name:'关闭知识详情',exact:true}).click();await page.locator('#entryDialog').waitFor({state:'hidden'});
       }
+      for(const [id,layer] of [['K-D01-001','L2'],['K-D08-045','L3']]) {
+        await page.goto(`${base}#${id}/${layer}`);await page.locator('.unit-tabs>button[aria-pressed=true]').filter({hasText:layer}).waitFor();
+        await page.reload();await page.locator('.unit-tabs>button[aria-pressed=true]').filter({hasText:layer}).waitFor();
+      }
+      await page.goto(`${base}#K-D08-045/L9`);await page.locator('.unit-tabs>button[aria-pressed=true]').filter({hasText:'L1'}).waitFor();
+      await page.getByRole('button',{name:'关闭知识详情',exact:true}).click();assert.equal(new URL(page.url()).hash,'');
+      await page.goto(`${base}#K-D07-011/L2`);await page.getByRole('button',{name:'展开工序说明',exact:true}).click();
+      await page.evaluate(()=>{location.hash='K-D04-003/L2';});await page.locator('[data-demo=number]').waitFor();
+      await page.keyboard.press('Escape');await page.locator('#entryDialog').waitFor({state:'hidden'});
+      assert.equal(new URL(page.url()).hash,'','disposed popover must not capture Escape in another lesson');
       const state=await page.evaluate(()=>({...localStorage}));assert.deepEqual(state,{'adFactoryLearning.v8.production':'synthetic-main-sentinel','adFactoryLearning.v8.order-lab':'synthetic-lab-sentinel'});
       assert.deepEqual(errors,[]);assert.deepEqual(writes,[]);
       if(evidence)await page.screenshot({path:`${evidence}/${name}-${width}-teaching.png`});
-      await context.close();console.log(`${name} ${width}: 16 topics × 3 layers, actual controls/negative cases, teaching filter, viewport and synthetic storage preservation PASS`);
+      await context.close();console.log(`${name} ${width}: 32 topics × 3 layers, actual controls/negative cases, level deep links/reload, teaching filter, viewport and synthetic storage preservation PASS`);
     }
   } finally {await browser.close();}
 }

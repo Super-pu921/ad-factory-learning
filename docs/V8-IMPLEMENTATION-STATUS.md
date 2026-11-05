@@ -53,7 +53,7 @@ associate original progress with any sample unit.
 
 ## D01–D16 teaching batch 1
 
-The authored catalog now has **17 teaching topics / 51 layered units**: the
+Batch 1 delivered **17 teaching topics / 51 layered units**: the
 original Button sample plus sixteen additional topics, one in each D01–D16
 domain. `teaching-manifest.json` records their exact content hashes, unit levels,
 difficulties and pinned content references. It is reproducible with
@@ -83,7 +83,7 @@ Each new topic has three independently authored objectives, exercises,
 acceptance conditions, pitfalls and summaries, plus shared/version-pinned
 principle/mechanism blocks and a runnable code example. All sixteen code
 examples execute against the actual teaching mechanisms during Node tests.
-The directory adds an available-teaching filter, per-domain teaching counts
+The directory includes an available-teaching filter, per-domain teaching counts
 and search across the new objectives.
 
 All 48 new units have topic-specific browser controls and negative cases.
@@ -110,6 +110,66 @@ viewports, exercised the entry link, domain/search/alias behavior, keyboard
 activation, failure/retry, numeric errors, viewport limits and original-storage
 preservation. Separate source-failure and untrusted-text cases are covered.
 These are automated browser checks, not manual acceptance in a user's profile.
+
+## D01–D16 teaching batch 2 and unit navigation
+
+Batch 2 adds **16 topics / 48 layered units**, bringing the authored directory
+to **33 topics / 99 units**. Every domain now has at least two teaching topics;
+D01 has three including the original Button pilot. The original 840 source
+entries and 833 preliminary concepts are unchanged. The first 17 topics retain
+their exact content versions and hashes. No remaining directory entry is marked
+as authored merely because it appears in the directory.
+
+| Domain | New topic | Original knowledge ID |
+| --- | --- | --- |
+| D01 | Link | K-D01-003 |
+| D02 | Flex Layout | K-D02-003 |
+| D03 | Pagination | K-D03-008 |
+| D04 | Number Input | K-D04-003 |
+| D05 | Statistic | K-D05-004 |
+| D06 | Progress | K-D06-013 |
+| D07 | Popover | K-D07-011 |
+| D08 | JSON Editor | K-D08-045 |
+| D09 | Line Chart | K-D09-005 |
+| D10 | Layer Manager | K-D10-013 |
+| D11 | Snap to Grid | K-D11-007 |
+| D12 | Kanban Board | K-D12-001 |
+| D13 | Typing Indicator | K-D13-009 |
+| D14 | Conversation Branch | K-D14-007 |
+| D15 | Number Formatting | K-D15-031 |
+| D16 | Debounce | K-D16-004 |
+
+Each topic has three independently authored objectives, exercises, acceptance
+conditions, pitfalls and summaries, pinned shared blocks, an executable example
+with expected output and a topic-specific interactive experiment. A shared
+experiment serves its three different teaching goals. All 32 batch-topic code
+examples execute in Node tests. Mechanism tests cover empty sets, invalid input,
+unchanged source collections, integer decimal parsing, zero baselines, safe
+navigation, text-only JSON previews and timer cancellation with a fake clock.
+
+Links such as `#K-D03-008/L2` open the specified unit, survive refresh and can be
+copied from each unit's share/review link. Old `#K-D03-008` links still open L1;
+unknown levels fall back to L1. Changing levels updates the current address
+without writing progress or adding an entry to browser history for every tab.
+Both the original Button pilot and all batch topics use this navigation.
+
+Batch 2 limits are visible in each experiment. The progress bar counts five
+simulated steps, not saved learning progress. The popover is a bounded custom
+nonmodal example, not a full positioning engine. JSON formatting is syntax-only
+and reads no files, executes no code and imports no records. Line-chart points
+use equal teaching intervals and make no predictions. Layers and snapping use
+fictional coordinate sketches. The board has keyboard controls and adjacent
+state transitions, without drag/drop or real tasks. Typing and branches use
+local fictional messages without accounts, network sessions or AI calls.
+Number formatting is limited to three locales and explicit decimal input;
+debounce schedules only local filtering and does not claim request-race safety.
+
+The browser regression exercises all **32 batch topics × 3 layers × 4 browser/
+viewport combinations = 384 unit scenarios**, plus layer-link refresh/fallback,
+the teaching-only filter, viewport limits and synthetic-storage preservation.
+The original directory/Button browser regression remains separate. Browser
+results are release evidence only when actually executed and recorded; the CI
+workflow runs Node checks, not the browser suite.
 
 ## Run
 
@@ -167,9 +227,9 @@ created. No candidate IDs are promoted to permanent model identities.
 | P1 repository/storage inventory | Static repository verified; P1.3 incomplete | Original computer record backup, actual IDs and record associations; no browser/profile accessed by these tools |
 | P2 formal mapping | Source structure and candidate consistency tooling implemented | Frozen PRD/technical-design originals; target organization, ID/version rules, evidence-backed legacy-to-knowledge mappings and resource semantics |
 | P3 compatibility | Offline immutable legacy view implemented | Approved target contract, production read authority/failure policy, tested integration and rollback; no production switch exists |
-| P4 teaching standard sample | 17 topics / 51 independent layered units with pinned content | Formal target Course/Unit integration skipped while originals are missing |
+| P4 teaching standard sample | 33 topics / 99 independent layered units with pinned content | Formal target Course/Unit integration skipped while originals are missing |
 | P5 domain pilot | Representative teaching experiments in all sixteen domains | Entire domain curricula and production compatibility are not claimed complete |
-| P6 D01–D16 expansion | Batch 1 adds 16 topics / 48 units to the searchable directory | Remaining concepts are not marked authored or accepted merely because their entries exist |
+| P6 D01–D16 expansion | Two batches add 32 topics / 96 units, plus the Button pilot; unit-level share/review links | Remaining concepts are not marked authored or accepted merely because their entries exist |
 | P7 D17 | Candidate only | Official scope and knowledge IDs; no D17 formal IDs invented, G10 remains in D14 |
 | P8 full acceptance/release | Foundation checks only | All content, compatibility, personal-record protection, backup, rollback and release gates; current static release is not P1–P8 completion |
 

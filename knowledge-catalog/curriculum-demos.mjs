@@ -157,6 +157,122 @@ export function renderCurriculumDemo(lesson,unit,{node,button}) {
       const undo=add('撤销工序',()=>{history.undo();refresh();}),redo=add('重做工序',()=>{history.redo();refresh();});
       add('重置工序',()=>{history=model.createHistory(['排版']);serial=1;refresh();});refresh();break;
     }
+    case 'link': {
+      const input=field('教学目标地址','#K-D01-001/L2');
+      run('生成教学链接',()=>{
+        const target=model.teachingHref(input.value),link=node('a','inline-link',target.external?'打开教学外链（新窗口）':'前往指定教学单元');link.href=target.href;
+        if(target.external){link.target='_blank';link.rel='noopener noreferrer';}
+        panel.replaceChildren(link);ok(target.external?'已生成 HTTPS 外链，尚未访问':'已生成目录内直达链接，尚未跳转');
+      });ok('支持目录教学锚点或 HTTPS 地址');break;
+    }
+    case 'flex': {
+      const direction=select('主轴方向',[['row','横向 row'],['column','纵向 column']]),wrap=field('允许换行','','checkbox');wrap.checked=true;
+      panel.classList.add('flex-experiment');
+      for(const text of ['排版','切割','装配','检查'])panel.append(node('div','experiment-card',text));
+      const refresh=()=>{Object.assign(panel.style,model.flexConfig(direction.value,wrap.checked));ok(`四张卡片 · ${direction.value} · ${wrap.checked?'允许换行':'不换行'}`);};
+      direction.addEventListener('change',refresh);wrap.addEventListener('change',refresh);refresh();break;
+    }
+    case 'pagination': {
+      const items=Array.from({length:23},(_,index)=>`J-${String(index+1).padStart(3,'0')}`),size=select('每页条数',[[5,'5 条'],[10,'10 条'],[20,'20 条']]),empty=field('空集合','','checkbox');let current=1;
+      const previous=add('上一页',()=>{current--;refresh();}),next=add('下一页',()=>{current++;refresh();});
+      const refresh=()=>{
+        const view=empty.checked?[]:items,state=model.pagination(view.length,current,Number(size.value));current=state.page||1;
+        const list=node('ol');for(const id of view.slice(state.start,state.end))list.append(node('li','',id));panel.replaceChildren(list);
+        previous.disabled=state.page<=1;next.disabled=state.page===0||state.page>=state.pages;
+        ok(`第 ${state.page}/${state.pages} 页 · ${view.length} 条教学记录 · 当前 ${state.end-state.start} 条`);
+      };
+      for(const input of [size,empty])input.addEventListener('change',()=>{current=1;refresh();});refresh();break;
+    }
+    case 'number': {
+      const input=field('教学调整量','-1.25');input.inputMode='decimal';const accepted=node('p','accepted-value','尚无有效百分位');panel.append(accepted);
+      run('校验教学数字',()=>{const value=model.decimalHundredths(input.value);accepted.textContent=`最后有效百分位：${value}`;ok(`已接受 ${(value/100).toFixed(2)}`);});ok('范围 -100–100，最多两位小数；空值不等于零');break;
+    }
+    case 'statistic': {
+      const current=field('当期教学件数','12'),previous=field('上期教学件数','10');
+      const refresh=()=>{const result=model.statisticChange(number(current),number(previous));panel.textContent=`当期 ${number(current)} 件 · 差值 ${result.delta>0?'+':''}${result.delta} 件`;
+        ok(result.percent===null?'上期为零，相对变化无法计算':`相对变化 ${result.percent>0?'+':''}${result.percent.toFixed(2)}%`);};
+      run('计算教学指标',refresh);refresh();break;
+    }
+    case 'progress': {
+      let completed=0;const unknown=field('总量未知','','checkbox'),label=node('label','','教学步骤进度'),bar=node('progress');bar.max=5;label.append(bar);panel.append(label);
+      const advance=add('推进教学步骤',()=>{completed++;refresh();});add('重置教学进度',()=>{completed=0;refresh();});
+      const refresh=()=>{const state=model.progressState(completed,5);if(unknown.checked)bar.removeAttribute('value');else bar.value=completed;advance.disabled=unknown.checked||state.done;ok(unknown.checked?'总量未知，不报告百分比':`${completed}/5 · ${state.percent}% · ${state.done?'教学计数完成':'教学计数进行中'}`);};
+      unknown.addEventListener('change',refresh);refresh();break;
+    }
+    case 'popover': {
+      const anchor=node('div','popover-anchor'),popup=node('div','teaching-popover','工序说明：先核对教学材料，再安排教学工序。');popup.hidden=true;popup.id=`${unit.id}-popover`;
+      const trigger=button('展开工序说明',()=>setOpen(popup.hidden));trigger.setAttribute('aria-controls',popup.id);
+      const setOpen=(open,restore=false)=>{popup.hidden=!open;trigger.setAttribute('aria-expanded',String(open));ok(open?'说明已展开':'说明已关闭');if(restore)trigger.focus();};
+      const outside=event=>{if(!anchor.contains(event.target)&&!popup.hidden)setOpen(false);};
+      const escape=event=>{if(event.key==='Escape'&&!popup.hidden){event.preventDefault();event.stopPropagation();setOpen(false,true);}};
+      document.addEventListener('pointerdown',outside);document.addEventListener('keydown',escape,true);
+      dispose=()=>{document.removeEventListener('pointerdown',outside);document.removeEventListener('keydown',escape,true);};
+      anchor.append(trigger,popup);panel.append(anchor);setOpen(false);break;
+    }
+    case 'json': {
+      const label=node('label','experiment-field','教学 JSON'),input=node('textarea');input.value='{"qty":2,"name":"教学"}';label.append(input);controls.append(label);
+      const preview=node('pre');preview.dataset.jsonPreview='';panel.append(preview);
+      run('格式化教学 JSON',()=>{preview.textContent=model.formatTeachingJson(input.value);ok('JSON 语法有效，仅生成内存预览');});ok('尚未解析，无文件读取或导入');break;
+    }
+    case 'line': {
+      const input=field('有序观测值','2,5,3');
+      const svgNode=(tag,attrs)=>{const element=document.createElementNS('http://www.w3.org/2000/svg',tag);for(const [key,value] of Object.entries(attrs))element.setAttribute(key,String(value));return element;};
+      const refresh=()=>{
+        const points=model.linePoints(input.value),svg=svgNode('svg',{viewBox:'-5 -10 110 120',role:'img','aria-label':'按教学序号排列的折线图',class:'teaching-line-chart'});
+        svg.append(svgNode('polyline',{points:points.map(point=>`${point.x},${point.y}`).join(' '),fill:'none',stroke:'#315dd0','stroke-width':1.5}));
+        points.forEach(point=>svg.append(svgNode('circle',{cx:point.x,cy:point.y,r:2.5,fill:'#315dd0'})));
+        const list=node('ol');points.forEach((point,index)=>list.append(node('li','',`教学序号 ${index+1}：${point.value}`)));panel.replaceChildren(svg,list);ok(`${points.length} 个有效观测 · 等间隔教学序号，无预测`);
+      };run('绘制教学折线',refresh);refresh();break;
+    }
+    case 'layers': {
+      const names={base:'底图示意',route:'路线示意',point:'点位示意'};let layers=Object.keys(names).map(id=>({id,visible:true}));
+      const selected=select('操作图层',Object.entries(names));selected.value='route';
+      const visibility=Object.keys(names).map(id=>{const input=field(`显示${names[id]}`,'','checkbox');input.checked=true;input.addEventListener('change',()=>{layers=layers.map(layer=>({...layer,visible:layer.id===id?input.checked:layer.visible}));refresh();});return input;});
+      add('图层上移',()=>{layers=model.reorderLayers(layers,selected.value,1);refresh();});add('图层下移',()=>{layers=model.reorderLayers(layers,selected.value,-1);refresh();});
+      const refresh=()=>{
+        const plane=node('div','layer-plane');plane.setAttribute('aria-label','虚构图层坐标示意');
+        for(const [index,layer] of layers.entries()){const item=node('div',`layer-shape layer-${layer.id}`,names[layer.id]);item.hidden=!layer.visible;item.style.zIndex=String(index);item.dataset.layer=layer.id;plane.append(item);}
+        panel.replaceChildren(plane,node('p','',`底到顶：${layers.map(layer=>names[layer.id]).join(' → ')}`));ok(`可见 ${layers.filter(layer=>layer.visible).length}/3 层 · 无实际地图服务`);
+      };refresh();break;
+    }
+    case 'snap': {
+      const x=field('原始横坐标','23'),y=field('原始纵坐标','37'),step=select('吸附网格',[[5,'5'],[10,'10'],[20,'20']]);step.value='10';
+      const refresh=()=>{
+        const result=model.snapToGrid(number(x),number(y),Number(step.value)),plane=node('div','coordinate-plane');
+        for(const [px,py,text] of [[number(x),number(y),'○'],[result.x,result.y,'◆']]){const marker=node('span','coordinate-marker',text);marker.style.left=`${px}%`;marker.style.top=`${py}%`;plane.append(marker);}
+        panel.replaceChildren(plane);ok(`原始 ${number(x)},${number(y)} → 吸附 ${result.x},${result.y}`);
+      };run('吸附教学点',refresh);refresh();break;
+    }
+    case 'kanban': {
+      let cards=[{id:'A',status:'TODO'},{id:'B',status:'DOING'}];const selected=select('选择教学卡片',[['A','A · 排版'],['B','B · 切割']]),target=select('目标看板列',[['TODO','TODO 待办'],['DOING','DOING 进行中'],['DONE','DONE 完成']]);target.value='DOING';
+      const refresh=()=>{const board=node('div','teaching-board');for(const status of ['TODO','DOING','DONE']){const lane=node('section','experiment-card');lane.append(node('h5','',status));for(const card of cards.filter(item=>item.status===status))lane.append(node('p','',`教学卡片 ${card.id}`));board.append(lane);}panel.replaceChildren(board);};
+      run('移动教学卡片',()=>{cards=model.moveKanban(cards,selected.value,target.value);refresh();ok(`${selected.value} → ${target.value} · 共两张教学卡片`);});refresh();ok('A 在 TODO，B 在 DOING；只允许相邻列流转');break;
+    }
+    case 'typing': {
+      const input=field('本地模拟输入','');let timer=null,last=null;
+      const refresh=()=>ok(model.typingActive(last,performance.now())?'本地模拟：正在输入（未发送）':'本地模拟：暂无输入信号');
+      const clear=()=>{clearTimeout(timer);timer=null;};
+      input.addEventListener('input',()=>{clear();last=input.value?performance.now():null;refresh();if(last!==null)timer=setTimeout(()=>{timer=null;last=null;refresh();},1000);});
+      add('清空模拟输入',()=>{input.value='';clear();last=null;refresh();});dispose=clear;refresh();break;
+    }
+    case 'branch': {
+      const original=[{role:'user',text:'教学任务：比较两种排版'},{role:'assistant',text:'教学示例：方案甲'},{role:'user',text:'再比较材料'},{role:'assistant',text:'教学示例：材料对比'}];let branch=[];
+      const from=select('分支起点',original.map((message,index)=>[index,`第 ${index+1} 条 · ${message.role}`]));from.value='1';const input=field('分支续写文本','教学方案乙');
+      const refresh=()=>{panel.replaceChildren();for(const [title,messages] of [['原始教学对话（4 条）',original],['当前教学分支',branch]]){const section=node('section');section.append(node('h5','',title));const list=node('ol');messages.forEach(message=>list.append(node('li','',`${message.role}：${message.text}`)));section.append(list);panel.append(section);}};
+      add('从选中点建立分支',()=>{branch=model.branchMessages(original,Number(from.value));refresh();ok(`分支 ${branch.length} 条 · 原始对话 4 条`);});
+      run('追加教学续写',()=>{const text=input.value.trim();if(!branch.length||!text||text.length>80||branch.length>=20)throw new Error('先建立分支，再输入 1–80 字文本；分支最多 20 条');branch=[...branch,{role:'user',text}];refresh();ok(`分支 ${branch.length} 条 · 原始对话 4 条 · 无 AI 调用`);});refresh();ok('尚未建立分支，仅使用四条虚构教学消息');break;
+    }
+    case 'locale': {
+      const input=field('规范十进制数','1234.5'),locale=select('显示地区',[['zh-CN','中文（中国）'],['en-US','英文（美国）'],['de-DE','德文（德国）']]);
+      const refresh=()=>{const formatted=model.localizedNumber(input.value,locale.value);panel.textContent=`地区格式：${formatted}`;ok(`内部百分位：${model.decimalHundredths(input.value,1000000)} · 显示地区 ${locale.value}`);};
+      run('格式化教学数字',refresh);locale.addEventListener('change',safe(refresh));refresh();break;
+    }
+    case 'debounce': {
+      const input=field('防抖教学搜索',''),names=['排版教学','切割教学','装配教学','检查教学'];let calls=0;
+      const debouncer=model.createDebouncer(query=>{calls++;const matches=names.filter(name=>name.includes(query));panel.textContent=matches.length?matches.join(' · '):'没有匹配教学名称';ok(`已执行 ${calls} 次 · 查询“${query}”`);},300);
+      input.addEventListener('input',()=>{debouncer.run(input.value.trim());ok(`等待安静 300 ms · 已执行 ${calls} 次`);});
+      add('取消待执行搜索',()=>{debouncer.cancel();ok(`已取消 · 已执行 ${calls} 次`);});dispose=()=>debouncer.dispose();panel.textContent=names.join(' · ');ok('尚未执行 · 四个本地教学名称');break;
+    }
     default:throw new Error('未知教学实验');
   }
   root.append(controls,panel,output,node('p','subtle',lesson.limits));

@@ -122,8 +122,8 @@ function renderUnit(unit,container) {
 
 function renderDetail() {
   disposeExperiment();disposeExperiment=()=>{};
-  let id;
-  try{id=decodeURIComponent(location.hash.slice(1));}catch{return;}
+  let id,level;
+  try{[id,level]=decodeURIComponent(location.hash.slice(1)).split('/');}catch{return;}
   if(!id) return;
   const entry=byId.get(id),body=$('detailBody');
   $('detailTitle').textContent=entry?.name||'未找到知识条目';$('detailId').textContent=id;body.replaceChildren();
@@ -141,9 +141,10 @@ function renderDetail() {
       const select=unit=>{
         [...tabs.children].forEach((control,index)=>control.setAttribute('aria-pressed',String(buttonPilot.units[index]===unit)));
         renderUnit(unit,content);
+        addUnitLink(entry.id,unit,content);
       };
-      for(const unit of buttonPilot.units) tabs.append(button(`${unit.level} · ${unit.difficulty} · ${unit.title}`,()=>select(unit)));
-      body.append(tabs,content);select(buttonPilot.units[0]);
+      for(const unit of buttonPilot.units) tabs.append(button(`${unit.level} · ${unit.difficulty} · ${unit.title}`,()=>{setUnitRoute(entry.id,unit.level);select(unit);}));
+      body.append(tabs,content);select(buttonPilot.units.find(unit=>unit.level===level)||buttonPilot.units[0]);
     } else if(curriculumById.has(entry.id)) {
       const lesson=curriculumById.get(entry.id),tabs=node('div','unit-tabs'),content=node('div');
       body.append(node('p','subtle','分层教学 · 各单元目标与验收独立，交互仅在内存运行。'));
@@ -160,12 +161,21 @@ function renderDetail() {
         const checks=node('ol');unit.acceptance.forEach(check=>checks.append(node('li','',check)));
         content.append(section('验收条件',checks),section('常见误区',unit.pitfall),section('小结',unit.summary));
         if(lesson.references.length){const refs=node('ul');for(const [label,url] of lesson.references){const li=node('li'),link=node('a','',label);link.href=url;link.target='_blank';link.rel='noopener';li.append(link);refs.append(li);}content.append(section('延伸资料',refs));}
+        addUnitLink(entry.id,unit,content);
       };
-      for(const unit of lesson.units)tabs.append(button(`${unit.level} · ${unit.difficulty} · ${unit.title}`,()=>select(unit)));
-      body.append(tabs,content);select(lesson.units[0]);
+      for(const unit of lesson.units)tabs.append(button(`${unit.level} · ${unit.difficulty} · ${unit.title}`,()=>{setUnitRoute(entry.id,unit.level);select(unit);}));
+      body.append(tabs,content);select(lesson.units.find(unit=>unit.level===level)||lesson.units[0]);
     } else if(entry.canonicalId===entry.id) body.append(node('p','subtle','当前已收录目录主题，完整教学内容待建设。'));
   }
   if(!$('entryDialog').open) $('entryDialog').showModal();
+}
+
+function setUnitRoute(id,level) {
+  history.replaceState(null,'',`${location.pathname}${location.search}#${id}/${level}`);
+}
+function addUnitLink(id,unit,container) {
+  const link=node('a','inline-link',`本单元直达链接 · ${unit.level}`);link.href=`#${id}/${unit.level}`;
+  container.append(section('分享与复习',link));
 }
 
 $('searchForm').addEventListener('submit',event=>event.preventDefault());
