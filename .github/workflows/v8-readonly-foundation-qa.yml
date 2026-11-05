@@ -6,6 +6,9 @@ on:
       - 'scripts/*migration*.mjs'
       - 'scripts/*legacy-catalog*.mjs'
       - 'scripts/*knowledge-catalog*.mjs'
+      - 'scripts/*knowledge-pilot*.mjs'
+      - 'scripts/*knowledge-browser*.mjs'
+      - 'index.html'
       - 'knowledge-catalog/**'
       - '.github/workflows/v8-readonly-foundation-qa.yml'
   pull_request:
@@ -13,6 +16,9 @@ on:
       - 'scripts/*migration*.mjs'
       - 'scripts/*legacy-catalog*.mjs'
       - 'scripts/*knowledge-catalog*.mjs'
+      - 'scripts/*knowledge-pilot*.mjs'
+      - 'scripts/*knowledge-browser*.mjs'
+      - 'index.html'
       - 'knowledge-catalog/**'
       - '.github/workflows/v8-readonly-foundation-qa.yml'
   workflow_dispatch:
@@ -36,10 +42,15 @@ jobs:
           node --check scripts/test-v8-legacy-catalog-view.mjs
           node --check scripts/build-v8-knowledge-catalog.mjs
           node --check scripts/test-v8-knowledge-catalog.mjs
+          node --check knowledge-catalog/catalog-app.mjs
+          node --check knowledge-catalog/button-pilot.mjs
+          node --check scripts/test-v8-knowledge-pilot.mjs
+          node --check scripts/test-v8-knowledge-browser.mjs
           node scripts/audit-v8-migration.mjs
           node scripts/test-v8-migration.mjs
           node scripts/test-v8-legacy-catalog-view.mjs
           node scripts/test-v8-knowledge-catalog.mjs
+          node scripts/test-v8-knowledge-pilot.mjs
           node scripts/validate-v8-knowledge.mjs
           node scripts/test-v8-missions.mjs
           node scripts/test-v8-order-lab.mjs
