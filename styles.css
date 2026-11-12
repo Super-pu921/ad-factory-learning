@@ -85,6 +85,11 @@ a,button,summary,[role="button"],.card.clickable,label[for]{touch-action:manipul
 .component-searchbar>label{display:flex;align-items:stretch;min-width:0;margin:0}
 .component-searchbar .field{width:100%;min-width:0;height:48px;min-height:48px;padding-block:10px}
 .component-searchbar>.btn{min-height:48px;height:48px;align-self:stretch;padding-inline:16px}
+.catalog-shortcut{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:7px 10px;border:1px solid var(--line);border-radius:11px;background:#fff;color:var(--blue);font-size:12px;font-weight:700;white-space:nowrap}
+.knowledge-entry{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:20px;padding:20px;border-color:#d8e3fb;background:#f4f7ff}
+.knowledge-entry h2{font-size:18px;margin:0 0 7px}
+.knowledge-entry p{font-size:13px;color:var(--muted);margin:0}
+.knowledge-entry-actions{display:flex;flex-wrap:wrap;gap:9px}
 @media(max-width:760px){
  .v8-compact-index>.page-head{display:none}
  .v8-compact-index>.section-head:first-of-type{margin-top:0}

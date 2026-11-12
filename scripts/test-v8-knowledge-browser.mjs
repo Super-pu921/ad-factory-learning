@@ -7,6 +7,8 @@ const {chromium,webkit}=require(process.env.V8_PLAYWRIGHT_MODULE||'playwright');
 const base=process.env.V8_CATALOG_TEST_URL||'http://127.0.0.1:8766/knowledge-catalog/';
 const evidence=process.env.V8_EVIDENCE_DIR;
 if(evidence)mkdirSync(evidence,{recursive:true});
+const teachingStats=JSON.parse(readFileSync(new URL('../knowledge-catalog/teaching-manifest.json',import.meta.url),'utf8')).statistics;
+const coverageText=`${teachingStats.originalDirectoryEntries} 条知识目录 · 已有教学 ${teachingStats.teachingTopics} 个主题 / ${teachingStats.layeredUnits} 个分层单元`;
 
 for(const [engine,name] of [[chromium,'chromium'],[webkit,'webkit']]) {
   const executablePath=process.env[name==='chromium'?'V8_CHROMIUM_EXECUTABLE':'V8_WEBKIT_EXECUTABLE'];
@@ -22,6 +24,20 @@ for(const [engine,name] of [[chromium,'chromium'],[webkit,'webkit']]) {
       page.on('pageerror',error=>errors.push(error.message));
       await page.goto(new URL('../index.html#/components',base).href);
       assert.equal(await page.locator('#bottomNav a').count(),4,'the original four main navigation items stay intact');
+      await page.getByRole('heading',{name:'D01–D16 知识目录与教学',exact:true}).waitFor();
+      await page.getByText(coverageText,{exact:true}).waitFor();
+      await page.getByRole('heading',{name:'原有组件演示 · 88 个',exact:true}).waitFor();
+      assert.equal(await page.locator('.v8-category-tile .micro').allTextContents().then(values=>values.reduce((sum,value)=>sum+Number(value),0)),88);
+      assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+1),true,'workbench must not overflow');
+      await page.locator('#componentSearch').fill('button');
+      assert.ok(await page.locator('#componentResults .list-row').count()>0,'original demo search remains usable');
+      assert.equal(await page.getByRole('link',{name:'进入已有教学',exact:true}).isVisible(),true,'new teaching stays accessible while searching old demos');
+      await page.getByRole('button',{name:'清除',exact:true}).click();
+      if(evidence)await page.screenshot({path:`${evidence}/${name}-${width}-workbench.png`,fullPage:true});
+      await page.getByRole('link',{name:'进入已有教学',exact:true}).click();
+      await page.getByText(`${teachingStats.teachingTopics} 个目录入口 · 已显示 40 个`,{exact:true}).waitFor();
+      assert.equal(await page.locator('#teachingOnly').isChecked(),true);
+      await page.goto(new URL('../index.html#/components',base).href);
       await page.getByRole('link',{name:'知识目录',exact:true}).click();
       await page.getByText('16 个领域 · 840 个原始入口 · 833 个初步概念',{exact:true}).waitFor();
       assert.equal(await page.locator('.entry').count(),40);
@@ -90,5 +106,27 @@ for(const [engine,name] of [[chromium,'chromium'],[webkit,'webkit']]) {
     assert.equal(await errorsPage.evaluate(()=>window.__catalogXss),undefined);
     await errorsContext.close();
     console.log(`${name}: source failure and untrusted catalog text handling PASS`);
+    const summaryContext=await browser.newContext({serviceWorkers:'block'});
+    const summaryPage=await summaryContext.newPage();const summaryErrors=[];
+    summaryPage.on('pageerror',error=>summaryErrors.push(error.message));
+    await summaryContext.route('**/teaching-manifest.json',route=>route.fulfill({status:503,body:'synthetic coverage outage'}));
+    await summaryPage.goto(new URL('../index.html#/components',base).href);
+    await summaryPage.getByRole('heading',{name:'原有组件演示 · 88 个',exact:true}).waitFor();
+    assert.equal(await summaryPage.getByRole('link',{name:'查看完整知识目录',exact:true}).isVisible(),true);
+    assert.equal(await summaryPage.getByRole('link',{name:'进入已有教学',exact:true}).isVisible(),true);
+    assert.equal(await summaryPage.locator('#knowledgeCoverage').textContent(),'完整知识目录与 L1 / L2 / L3 分层教学。');
+    assert.deepEqual(summaryErrors,[]);
+    await summaryContext.unroute('**/teaching-manifest.json');
+    let releaseSummary;const heldSummary=new Promise(resolve=>{releaseSummary=resolve;});
+    let markRequested;const requested=new Promise(resolve=>{markRequested=resolve;});
+    await summaryContext.route('**/teaching-manifest.json',async route=>{markRequested();await heldSummary;await route.continue();});
+    await summaryPage.reload();await requested;
+    await summaryPage.locator('#sideNav [data-nav=learn]').click();
+    releaseSummary();await summaryPage.waitForResponse(response=>response.url().endsWith('/teaching-manifest.json'));
+    await summaryPage.locator('#sideNav [data-nav=components]').click();
+    await summaryPage.getByText(coverageText,{exact:true}).waitFor();
+    assert.deepEqual(summaryErrors,[]);
+    await summaryContext.close();
+    console.log(`${name}: workbench entry/coverage outage/delayed response across navigation PASS`);
   } finally {await browser.close();}
 }

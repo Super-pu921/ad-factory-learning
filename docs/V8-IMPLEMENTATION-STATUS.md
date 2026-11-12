@@ -1,6 +1,6 @@
 # V8 implementation and release status
 
-Updated: 2026-11-05. Scope: V2.0 overall P1–P8 roadmap.
+Updated: 2026-11-12. Scope: V2.0 overall P1–P8 roadmap.
 
 The user has authorized continuous development, verification and release without
 repeated phase approvals. This replaces the former local-only/no-publish task
@@ -383,11 +383,37 @@ and P1.3 backup coverage and real-record validation. The 13 D17 candidate
 subdomains are not an approved final teaching catalog. Permission to work
 continuously removes repeated phase approval, but cannot supply missing facts.
 
+## Workbench directory entry and coverage clarification (2026-11-12)
+
+The original component library still contains **88 working demo entries**.
+The newer knowledge directory contains **840 source entries** (833 preliminary
+concepts), with **65 authored teaching topics / 195 L1–L3 units** so far.
+These measures overlap and must not be added together or reported as hundreds
+of completed components. The earlier goal of more than 300 usable components
+has **not** been met. This release adds no new teaching topic or demo.
+
+The workbench component landing page now shows a prominent directory card
+with separate links to the full catalog and teaching-only results. Counts come
+from the existing static teaching manifest, so future content releases do not
+require a second hardcoded teaching total. If it cannot load, both links and
+the original library still work, without displaying invented counts. An in-flight
+response updates only the coverage text and never rerenders a user's current
+page. The original library is explicitly labelled as 88 demos, and its search
+continues to search that library. The global top-bar shortcut now includes
+visible text, including on lesson detail pages.
+
+Existing browser checks additionally exercise both new entry paths, original
+search/category totals, mobile layout, a failed summary fetch and a delayed
+response arriving across navigation. Tests use new isolated browser contexts;
+no user profile, actual saved learning record or migration is involved.
+
 ## Data protection and release boundary
 
-The existing `app.js`, `data.json`, `styles.css`, `sw.js`, old labs,
-QA directories, storage keys and default read/write behavior are unchanged.
-`index.html` gains only a top-bar link to the new directory.
+`data.json`, `sw.js`, old labs, QA directories, storage keys and default
+read/write behavior are unchanged. The November 12 workbench update adds
+visible directory/teaching links and reads the static teaching manifest for
+coverage text in `app.js`, with contained styles and a labelled top-bar link.
+It does not replace the original component list, search or course reading.
 The offline foundation modules do not import application initialization scripts,
 open a browser, read a user profile or access localStorage/IndexedDB. The separate
 directory UI reads only its static catalog; its user-triggered teaching demos run
