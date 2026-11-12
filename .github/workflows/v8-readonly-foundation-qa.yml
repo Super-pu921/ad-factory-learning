@@ -9,8 +9,10 @@ on:
       - 'scripts/*knowledge-pilot*.mjs'
       - 'scripts/*knowledge-browser*.mjs'
       - 'scripts/*curriculum*.mjs'
+      - 'scripts/*expanded*.mjs'
       - 'scripts/*teaching-manifest*.mjs'
       - 'index.html'
+      - 'app.js'
       - 'knowledge-catalog/**'
       - '.github/workflows/v8-readonly-foundation-qa.yml'
   pull_request:
@@ -21,8 +23,10 @@ on:
       - 'scripts/*knowledge-pilot*.mjs'
       - 'scripts/*knowledge-browser*.mjs'
       - 'scripts/*curriculum*.mjs'
+      - 'scripts/*expanded*.mjs'
       - 'scripts/*teaching-manifest*.mjs'
       - 'index.html'
+      - 'app.js'
       - 'knowledge-catalog/**'
       - '.github/workflows/v8-readonly-foundation-qa.yml'
   workflow_dispatch:
@@ -39,6 +43,7 @@ jobs:
           node-version: '22'
       - name: Syntax, readonly tools and original regression
         run: |
+          node --check app.js
           node --check scripts/migration-audit-core.mjs
           node --check scripts/audit-v8-migration.mjs
           node --check scripts/test-v8-migration.mjs
@@ -56,12 +61,25 @@ jobs:
           node --check scripts/build-v8-teaching-manifest.mjs
           node --check scripts/test-v8-curriculum.mjs
           node --check scripts/test-v8-curriculum-browser.mjs
+          node --check knowledge-catalog/expanded-basic.mjs
+          node --check knowledge-catalog/expanded-basic-models.mjs
+          node --check knowledge-catalog/expanded-basic-definitions.mjs
+          node --check knowledge-catalog/expanded-basic-examples.mjs
+          node --check knowledge-catalog/expanded-advanced.mjs
+          node --check knowledge-catalog/expanded-curriculum.mjs
+          node --check scripts/test-v8-expanded-basic.mjs
+          node --check scripts/test-v8-expanded-advanced.mjs
+          node --check scripts/test-v8-expanded-curriculum.mjs
+          node --check scripts/test-v8-expanded-browser.mjs
           node scripts/audit-v8-migration.mjs
           node scripts/test-v8-migration.mjs
           node scripts/test-v8-legacy-catalog-view.mjs
           node scripts/test-v8-knowledge-catalog.mjs
           node scripts/test-v8-knowledge-pilot.mjs
           node scripts/test-v8-curriculum.mjs
+          node scripts/test-v8-expanded-basic.mjs
+          node scripts/test-v8-expanded-advanced.mjs
+          node scripts/test-v8-expanded-curriculum.mjs
           node scripts/validate-v8-knowledge.mjs
           node scripts/test-v8-missions.mjs
           node scripts/test-v8-order-lab.mjs

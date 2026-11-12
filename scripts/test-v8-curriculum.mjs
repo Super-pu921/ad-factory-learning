@@ -26,7 +26,7 @@ for(const lesson of curriculum) {
 assert.throws(()=>{curriculum[0].units[0].blockRefs[0].version='latest';},TypeError);
 const manifest=buildTeachingManifest();
 assert.deepEqual(manifest,JSON.parse(readFileSync(new URL('../knowledge-catalog/teaching-manifest.json',import.meta.url),'utf8')));
-assert.deepEqual(manifest.statistics,{originalDirectoryEntries:840,teachingTopics:65,layeredUnits:195,coveredDomains:16,formalMigratedCourses:0});
+assert.deepEqual(manifest.statistics,{originalDirectoryEntries:840,teachingTopics:320,layeredUnits:960,coveredDomains:16,formalMigratedCourses:0});
 assert.ok(manifest.domains.every(domain=>domain.teachingTopics>=4));
 assert.equal(manifest.productionMigration,'BLOCKED');assert.equal(manifest.progressPersistence,'NONE');
 

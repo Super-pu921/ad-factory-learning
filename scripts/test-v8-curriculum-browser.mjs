@@ -1,11 +1,14 @@
 import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
-import {mkdirSync} from 'node:fs';
+import {mkdirSync,readFileSync} from 'node:fs';
 import {curriculum} from '../knowledge-catalog/curriculum.mjs';
 const {chromium,webkit}=createRequire(import.meta.url)(process.env.V8_PLAYWRIGHT_MODULE||'playwright');
 const base=process.env.V8_CATALOG_TEST_URL||'http://127.0.0.1:8768/knowledge-catalog/';
 const evidence=process.env.V8_EVIDENCE_DIR;
 if(evidence)mkdirSync(evidence,{recursive:true});
+const stats=JSON.parse(readFileSync(new URL('../knowledge-catalog/teaching-manifest.json',import.meta.url),'utf8')).statistics;
+const coverage=`已有教学：${stats.teachingTopics} 个主题 · ${stats.layeredUnits} 个分层单元`;
+async function loadAllTeaching(page){while(await page.getByRole('button',{name:'加载更多',exact:true}).isVisible())await page.getByRole('button',{name:'加载更多',exact:true}).click();}
 
 async function exercise(page,kind,level) {
   const root=page.locator(`[data-demo="${kind}"]`),result=root.locator('[data-result]');
@@ -287,19 +290,19 @@ for(const [engine,name] of [[chromium,'chromium'],[webkit,'webkit']]) {
       await page.route('**/catalog.json',async route=>{await heldCatalog;await route.continue();});
       const catalogRequested=page.waitForRequest('**/catalog.json');await page.goto(base,{waitUntil:'domcontentloaded'});await catalogRequested;
       await page.getByLabel('教学层级',{exact:true}).selectOption('L3');await page.getByLabel('教学难度',{exact:true}).selectOption('E3');releaseCatalog();
-      await page.getByText('已有教学：65 个主题 · 195 个分层单元',{exact:true}).waitFor();assert.ok(await page.locator('.entry').count()>0,'queued filters apply after slow catalog load');assert.deepEqual(errors,[],'early filter changes must not throw');await page.unroute('**/catalog.json');
+      await page.getByText(coverage,{exact:true}).waitFor();assert.ok(await page.locator('.entry').count()>0,'queued filters apply after slow catalog load');assert.deepEqual(errors,[],'early filter changes must not throw');await page.unroute('**/catalog.json');
       await page.getByLabel('教学层级',{exact:true}).selectOption('all');await page.getByLabel('教学难度',{exact:true}).selectOption('all');
-      await page.getByLabel('只看已有教学').check();assert.equal(await page.locator('.entry').count(),40);await page.getByRole('button',{name:'加载更多',exact:true}).click();assert.equal(await page.locator('.entry').count(),65);
+      await page.getByLabel('只看已有教学').check();assert.equal(await page.locator('.entry').count(),40);await loadAllTeaching(page);assert.equal(await page.locator('.entry').count(),stats.teachingTopics);
       await page.getByLabel('教学层级',{exact:true}).selectOption('L1');await page.getByLabel('教学难度',{exact:true}).selectOption('E2');await page.locator('#catalogSearch').fill('K-D01-001');assert.equal(await page.locator('.entry').count(),0,'level and difficulty must match the same unit');
       await page.getByLabel('教学层级',{exact:true}).selectOption('L2');assert.equal(await page.locator('.entry').count(),1);await page.locator('.entry h3 button').click();await page.locator('.unit-tabs>button[aria-pressed=true]').filter({hasText:'L2'}).waitFor();assert.equal(new URL(page.url()).hash,'#K-D01-001/L2');await page.getByRole('button',{name:'关闭知识详情',exact:true}).click();
       await page.getByRole('button',{name:'清除',exact:true}).click();await page.getByLabel('教学难度',{exact:true}).selectOption('E5');assert.equal(await page.locator('.entry').count(),0);
-      await page.getByLabel('教学层级',{exact:true}).selectOption('all');await page.getByLabel('教学难度',{exact:true}).selectOption('all');await page.getByRole('button',{name:'加载更多',exact:true}).click();assert.equal(await page.locator('.entry').count(),65);
+      await page.getByLabel('教学层级',{exact:true}).selectOption('all');await page.getByLabel('教学难度',{exact:true}).selectOption('all');await loadAllTeaching(page);assert.equal(await page.locator('.entry').count(),stats.teachingTopics);
       await page.getByRole('button',{name:/D02 · 页面布局/}).click();await page.getByLabel('教学层级',{exact:true}).selectOption('L2');await page.getByLabel('教学难度',{exact:true}).selectOption('E2');await page.locator('#catalogSearch').fill('Box');assert.equal(await page.locator('.entry').count(),1);
       const shared=new URL(await page.locator('#filterLink').getAttribute('href'),base);assert.equal(shared.searchParams.get('domain'),'D02');assert.equal(shared.searchParams.get('q'),'Box');assert.equal(shared.searchParams.get('teaching'),'1');
-      await page.reload();await page.getByText('已有教学：65 个主题 · 195 个分层单元',{exact:true}).waitFor();assert.equal(await page.locator('#catalogSearch').inputValue(),'Box');assert.equal(await page.locator('#levelFilter').inputValue(),'L2');assert.equal(await page.locator('#difficultyFilter').inputValue(),'E2');assert.equal(await page.getByLabel('只看已有教学').isChecked(),true);assert.equal(await page.locator('.entry').count(),1);
+      await page.reload();await page.getByText(coverage,{exact:true}).waitFor();assert.equal(await page.locator('#catalogSearch').inputValue(),'Box');assert.equal(await page.locator('#levelFilter').inputValue(),'L2');assert.equal(await page.locator('#difficultyFilter').inputValue(),'E2');assert.equal(await page.getByLabel('只看已有教学').isChecked(),true);assert.equal(await page.locator('.entry').count(),1);
       await page.locator('.entry h3 button').click();assert.equal(new URL(page.url()).hash,'#K-D02-002/L2');await page.getByRole('button',{name:'关闭知识详情',exact:true}).click();await page.getByRole('button',{name:'重置筛选',exact:true}).click();await page.getByRole('button',{name:/D01 · 基础控件/}).click();assert.equal(await page.locator('.entry').count(),22);
       await page.goBack();await page.waitForFunction(()=>document.getElementById('catalogSearch').value==='Box');assert.equal(await page.locator('.entry').count(),1);await page.goForward();await page.waitForFunction(()=>document.querySelector('#domains button[aria-pressed=true]').dataset.domain==='D01');assert.equal(await page.locator('.entry').count(),22);
-      await page.getByRole('button',{name:'重置筛选',exact:true}).click();assert.equal(new URL(page.url()).search,'');await page.getByLabel('只看已有教学').check();await page.getByRole('button',{name:'加载更多',exact:true}).click();assert.equal(await page.locator('.entry').count(),65);
+      await page.getByRole('button',{name:'重置筛选',exact:true}).click();assert.equal(new URL(page.url()).search,'');await page.getByLabel('只看已有教学').check();await loadAllTeaching(page);assert.equal(await page.locator('.entry').count(),stats.teachingTopics);
       for(const lesson of curriculum) {
         await page.evaluate(id=>{location.hash=id;},lesson.knowledgeId);
         await page.waitForFunction(id=>document.getElementById('detailId').textContent===id,lesson.knowledgeId);
@@ -326,7 +329,7 @@ for(const [engine,name] of [[chromium,'chromium'],[webkit,'webkit']]) {
       await page.goto(`${base}#K-D07-013/L2`);await page.getByRole('button',{name:'聚焦查看术语说明',exact:true}).focus();await page.getByRole('tooltip').waitFor({state:'visible'});
       await page.evaluate(()=>{location.hash='K-D04-003/L2';});await page.locator('[data-demo=number]').waitFor();await page.keyboard.press('Escape');await page.locator('#entryDialog').waitFor({state:'hidden'});
       assert.equal(new URL(page.url()).hash,'','disposed tooltip must not capture Escape in another lesson');
-      await page.goto(`${base}?domain=D99&level=L9&difficulty=E9&q=%3Cimg%20src=x%3E`);await page.getByText('已有教学：65 个主题 · 195 个分层单元',{exact:true}).waitFor();assert.equal(await page.locator('#levelFilter').inputValue(),'all');assert.equal(await page.locator('#difficultyFilter').inputValue(),'all');assert.equal(await page.locator('#catalogSearch').inputValue(),'<img src=x>');assert.equal(await page.locator('img').count(),0);await page.getByRole('button',{name:'重置筛选',exact:true}).click();
+      await page.goto(`${base}?domain=D99&level=L9&difficulty=E9&q=%3Cimg%20src=x%3E`);await page.getByText(coverage,{exact:true}).waitFor();assert.equal(await page.locator('#levelFilter').inputValue(),'all');assert.equal(await page.locator('#difficultyFilter').inputValue(),'all');assert.equal(await page.locator('#catalogSearch').inputValue(),'<img src=x>');assert.equal(await page.locator('img').count(),0);await page.getByRole('button',{name:'重置筛选',exact:true}).click();
       const state=await page.evaluate(()=>({...localStorage}));assert.deepEqual(state,{'adFactoryLearning.v8.production':'synthetic-main-sentinel','adFactoryLearning.v8.order-lab':'synthetic-lab-sentinel'});
       assert.deepEqual(errors,[]);assert.deepEqual(writes,[]);
       if(evidence)await page.screenshot({path:`${evidence}/${name}-${width}-teaching.png`});

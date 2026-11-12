@@ -1,7 +1,10 @@
 import {buttonPilot,calculateDemoQuote,createSubmissionGate} from './button-pilot.mjs';
-import {curriculum,curriculumById} from './curriculum.mjs';
+import {curriculum as previousCurriculum} from './curriculum.mjs';
+import {expandedCurriculum,expandedById,renderExpandedDemo} from './expanded-curriculum.mjs';
 import {renderCurriculumDemo} from './curriculum-demos.mjs';
 import {matchingTeachingUnits,parseCatalogFilters,catalogFilterParams} from './curriculum-models.mjs';
+const curriculum=[...previousCurriculum,...expandedCurriculum];
+const curriculumById=new Map(curriculum.map(lesson=>[lesson.knowledgeId,lesson]));
 
 const domainNames=['基础控件与视觉元素','页面布局与响应式','导航与页面组织','表单与数据输入','数据展示与高级数据表格','状态与系统反馈','弹层、浮层与复杂交互','文件、媒体与专业编辑器','图表与专业数据可视化','地图与地理可视化','流程图、节点与画布编辑','企业业务组件与工作流','多人协作与实时交互','AI / Agent 专题','无障碍、国际化与主题','工程化交互与系统运行模式'];
 const candidateNames=[['G01','浏览器运行与渲染'],['G02','Web 网络与通信'],['G03','数据库与数据建模'],['G04','前端框架运行原理'],['G05','CSS 与视觉渲染工程'],['G06','图形学与计算'],['G07','软件架构与设计模式'],['G08','开发工具链与协作工程'],['G09','云基础设施与部署运维'],['G11','数据结构与算法'],['G12','操作系统与计算机组成'],['G13','编程语言与类型系统'],['G14','数学与数据计算基础']];
@@ -162,9 +165,9 @@ function renderDetail() {
         [...tabs.children].forEach((control,index)=>control.setAttribute('aria-pressed',String(lesson.units[index]===unit)));
         content.replaceChildren(section('学习目标',unit.objective));
         for(const ref of unit.blockRefs){const block=lesson.blocks[ref.id];content.append(section(block.title,block.body));}
-        const experiment=renderCurriculumDemo(lesson,unit,{node,button});disposeExperiment=experiment.dispose;content.append(experiment.element);
+        const experiment=(expandedById.has(lesson.knowledgeId)?renderExpandedDemo:renderCurriculumDemo)(lesson,unit,{node,button});disposeExperiment=experiment.dispose;content.append(experiment.element);
         const code=node('div');code.append(node('p','','浏览器控制台可运行下列 JavaScript；无第三方依赖。可复制代码至当前目录页面控制台，预期输出见下方。'),node('pre','',lesson.code),node('p','',`预期输出：${lesson.expected}`));
-        const implementation=node('a','inline-link','查看完整交互实现');implementation.href='./curriculum-demos.mjs';implementation.target='_blank';implementation.rel='noopener';code.append(implementation);
+        const implementation=node('a','inline-link','查看完整交互实现');implementation.href=lesson.implementationPath||'./curriculum-demos.mjs';implementation.target='_blank';implementation.rel='noopener';code.append(implementation);
         content.append(section('代码与运行',code),section('动手练习',unit.exercise));
         const checks=node('ol');unit.acceptance.forEach(check=>checks.append(node('li','',check)));
         content.append(section('验收条件',checks),section('常见误区',unit.pitfall),section('小结',unit.summary));

@@ -1,11 +1,55 @@
 # V8 implementation and release status
 
-Updated: 2026-11-12. Scope: V2.0 overall P1–P8 roadmap.
+Updated: 2026-11-13. Scope: V2.0 overall P1–P8 roadmap.
 
 The user has authorized continuous development, verification and release without
 repeated phase approvals. This replaces the former local-only/no-publish task
 restriction. It does not make unverified mappings or personal-record migrations
 safe to execute. Production migration remains **BLOCKED**.
+
+## 320 runnable teaching components (2026-11-13)
+
+The catalog now registers **320 unique canonical teaching components / 960
+L1–L3 units**: the unchanged 65-topic baseline, 175 basic additions and 80
+advanced additions. All retain the original knowledge IDs and source titles.
+The complete per-ID inventory, domain totals, implementation locations and
+layer links are in [V8-COMPONENTS-320.md](V8-COMPONENTS-320.md).
+
+This is a bounded, interactive teaching implementation for each concept, not
+320 new production backend services. A component is counted once per canonical
+knowledge ID; its three units are not three components. The original 88 demo
+Components remain intact and are not summed with the new registry because an
+authoritative old-to-new mapping is still missing. The remaining 513 canonical
+concepts are NOT_IMPLEMENTED, not silently marked complete.
+
+The workbench prominently names the runnable component count and searches the
+teaching manifest by title/knowledge ID alongside the separately labelled old
+library. A selected teaching result opens its real L1 demo. A duplicate blur
+change event no longer replaces the clicked result before navigation. Static
+summary failures and delayed responses retain the original usable library.
+
+The additions cover real DOM controls, CSS/container layouts, local navigation,
+validated forms, immutable data-grid operations, finite feedback states, SVG
+charts, coordinate/graph mechanisms and bounded engineering algorithms. Each
+new topic has executable example code, a pinned expected output, a working
+interactive mechanism, positive/negative cases and separate L1/L2/L3 goals,
+exercises and acceptance conditions. Timers, event listeners and object URLs
+are released when a unit is disposed. Export creates only fictional teaching
+content in an in-memory Blob; no existing user file is read or overwritten.
+
+Node checks and browser evidence are produced by the actual release run;
+this source status does not substitute for successful execution. The existing
+Node 22 CI now includes both new mechanism suites and the 320/960 manifest
+checks. Browser suites separately exercise the 255 additions at all three
+layers in Chromium/WebKit on desktop/390px, plus the original 65-topic checks.
+Per-ID/level/browser results are retained externally as case-results.json.
+
+PRD V1.3/P2.5 originals, P1.3 real-record evidence, production backend contracts,
+authoritative old-component mappings and D17 approval remain missing or
+unapproved. Their dependent implementation is SKIPPED_MISSING_INPUT, while
+unimplemented algorithms such as QR/Barcode are simply NOT_IMPLEMENTED.
+Production migration remains BLOCKED, formal migrated Courses remain zero,
+and no new progress persistence or production reading switch is introduced.
 
 ## Delivered foundation
 
@@ -389,8 +433,9 @@ The original component library still contains **88 working demo entries**.
 The newer knowledge directory contains **840 source entries** (833 preliminary
 concepts), with **65 authored teaching topics / 195 L1–L3 units** so far.
 These measures overlap and must not be added together or reported as hundreds
-of completed components. The earlier goal of more than 300 usable components
-has **not** been met. This release adds no new teaching topic or demo.
+of completed components. At that November 12 entry-only release, the goal of more than 300 usable
+components had **not** been met; that release added no teaching topic or demo.
+The later 320-component expansion is recorded separately above.
 
 The workbench component landing page now shows a prominent directory card
 with separate links to the full catalog and teaching-only results. Counts come
@@ -412,7 +457,8 @@ no user profile, actual saved learning record or migration is involved.
 `data.json`, `sw.js`, old labs, QA directories, storage keys and default
 read/write behavior are unchanged. The November 12 workbench update adds
 visible directory/teaching links and reads the static teaching manifest for
-coverage text in `app.js`, with contained styles and a labelled top-bar link.
+coverage text and teaching-component search in `app.js`, with contained styles
+and a labelled top-bar link.
 It does not replace the original component list, search or course reading.
 The offline foundation modules do not import application initialization scripts,
 open a browser, read a user profile or access localStorage/IndexedDB. The separate

@@ -8,7 +8,7 @@ const base=process.env.V8_CATALOG_TEST_URL||'http://127.0.0.1:8766/knowledge-cat
 const evidence=process.env.V8_EVIDENCE_DIR;
 if(evidence)mkdirSync(evidence,{recursive:true});
 const teachingStats=JSON.parse(readFileSync(new URL('../knowledge-catalog/teaching-manifest.json',import.meta.url),'utf8')).statistics;
-const coverageText=`${teachingStats.originalDirectoryEntries} 条知识目录 · 已有教学 ${teachingStats.teachingTopics} 个主题 / ${teachingStats.layeredUnits} 个分层单元`;
+const coverageText=`可运行教学组件 ${teachingStats.teachingTopics} 个 · ${teachingStats.layeredUnits} 个分层单元 · ${teachingStats.originalDirectoryEntries} 条目录`;
 
 for(const [engine,name] of [[chromium,'chromium'],[webkit,'webkit']]) {
   const executablePath=process.env[name==='chromium'?'V8_CHROMIUM_EXECUTABLE':'V8_WEBKIT_EXECUTABLE'];
@@ -24,17 +24,24 @@ for(const [engine,name] of [[chromium,'chromium'],[webkit,'webkit']]) {
       page.on('pageerror',error=>errors.push(error.message));
       await page.goto(new URL('../index.html#/components',base).href);
       assert.equal(await page.locator('#bottomNav a').count(),4,'the original four main navigation items stay intact');
-      await page.getByRole('heading',{name:'D01–D16 知识目录与教学',exact:true}).waitFor();
+      await page.getByRole('heading',{name:'D01–D16 可运行组件与教学',exact:true}).waitFor();
       await page.getByText(coverageText,{exact:true}).waitFor();
       await page.getByRole('heading',{name:'原有组件演示 · 88 个',exact:true}).waitFor();
       assert.equal(await page.locator('.v8-category-tile .micro').allTextContents().then(values=>values.reduce((sum,value)=>sum+Number(value),0)),88);
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+1),true,'workbench must not overflow');
       await page.locator('#componentSearch').fill('button');
       assert.ok(await page.locator('#componentResults .list-row').count()>0,'original demo search remains usable');
-      assert.equal(await page.getByRole('link',{name:'进入已有教学',exact:true}).isVisible(),true,'new teaching stays accessible while searching old demos');
+      assert.equal(await page.getByRole('link',{name:'进入组件演示与教学',exact:true}).isVisible(),true,'new teaching stays accessible while searching old demos');
+      await page.locator('#componentSearch').fill('K-D04-035');
+      assert.equal(await page.locator('#teachingComponentResults a').count(),1);
+      await page.locator('#teachingComponentResults a').click();
+      await page.locator('#detailId').filter({hasText:'K-D04-035'}).waitFor();
+      await page.locator('[data-demo=field-week]').waitFor();
+      await page.goto(new URL('../index.html#/components',base).href);
+      await page.getByText(coverageText,{exact:true}).waitFor();
       await page.getByRole('button',{name:'清除',exact:true}).click();
       if(evidence)await page.screenshot({path:`${evidence}/${name}-${width}-workbench.png`,fullPage:true});
-      await page.getByRole('link',{name:'进入已有教学',exact:true}).click();
+      await page.getByRole('link',{name:'进入组件演示与教学',exact:true}).click();
       await page.getByText(`${teachingStats.teachingTopics} 个目录入口 · 已显示 40 个`,{exact:true}).waitFor();
       assert.equal(await page.locator('#teachingOnly').isChecked(),true);
       await page.goto(new URL('../index.html#/components',base).href);
@@ -113,7 +120,7 @@ for(const [engine,name] of [[chromium,'chromium'],[webkit,'webkit']]) {
     await summaryPage.goto(new URL('../index.html#/components',base).href);
     await summaryPage.getByRole('heading',{name:'原有组件演示 · 88 个',exact:true}).waitFor();
     assert.equal(await summaryPage.getByRole('link',{name:'查看完整知识目录',exact:true}).isVisible(),true);
-    assert.equal(await summaryPage.getByRole('link',{name:'进入已有教学',exact:true}).isVisible(),true);
+    assert.equal(await summaryPage.getByRole('link',{name:'进入组件演示与教学',exact:true}).isVisible(),true);
     assert.equal(await summaryPage.locator('#knowledgeCoverage').textContent(),'完整知识目录与 L1 / L2 / L3 分层教学。');
     assert.deepEqual(summaryErrors,[]);
     await summaryContext.unroute('**/teaching-manifest.json');

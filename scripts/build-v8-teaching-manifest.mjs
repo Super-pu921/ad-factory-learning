@@ -2,9 +2,10 @@ import {createHash} from 'node:crypto';
 import {pathToFileURL} from 'node:url';
 import {buttonPilot} from '../knowledge-catalog/button-pilot.mjs';
 import {curriculum} from '../knowledge-catalog/curriculum.mjs';
+import {expandedCurriculum} from '../knowledge-catalog/expanded-curriculum.mjs';
 
 export function buildTeachingManifest() {
-  const lessons=[buttonPilot,...curriculum];
+  const lessons=[buttonPilot,...curriculum,...expandedCurriculum];
   const topics=lessons.map(lesson=>({knowledgeId:lesson.knowledgeId,domain:lesson.knowledgeId.slice(2,5),title:lesson.title,version:lesson.version,
     contentSha256:createHash('sha256').update(JSON.stringify(lesson)).digest('hex'),
     units:lesson.units.map(unit=>({id:unit.id,level:unit.level,difficulty:unit.difficulty,title:unit.title,blockRefs:unit.blockRefs}))}));
