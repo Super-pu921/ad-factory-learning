@@ -2,6 +2,41 @@
 
 Updated: 2026-11-13. Scope: V2.0 overall P1–P8 roadmap.
 
+## Current: remaining 513 concepts accounted for
+
+The registry now contains **821 canonical teaching topics / 2463 L1–L3 units**.
+The unchanged 320-topic baseline is protected by per-topic content hashes.
+This batch adds 501 runnable, bounded teaching mechanisms; 12 topics are
+explicitly `SKIPPED_MISSING_INPUT`, with reasons and required inputs displayed
+in the catalog and manifest. The 833 canonical concepts are fully accounted
+for. See [the current per-ID inventory](V8-COMPONENTS-CURRENT.md).
+
+New mechanisms include independently checked QR/Code39, restricted real
+PDF/OOXML parsing, synthetic native media, opaque-origin arithmetic sandbox,
+business invariants, collaboration transforms, native browser engineering
+examples, accessibility semantics, Intl and scoped themes. A teaching demo is
+not a production backend, arbitrary-code execution service or model inference.
+The skips include missing payment/model/device contracts, three real network
+transport endpoints and cross-engine Background Sync support.
+
+Original data.json, courses, 88 legacy demos and business labs are retained.
+Learning progress is not persisted or migrated by the catalog. A small set of
+explicit-save demos use only their own synthetic topic sandbox keys; they do
+not enumerate existing storage. Synthetic map cache uses its own cache name.
+Production migration remains **BLOCKED**; formal migrated Course count is 0.
+
+Local acceptance completed on Node 22: all 64 required syntax/regression
+commands passed, including 501 executed new example snippets and negative
+cases. The 501 additions completed 6012 directory interaction scenarios
+(L1/L2/L3, Chromium/WebKit, 1440px/390px). Scoped revisions completed another
+500 scenarios covering refresh persistence, media, overlays, CSV/mapping,
+real map assets and plain-text paste protection. The unchanged old teaching
+bank and workbench entry also passed browser regression. Deployment and live
+acceptance are recorded separately; local PASS does not claim a release.
+
+The sections below are historical delivery snapshots. Their counts and
+memory-only statements describe those earlier batches, not the current total.
+
 The user has authorized continuous development, verification and release without
 repeated phase approvals. This replaces the former local-only/no-publish task
 restriction. It does not make unverified mappings or personal-record migrations

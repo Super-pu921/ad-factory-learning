@@ -10,6 +10,7 @@ on:
       - 'scripts/*knowledge-browser*.mjs'
       - 'scripts/*curriculum*.mjs'
       - 'scripts/*expanded*.mjs'
+      - 'scripts/*remaining*.mjs'
       - 'scripts/*teaching-manifest*.mjs'
       - 'index.html'
       - 'app.js'
@@ -24,6 +25,7 @@ on:
       - 'scripts/*knowledge-browser*.mjs'
       - 'scripts/*curriculum*.mjs'
       - 'scripts/*expanded*.mjs'
+      - 'scripts/*remaining*.mjs'
       - 'scripts/*teaching-manifest*.mjs'
       - 'index.html'
       - 'app.js'
@@ -71,6 +73,23 @@ jobs:
           node --check scripts/test-v8-expanded-advanced.mjs
           node --check scripts/test-v8-expanded-curriculum.mjs
           node --check scripts/test-v8-expanded-browser.mjs
+          node --check knowledge-catalog/remaining-formats.mjs
+          node --check knowledge-catalog/remaining-fixtures.mjs
+          node --check knowledge-catalog/remaining-ui.mjs
+          node --check knowledge-catalog/remaining-ui-models.mjs
+          node --check knowledge-catalog/remaining-ui-visuals.mjs
+          node --check knowledge-catalog/remaining-ui-source.mjs
+          node --check knowledge-catalog/remaining-systems.mjs
+          node --check knowledge-catalog/remaining-systems-definitions.mjs
+          node --check knowledge-catalog/remaining-engineering.mjs
+          node --check knowledge-catalog/remaining-engineering-definitions.mjs
+          node --check knowledge-catalog/remaining-engineering-chunk.mjs
+          node --check knowledge-catalog/remaining-curriculum.mjs
+          node --check scripts/test-v8-remaining-ui.mjs
+          node --check scripts/test-v8-remaining-systems.mjs
+          node --check scripts/test-v8-remaining-engineering.mjs
+          node --check scripts/test-v8-remaining-curriculum.mjs
+          node --check scripts/test-v8-remaining-browser.mjs
           node scripts/audit-v8-migration.mjs
           node scripts/test-v8-migration.mjs
           node scripts/test-v8-legacy-catalog-view.mjs
@@ -80,6 +99,10 @@ jobs:
           node scripts/test-v8-expanded-basic.mjs
           node scripts/test-v8-expanded-advanced.mjs
           node scripts/test-v8-expanded-curriculum.mjs
+          node scripts/test-v8-remaining-ui.mjs
+          node scripts/test-v8-remaining-systems.mjs
+          node scripts/test-v8-remaining-engineering.mjs
+          node scripts/test-v8-remaining-curriculum.mjs
           node scripts/validate-v8-knowledge.mjs
           node scripts/test-v8-missions.mjs
           node scripts/test-v8-order-lab.mjs

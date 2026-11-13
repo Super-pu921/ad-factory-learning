@@ -1,12 +1,13 @@
 import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
-import {mkdirSync,writeFileSync} from 'node:fs';
+import {mkdirSync,writeFileSync,readFileSync} from 'node:fs';
 import {expandedDefinitions} from '../knowledge-catalog/expanded-curriculum.mjs';
 import {exerciseBasicDemo} from './test-v8-expanded-basic.mjs';
 import {exerciseAdvancedDemo} from './test-v8-expanded-advanced.mjs';
 const {chromium,webkit}=createRequire(import.meta.url)(process.env.V8_PLAYWRIGHT_MODULE||'playwright');
 const base=process.env.V8_CATALOG_TEST_URL||'http://127.0.0.1:8768/knowledge-catalog/';
 const evidence=process.env.V8_EVIDENCE_DIR;
+const stats=JSON.parse(readFileSync(new URL('../knowledge-catalog/teaching-manifest.json',import.meta.url),'utf8')).statistics;
 if(evidence)mkdirSync(evidence,{recursive:true});
 const levels=(process.env.V8_EXPANDED_LEVELS||'L1,L2,L3').split(',');
 assert.ok(levels.length&&levels.every(level=>['L1','L2','L3'].includes(level)));
@@ -25,7 +26,7 @@ for(const [engine,name] of [[chromium,'chromium'],[webkit,'webkit']]) {
       const page=await context.newPage(),errors=[],writes=[];page.setDefaultTimeout(12000);
       page.on('pageerror',error=>errors.push(error.message));page.on('request',request=>{if(request.method()!=='GET')writes.push(request.method()+' '+request.url());});
       await page.goto(base,{waitUntil:'domcontentloaded'});
-      await page.getByText('已有教学：320 个主题 · 960 个分层单元',{exact:true}).waitFor();
+      await page.getByText(`已有教学：${stats.teachingTopics} 个主题 · ${stats.layeredUnits} 个分层单元`,{exact:true}).waitFor();
       let completed=0;
       for(const def of definitions) {
         await page.evaluate(id=>{location.hash=id;},def.knowledgeId);

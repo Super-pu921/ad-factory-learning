@@ -1,9 +1,10 @@
 import {buttonPilot,calculateDemoQuote,createSubmissionGate} from './button-pilot.mjs';
 import {curriculum as previousCurriculum} from './curriculum.mjs';
 import {expandedCurriculum,expandedById,renderExpandedDemo} from './expanded-curriculum.mjs';
+import {remainingCurriculum,remainingById,remainingSkipped,remainingSkippedById,renderRemainingDemo} from './remaining-curriculum.mjs';
 import {renderCurriculumDemo} from './curriculum-demos.mjs';
 import {matchingTeachingUnits,parseCatalogFilters,catalogFilterParams} from './curriculum-models.mjs';
-const curriculum=[...previousCurriculum,...expandedCurriculum];
+const curriculum=[...previousCurriculum,...expandedCurriculum,...remainingCurriculum];
 const curriculumById=new Map(curriculum.map(lesson=>[lesson.knowledgeId,lesson]));
 
 const domainNames=['基础控件与视觉元素','页面布局与响应式','导航与页面组织','表单与数据输入','数据展示与高级数据表格','状态与系统反馈','弹层、浮层与复杂交互','文件、媒体与专业编辑器','图表与专业数据可视化','地图与地理可视化','流程图、节点与画布编辑','企业业务组件与工作流','多人协作与实时交互','AI / Agent 专题','无障碍、国际化与主题','工程化交互与系统运行模式'];
@@ -158,14 +159,14 @@ function renderDetail() {
       body.append(tabs,content);select(buttonPilot.units.find(unit=>unit.level===level)||buttonPilot.units[0]);
     } else if(curriculumById.has(entry.id)) {
       const lesson=curriculumById.get(entry.id),tabs=node('div','unit-tabs'),content=node('div');
-      body.append(node('p','subtle','分层教学 · 各单元目标与验收独立，交互仅在内存运行。'));
+      body.append(node('p','subtle',remainingById.has(entry.id)?'分层教学 · 使用独立合成样例；显式保存仅影响本例沙箱配置。':'分层教学 · 各单元目标与验收独立，交互仅在内存运行。'));
       tabs.setAttribute('aria-label','选择教学层级');
       const select=unit=>{
         disposeExperiment();disposeExperiment=()=>{};
         [...tabs.children].forEach((control,index)=>control.setAttribute('aria-pressed',String(lesson.units[index]===unit)));
         content.replaceChildren(section('学习目标',unit.objective));
         for(const ref of unit.blockRefs){const block=lesson.blocks[ref.id];content.append(section(block.title,block.body));}
-        const experiment=(expandedById.has(lesson.knowledgeId)?renderExpandedDemo:renderCurriculumDemo)(lesson,unit,{node,button});disposeExperiment=experiment.dispose;content.append(experiment.element);
+        const experiment=(remainingById.has(lesson.knowledgeId)?renderRemainingDemo:expandedById.has(lesson.knowledgeId)?renderExpandedDemo:renderCurriculumDemo)(lesson,unit,{node,button});disposeExperiment=experiment.dispose;content.append(experiment.element);
         const code=node('div');code.append(node('p','','浏览器控制台可运行下列 JavaScript；无第三方依赖。可复制代码至当前目录页面控制台，预期输出见下方。'),node('pre','',lesson.code),node('p','',`预期输出：${lesson.expected}`));
         const implementation=node('a','inline-link','查看完整交互实现');implementation.href=lesson.implementationPath||'./curriculum-demos.mjs';implementation.target='_blank';implementation.rel='noopener';code.append(implementation);
         content.append(section('代码与运行',code),section('动手练习',unit.exercise));
@@ -176,6 +177,8 @@ function renderDetail() {
       };
       for(const unit of lesson.units)tabs.append(button(`${unit.level} · ${unit.difficulty} · ${unit.title}`,()=>{setUnitRoute(entry.id,unit.level);select(unit);}));
       body.append(tabs,content);select(lesson.units.find(unit=>unit.level===level)||lesson.units[0]);
+    } else if(remainingSkippedById.has(entry.id)){
+      const skipped=remainingSkippedById.get(entry.id);body.append(node('p','subtle','SKIPPED_MISSING_INPUT · '+skipped.reason),node('p','subtle','补充条件：'+skipped.requiredInput));
     } else if(entry.canonicalId===entry.id) body.append(node('p','subtle','当前已收录目录主题，完整教学内容待建设。'));
   }
   if(!$('entryDialog').open) $('entryDialog').showModal();
@@ -223,6 +226,7 @@ try {
   byId=new Map(catalog.entries.map(entry=>[entry.id,entry]));
   $('summary').textContent=`16 个领域 · ${catalog.entries.length} 个原始入口 · ${catalog.statistics.preliminaryCanonicalConcepts} 个初步概念`;
   $('teachingCoverage').textContent=`已有教学：${curriculum.length+1} 个主题 · ${curriculum.reduce((count,lesson)=>count+lesson.units.length,buttonPilot.units.length)} 个分层单元`;
+  $('skippedCoverage').textContent=`缺少必要输入：${remainingSkipped.length} 个主题，保留原因，不计入可运行教学。`;
   candidateNames.forEach(([key,name])=>$('d17List').append(node('li','',`${key} · ${name}`)));
   renderDomains();renderResults();renderDetail();
 } catch(error) {
