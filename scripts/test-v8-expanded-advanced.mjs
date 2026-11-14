@@ -1,3 +1,4 @@
+import {revealTeachingControls} from './teaching-ui-browser-helpers.mjs';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { pathToFileURL, fileURLToPath } from 'node:url';
@@ -9,7 +10,7 @@ import { advancedDefinitions, runAdvancedExample } from '../knowledge-catalog/ex
 /** Real browser interaction. The caller owns the isolated page/server and selects a unit first. */
 export async function exerciseAdvancedDemo(page, definition, level = 'L2') {
   const root = page.locator(`[data-demo="${definition.kind}"]`).first();
-  await root.waitFor({state:'visible'});
+  await root.waitFor({state:'visible'});await revealTeachingControls(root);
   await root.locator('[data-reset]').click();
   assert.deepEqual(JSON.parse(await root.locator('[data-result]').textContent()), runAdvancedExample(definition));
   assert.equal(await root.locator('svg').count(), 1);
@@ -35,7 +36,7 @@ export async function exerciseAdvancedDemo(page, definition, level = 'L2') {
     assert.deepEqual(JSON.parse(await root.locator('[data-result]').textContent()), runAdvancedExample(definition));
   }
   if (level === 'L3') {
-    await root.locator('details').evaluate(el=>{el.open=true;});
+    await root.locator('details').evaluateAll(elements=>elements.forEach(el=>el.open=true));
     await root.locator('[data-input]').fill(JSON.stringify(definition.changed));
     await root.locator('[data-run-json]').click();
     assert.deepEqual(JSON.parse(await root.locator('[data-result]').textContent()), changed);

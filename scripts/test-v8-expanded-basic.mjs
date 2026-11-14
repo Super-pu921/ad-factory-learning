@@ -1,3 +1,4 @@
+import {revealTeachingControls} from './teaching-ui-browser-helpers.mjs';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
@@ -55,7 +56,7 @@ export async function exerciseBasicDemo(page,def,level='L2') {
   const root=page.locator(`[data-demo="${def.kind}"]`),preview=root.locator('[data-preview]'),input=root.locator('[data-input]');
   const result=async()=>JSON.parse(await root.locator('[data-result]').textContent());
   const apply=async raw=>{await input.fill(raw);await root.getByRole('button',{name:'应用演示值',exact:true}).click();};
-  await root.waitFor();assert.deepEqual(await result(),runBasicExample(def.knowledgeId));
+  await root.waitFor();await revealTeachingControls(root);assert.deepEqual(await result(),runBasicExample(def.knowledgeId));
   await apply(def.good);assert.equal(await root.locator('[data-error]').textContent(),'');
   const model=runBasicExample(def.knowledgeId,def.good);assert.deepEqual(await result(),model);
   const [family,...tail]=def.kind.split('-'),variant=tail.join('-');
@@ -142,7 +143,7 @@ export async function exerciseBasicDemo(page,def,level='L2') {
       if(variant==='keyboard'){const cell=table.locator('[tabindex="0"]');await cell.focus();await page.keyboard.press('ArrowLeft');assert.equal(await page.evaluate(()=>document.activeElement.dataset.column),'qty');}
       if(variant==='rowselect'){await apply('A');await preview.getByLabel('选择教学行 A').uncheck();assert.deepEqual((await result()).ids,[]);assert.equal(await preview.locator('[aria-selected=true]').count(),0);}
       if(variant==='chooser'){await apply('id');await preview.getByLabel('id',{exact:true}).click();assert.equal(await preview.getByLabel('id',{exact:true}).isChecked(),true);assert.equal(await root.locator('[data-error]').textContent(),'至少保留一个展示列');await apply(def.good);}
-      if(variant==='infinite'){await preview.locator('.basic-infinite').evaluate(el=>{el.scrollTop=el.scrollHeight;});await root.locator('[data-result]').filter({hasText:'9'}).waitFor();assert.equal((await result()).count,9);await preview.getByRole('button',{name:'加载下一批教学条目',exact:true}).click();assert.equal((await result()).count,10);assert.equal(await preview.getByRole('button',{name:'加载下一批教学条目',exact:true}).isDisabled(),true);}
+      if(variant==='infinite'){await preview.locator('.basic-infinite').evaluate(el=>{el.scrollTop=el.scrollHeight;});await root.locator('[data-result]').filter({hasText:'9'}).waitFor({state:'attached'});assert.equal((await result()).count,9);await preview.getByRole('button',{name:'加载下一批教学条目',exact:true}).click();assert.equal((await result()).count,10);assert.equal(await preview.getByRole('button',{name:'加载下一批教学条目',exact:true}).isDisabled(),true);}
       if(variant==='tree'){await preview.getByRole('button',{name:'折叠教学子行',exact:true}).click();assert.equal(await preview.locator('tbody tr').count(),1);}
       if(variant==='group'){assert.equal(await preview.locator('details').count(),2);await preview.locator('summary').filter({hasText:'cut'}).click();assert.equal((await result()).rows.length,2);}
     }
@@ -154,13 +155,13 @@ export async function exerciseBasicDemo(page,def,level='L2') {
     if(variant==='overlay'||variant==='fullscreen')assert.equal(await preview.getByRole('button',{name:'底层教学操作',exact:true}).isDisabled(),false);
     if(level==='L2') {
       await apply(def.initial);
-      if(variant==='inline'){await preview.getByRole('button',{name:'开始本地教学任务',exact:true}).click();assert.equal(await preview.locator('button').isDisabled(),true);await root.locator('[data-result]').filter({hasText:'complete'}).waitFor();}
+      if(variant==='inline'){await preview.getByRole('button',{name:'开始本地教学任务',exact:true}).click();assert.equal(await preview.locator('button').isDisabled(),true);await root.locator('[data-result]').filter({hasText:'complete'}).waitFor({state:'attached'});}
       else if(variant==='boundary'){await preview.getByRole('button',{name:'旁边的正常教学操作',exact:true}).click();await preview.getByRole('button',{name:'旁边组件仍正常',exact:true}).waitFor();await preview.getByRole('button',{name:'运行安全教学任务',exact:true}).click();}
       else if(variant==='conflict'){await preview.getByRole('button',{name:'尝试写入旧版本',exact:true}).click();assert.ok((await preview.locator('[data-feedback-state]').textContent()).includes('未覆盖'));await preview.getByRole('button',{name:'重新载入教学版本',exact:true}).click();assert.equal((await result()).version,2);}
       else if(variant==='overlay'||variant==='fullscreen'){assert.equal(await preview.getByRole('button',{name:'底层教学操作',exact:true}).isDisabled(),true);await preview.getByRole('button',{name:'完成本地加载',exact:true}).click();assert.equal(await preview.getByRole('button',{name:'底层教学操作',exact:true}).isDisabled(),false);}
-      else if(variant==='connection'){await preview.getByRole('button',{name:'建立本地教学连接',exact:true}).click();await root.locator('[data-result]').filter({hasText:'open'}).waitFor();assert.equal((await result()).state,'open');}
+      else if(variant==='connection'){await preview.getByRole('button',{name:'建立本地教学连接',exact:true}).click();await root.locator('[data-result]').filter({hasText:'open'}).waitFor({state:'attached'});assert.equal((await result()).state,'open');}
       else if(variant==='reconnecting'){await preview.getByRole('button',{name:'推进重连时钟',exact:true}).click();assert.equal(await preview.locator('[data-wait]').textContent(),'1');await preview.getByRole('button',{name:'推进重连时钟',exact:true}).click();assert.equal((await result()).state,'connected');}
-      else if(['network','offline','sync'].includes(variant)){await preview.getByLabel('虚构教学草稿').fill('must preserve fictional draft');if(variant==='network'){await page.context().setOffline(true);await root.locator('[data-result]').filter({hasText:'offline'}).waitFor();await page.context().setOffline(false);await root.locator('[data-result]').filter({hasText:'online'}).waitFor();}else if(variant==='sync'){await preview.getByRole('button',{name:'开始本地同步',exact:true}).click();await root.locator('[data-result]').filter({hasText:'synced'}).waitFor();}else await preview.getByRole('button').last().click();assert.equal(await preview.getByLabel('虚构教学草稿').inputValue(),'must preserve fictional draft');}
+      else if(['network','offline','sync'].includes(variant)){await preview.getByLabel('虚构教学草稿').fill('must preserve fictional draft');if(variant==='network'){await page.context().setOffline(true);await root.locator('[data-result]').filter({hasText:'offline'}).waitFor({state:'attached'});await page.context().setOffline(false);await root.locator('[data-result]').filter({hasText:'online'}).waitFor({state:'attached'});}else if(variant==='sync'){await preview.getByRole('button',{name:'开始本地同步',exact:true}).click();await root.locator('[data-result]').filter({hasText:'synced'}).waitFor({state:'attached'});}else await preview.getByRole('button').last().click();assert.equal(await preview.getByLabel('虚构教学草稿').inputValue(),'must preserve fictional draft');}
       else {await preview.getByRole('button').first().click();assert.equal((await result()).state,def.good);}
     }
   }

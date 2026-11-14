@@ -8,6 +8,8 @@ const evidence=process.env.V8_EVIDENCE_DIR;
 if(evidence)mkdirSync(evidence,{recursive:true});
 const stats=JSON.parse(readFileSync(new URL('../knowledge-catalog/teaching-manifest.json',import.meta.url),'utf8')).statistics;
 const coverage=`已有教学：${stats.teachingTopics} 个主题 · ${stats.layeredUnits} 个分层单元`;
+assert.ok(!process.env.V8_CURRICULUM_ENGINE||['chromium','webkit'].includes(process.env.V8_CURRICULUM_ENGINE));
+assert.ok(!process.env.V8_CURRICULUM_WIDTH||['1440','390'].includes(process.env.V8_CURRICULUM_WIDTH));
 async function loadAllTeaching(page){while(await page.getByRole('button',{name:'加载更多',exact:true}).isVisible())await page.getByRole('button',{name:'加载更多',exact:true}).click();}
 
 async function exercise(page,kind,level) {
@@ -279,9 +281,11 @@ async function exercise(page,kind,level) {
 }
 
 for(const [engine,name] of [[chromium,'chromium'],[webkit,'webkit']]) {
+  if(process.env.V8_CURRICULUM_ENGINE&&process.env.V8_CURRICULUM_ENGINE!==name)continue;
   const browser=await engine.launch({headless:true});
   try {
     for(const width of [1440,390]) {
+      if(process.env.V8_CURRICULUM_WIDTH&&Number(process.env.V8_CURRICULUM_WIDTH)!==width)continue;
       const context=await browser.newContext({viewport:{width,height:900},serviceWorkers:'block'});
       await context.addInitScript(()=>{localStorage.setItem('adFactoryLearning.v8.production','synthetic-main-sentinel');localStorage.setItem('adFactoryLearning.v8.order-lab','synthetic-lab-sentinel');});
       const page=await context.newPage(),errors=[],writes=[];page.setDefaultTimeout(12000);

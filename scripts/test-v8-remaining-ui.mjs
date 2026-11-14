@@ -1,3 +1,4 @@
+import {revealTeachingControls} from './teaching-ui-browser-helpers.mjs';
 import assert from 'node:assert/strict';
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {execFileSync} from 'node:child_process';
@@ -45,11 +46,11 @@ export async function testRemainingUiModels(){
 }
 
 export async function exerciseRemainingUiDemo(page,def,level='L2'){
- const root=page.locator(`[data-demo="${def.kind}"]`).first();await root.waitFor({state:'visible'});await root.locator('[data-reset]').click();assert.equal(await root.getAttribute('data-valid'),'true');assert.deepEqual(JSON.parse(await root.locator('[data-result]').textContent()),run(def));
+ const root=page.locator(`[data-demo="${def.kind}"]`).first();await root.waitFor({state:'visible'});await revealTeachingControls(root);await root.locator('[data-reset]').click();assert.equal(await root.getAttribute('data-valid'),'true');assert.deepEqual(JSON.parse(await root.locator('[data-result]').textContent()),run(def));
  if(def.knowledgeId==='K-D08-059')assert.equal(await root.locator('[data-visual] table').count(),2,'错误报告须实际展示原始行及错误原因');
  await root.locator('[data-input]').fill(JSON.stringify(def.changed));await root.locator('[data-run]').click();assert.equal(await root.getAttribute('data-valid'),'true',def.knowledgeId+'合法输入');assert.deepEqual(JSON.parse(await root.locator('[data-result]').textContent()),run(def,def.changed));
  const stage=root.locator('[data-visual]'),id=def.knowledgeId,domain=id.slice(2,5),n=Number(id.slice(-3));assert.ok(await stage.evaluate(e=>e.childElementCount)>0,id+'真实演示');
- const refreshInstance=async()=>{await page.reload({waitUntil:'domcontentloaded'});if(await page.evaluate(()=>typeof window.show==='function'))await page.evaluate(id=>window.show(id),def.knowledgeId);await root.waitFor({state:'visible'});};
+ const refreshInstance=async()=>{await page.reload({waitUntil:'domcontentloaded'});if(await page.evaluate(()=>typeof window.show==='function'))await page.evaluate(id=>window.show(id),def.knowledgeId);await root.waitFor({state:'visible'});await revealTeachingControls(root);};
  const nativeAction=async()=>{const action=stage.locator('[data-action]').first();if(await action.count()&&!await action.isDisabled())await action.click();};
  if(domain==='D05'){
   if(n===13){assert.equal(await stage.locator('svg rect').count()>100,true);await stage.getByRole('textbox',{name:'编码文本',exact:true}).fill('V8');await stage.getByRole('textbox',{name:'编码文本',exact:true}).press('Tab');assert.equal(await root.getAttribute('data-valid'),'true');}
@@ -65,7 +66,7 @@ export async function exerciseRemainingUiDemo(page,def,level='L2'){
   if(await local.count()){const bounds=await local.boundingBox(),parent=await stage.locator('[data-overlay-stage]').boundingBox();assert.ok(bounds.x>=parent.x-1&&bounds.x+bounds.width<=parent.x+parent.width+1,'浮层适应实际窄屏容器');
    if(n===21){await local.getByRole('button',{name:'展开子菜单',exact:true}).click();await local.getByRole('button',{name:'子项目',exact:true}).click();}
    else if(n===22){await local.getByRole('button',{name:'下一步',exact:true}).click();assert.match(await local.textContent(),/步骤2/);await local.locator('[data-dismiss]').click();}
-   else if(n===19||n===20){const box=await local.boundingBox();await page.mouse.move(box.x+10,box.y+10);await page.mouse.down();await page.mouse.move(box.x+25,box.y+25);await page.mouse.up();assert.equal(await local.getAttribute('data-dragged'),'true');await local.locator('[data-dismiss]').click();}
+   else if(n===19||n===20){await local.scrollIntoViewIfNeeded();const box=await local.boundingBox();await page.mouse.move(box.x+10,box.y+10);await page.mouse.down();await page.mouse.move(box.x+25,box.y+25);await page.mouse.up();assert.equal(await local.getAttribute('data-dragged'),'true');await local.locator('[data-dismiss]').click();}
    else {if(n===24)assert.equal(await stage.locator('[data-portal] [data-overlay-panel]').count(),1);await local.locator('[data-confirm]').click();}
   }else{await dialog.waitFor({state:'visible'});assert.equal(await dialog.evaluate(e=>e.contains(document.activeElement)),true);
    if([5,8,28].includes(n)){await dialog.getByRole('button',{name:'打开第二层',exact:true}).click();const nested=dialog.locator('[data-nested-dialog]');await nested.getByRole('button',{name:'返回第一层',exact:true}).click();}
@@ -118,7 +119,7 @@ export async function exerciseRemainingUiDemo(page,def,level='L2'){
   else {await stage.locator('[data-map-point]').first().focus();await page.keyboard.press('Enter');assert.match(await root.locator('[data-native-status]').textContent(),/经度/);if(n===15){assert.ok(Math.abs(Number(await stage.locator('[data-mvt-point]').getAttribute('cx'))-10/4096*280)<1e-8);}}
  }else if(domain==='D11'){
   if(n===51){await stage.locator('[data-xml-import]').click();assert.match(await root.locator('[data-native-status]').textContent(),/真实XML往返：3节点 2边/);}
-  else if(n===18){const canvas=stage.locator('svg').first(),box=await canvas.boundingBox();await page.mouse.move(box.x+20,box.y+20);await page.mouse.down();await page.mouse.move(box.x+50,box.y+40);await page.mouse.move(box.x+70,box.y+30);await page.mouse.up();assert.ok((await canvas.locator('[data-freehand]').getAttribute('points')).split(' ').length>=3);}
+  else if(n===18){const canvas=stage.locator('svg').first();await canvas.scrollIntoViewIfNeeded();const box=await canvas.boundingBox();await page.mouse.move(box.x+20,box.y+20);await page.mouse.down();await page.mouse.move(box.x+50,box.y+40);await page.mouse.move(box.x+70,box.y+30);await page.mouse.up();assert.ok((await canvas.locator('[data-freehand]').getAttribute('points')).split(' ').length>=3);}
   else if(n===50){await nativeAction();assert.ok(JSON.parse(await root.locator('[data-result]').textContent()).errors.length>0);}
   else {await stage.locator('[data-node]').first().focus();await page.keyboard.press('Enter');assert.match(await root.locator('[data-native-status]').textContent(),/键盘选中/);await nativeAction();}
  }else if(id==='K-D14-066'){

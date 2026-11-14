@@ -12,6 +12,7 @@ on:
       - 'scripts/*expanded*.mjs'
       - 'scripts/*remaining*.mjs'
       - 'scripts/*teaching-manifest*.mjs'
+      - 'scripts/*teaching-ui*.mjs'
       - 'index.html'
       - 'app.js'
       - 'knowledge-catalog/**'
@@ -27,6 +28,7 @@ on:
       - 'scripts/*expanded*.mjs'
       - 'scripts/*remaining*.mjs'
       - 'scripts/*teaching-manifest*.mjs'
+      - 'scripts/*teaching-ui*.mjs'
       - 'index.html'
       - 'app.js'
       - 'knowledge-catalog/**'
@@ -54,6 +56,10 @@ jobs:
           node --check scripts/build-v8-knowledge-catalog.mjs
           node --check scripts/test-v8-knowledge-catalog.mjs
           node --check knowledge-catalog/catalog-app.mjs
+          node --check knowledge-catalog/teaching-ui.mjs
+          node --check knowledge-catalog/teaching-labels.mjs
+          node --check scripts/teaching-ui-browser-helpers.mjs
+          node --check scripts/test-v8-teaching-ui.mjs
           node --check knowledge-catalog/button-pilot.mjs
           node --check scripts/test-v8-knowledge-pilot.mjs
           node --check scripts/test-v8-knowledge-browser.mjs
@@ -103,6 +109,7 @@ jobs:
           node scripts/test-v8-remaining-systems.mjs
           node scripts/test-v8-remaining-engineering.mjs
           node scripts/test-v8-remaining-curriculum.mjs
+          node scripts/test-v8-teaching-ui.mjs
           node scripts/validate-v8-knowledge.mjs
           node scripts/test-v8-missions.mjs
           node scripts/test-v8-order-lab.mjs
