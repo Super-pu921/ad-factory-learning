@@ -7,6 +7,7 @@ import {enhanceTeachingDemo,teachingSentence} from './teaching-ui.mjs';
 import {matchingTeachingUnits,parseCatalogFilters,catalogFilterParams} from './curriculum-models.mjs';
 const curriculum=[...previousCurriculum,...expandedCurriculum,...remainingCurriculum];
 const curriculumById=new Map(curriculum.map(lesson=>[lesson.knowledgeId,lesson]));
+const fromComponentLibrary=new URLSearchParams(location.search).get('from')==='components';
 
 const domainNames=['基础控件与视觉元素','页面布局与响应式','导航与页面组织','表单与数据输入','数据展示与高级数据表格','状态与系统反馈','弹层、浮层与复杂交互','文件、媒体与专业编辑器','图表与专业数据可视化','地图与地理可视化','流程图、节点与画布编辑','企业业务组件与工作流','多人协作与实时交互','AI / Agent 专题','无障碍、国际化与主题','工程化交互与系统运行模式'];
 const candidateNames=[['G01','浏览器运行与渲染'],['G02','Web 网络与通信'],['G03','数据库与数据建模'],['G04','前端框架运行原理'],['G05','CSS 与视觉渲染工程'],['G06','图形学与计算'],['G07','软件架构与设计模式'],['G08','开发工具链与协作工程'],['G09','云基础设施与部署运维'],['G11','数据结构与算法'],['G12','操作系统与计算机组成'],['G13','编程语言与类型系统'],['G14','数学与数据计算基础']];
@@ -146,6 +147,7 @@ function renderDetail() {
   if(!id) return;
   const entry=byId.get(id),body=$('detailBody');
   $('detailTitle').textContent=entry?.name||'未找到知识条目';$('detailId').textContent=id;body.replaceChildren();
+  if(fromComponentLibrary){$('closeDialog').textContent='← 组件列表';$('closeDialog').setAttribute('aria-label','返回组件列表');}
   if(!entry) body.append(node('p','','此 ID 不在当前原始目录中。'));
   else {
     body.append(node('p','detail-lead',entry.topics));
@@ -206,7 +208,8 @@ function restoreFilterInputs() {
   $('catalogSearch').value=filters.query;$('levelFilter').value=filters.level;$('difficultyFilter').value=filters.difficulty;$('teachingOnly').checked=filters.teachingOnly;
 }
 function syncFilterAddress() {
-  const params=catalogFilterParams({domain,query:$('catalogSearch').value,level:$('levelFilter').value,difficulty:$('difficultyFilter').value,teachingOnly:$('teachingOnly').checked});
+  const filters=catalogFilterParams({domain,query:$('catalogSearch').value,level:$('levelFilter').value,difficulty:$('difficultyFilter').value,teachingOnly:$('teachingOnly').checked});
+  const params=filters+(fromComponentLibrary?(filters?'&':'')+'from=components':'');
   const url=location.pathname+(params?'?'+params:'');if(location.pathname+location.search!==url)history.replaceState(null,'',url+location.hash);$('filterLink').href=url;
 }
 function updateFilters(){limit=40;renderResults();syncFilterAddress();}
@@ -223,11 +226,12 @@ function clearDetailRoute() {
   disposeExperiment();disposeExperiment=()=>{};
   if(location.hash)history.replaceState(null,'',location.pathname+location.search);
 }
-$('closeDialog').addEventListener('click',()=>{clearDetailRoute();$('entryDialog').close();});
+function closeDetail(){if(fromComponentLibrary){const entry=byId.get($('detailId').textContent),domain=entry?.domain;disposeExperiment();location.assign('../index.html#/components'+(/^D(?:0[1-9]|1[0-6])$/.test(domain)?'/category/'+domain:''));return;}clearDetailRoute();$('entryDialog').close();}
+$('closeDialog').addEventListener('click',closeDetail);
 $('catalogDirectory').addEventListener('click',event=>{const opener=event.target.closest('a[href^="#"],.entry h3 button');if(opener){directoryOpener=opener;directoryOpenerId=opener.closest('.entry')?.dataset.knowledgeId||null;}},true);
 $('entryDialog').addEventListener('cancel',event=>{if(event.target===$('entryDialog'))clearDetailRoute();});
 $('entryDialog').addEventListener('close',event=>{if(event.target!==$('entryDialog')||$('entryDialog').open)return;$('catalogDirectory').hidden=false;const entry=[...$('catalogResults').children].find(node=>node.dataset.knowledgeId===directoryOpenerId),target=directoryOpener?.isConnected&&directoryOpener!==document.body?directoryOpener:entry?.querySelector('h3 button')||$('catalogSearch');target.focus({preventScroll:true});directoryOpener=null;directoryOpenerId=null;requestAnimationFrame(()=>{if(!$('entryDialog').open)window.scrollTo({top:directoryScroll});});});
-document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!event.defaultPrevented&&$('entryDialog').open&&!document.querySelector('dialog:modal')&&!event.target.closest?.('input,textarea,select,[contenteditable=true]')){clearDetailRoute();$('entryDialog').close();}});
+document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!event.defaultPrevented&&$('entryDialog').open&&!document.querySelector('dialog:modal')&&!event.target.closest?.('input,textarea,select,[contenteditable=true]'))closeDetail();});
 document.querySelector('.skip').addEventListener('click',event=>{event.preventDefault();const target=$('entryDialog').open?$('detailTitle'):$('catalogResults');target.tabIndex=-1;target.focus();target.scrollIntoView({block:'start'});});
 window.addEventListener('hashchange',()=>{if(catalog) {if(location.hash)renderDetail();else {disposeExperiment();disposeExperiment=()=>{};$('entryDialog').close();}}});
 

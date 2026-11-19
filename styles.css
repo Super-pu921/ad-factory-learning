@@ -229,6 +229,15 @@ a,button,summary,[role="button"],.card.clickable,label[for]{touch-action:manipul
 .txlab-feedback{border-radius:10px;padding:12px;background:#edf5ff;color:#315080;font-size:13px;line-height:1.7}
 @media(max-width:760px){.txlab-card{padding:14px}.txlab-stats{gap:9px}.txlab-stats>div{padding:12px}.txlab-actions .btn{min-height:44px;width:100%}}
 
+/* Main component library shares the existing category and list controls. */
+.teaching-domain-tile .v8-category-icon{font-size:12px;font-weight:750}
+.teaching-domain-tile>div{min-width:0;flex:1}
+.teaching-domain-tile .micro{flex-shrink:0}
+.teaching-library-status{grid-column:1/-1}
+.teaching-category-search{display:grid;gap:7px;max-width:540px}
+.teaching-category-search .field{width:100%;min-width:0}
+.teaching-category-count{margin:18px 0 12px}
+
 /* P2.4 isolated customer / quote / order learning lab */
 .cqolab-card{display:grid;gap:14px;min-width:0;overflow:hidden}
 .cqolab-steps{display:flex;flex-wrap:wrap;gap:7px}

@@ -27,7 +27,7 @@ for(const [engine,name] of [[chromium,'chromium'],[webkit,'webkit']]) {
       await page.getByRole('heading',{name:'D01–D16 可运行组件与教学',exact:true}).waitFor();
       await page.getByText(coverageText,{exact:true}).waitFor();
       await page.getByRole('heading',{name:'原有组件演示 · 88 个',exact:true}).waitFor();
-      assert.equal(await page.locator('.v8-category-tile .micro').allTextContents().then(values=>values.reduce((sum,value)=>sum+Number(value),0)),88);
+      assert.equal(await page.locator('#componentCatalog .v8-category-tile .micro').allTextContents().then(values=>values.reduce((sum,value)=>sum+Number(value),0)),88);
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+1),true,'workbench must not overflow');
       await page.locator('#componentSearch').fill('button');
       assert.ok(await page.locator('#componentResults .list-row').count()>0,'original demo search remains usable');

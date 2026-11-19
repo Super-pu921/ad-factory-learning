@@ -8,6 +8,7 @@ on:
       - 'scripts/*knowledge-catalog*.mjs'
       - 'scripts/*knowledge-pilot*.mjs'
       - 'scripts/*knowledge-browser*.mjs'
+      - 'scripts/*component-library*.mjs'
       - 'scripts/*curriculum*.mjs'
       - 'scripts/*expanded*.mjs'
       - 'scripts/*remaining*.mjs'
@@ -24,6 +25,7 @@ on:
       - 'scripts/*knowledge-catalog*.mjs'
       - 'scripts/*knowledge-pilot*.mjs'
       - 'scripts/*knowledge-browser*.mjs'
+      - 'scripts/*component-library*.mjs'
       - 'scripts/*curriculum*.mjs'
       - 'scripts/*expanded*.mjs'
       - 'scripts/*remaining*.mjs'
@@ -63,6 +65,7 @@ jobs:
           node --check knowledge-catalog/button-pilot.mjs
           node --check scripts/test-v8-knowledge-pilot.mjs
           node --check scripts/test-v8-knowledge-browser.mjs
+          node --check scripts/test-v8-component-library-browser.mjs
           node --check knowledge-catalog/curriculum.mjs
           node --check knowledge-catalog/curriculum-models.mjs
           node --check knowledge-catalog/curriculum-demos.mjs
