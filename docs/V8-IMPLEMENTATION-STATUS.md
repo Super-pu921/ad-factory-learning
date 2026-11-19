@@ -1,8 +1,17 @@
 # V8 implementation and release status
 
-Updated: 2026-11-13. Scope: V2.0 overall P1–P8 roadmap.
+Scope: V2.0 overall P1–P8 roadmap.
 
-## Current: remaining 513 concepts accounted for
+## Current teaching release
+
+The [main component library](https://super-pu921.github.io/ad-factory-learning/index.html#/components)
+lists the runnable teaching topics by D01–D16 domain and retains the original
+88 demo entries. The main library and global search open the layered demos.
+The P7 [legacy review](V8-LEGACY-COMPONENT-REVIEW.md) records source evidence
+and unverified Knowledge candidates for the 88 originals. Formal mappings are
+pending semantic and version review. D17 still has 13 candidate subdomains.
+
+## Remaining 513 concepts accounted for
 
 The registry now contains **821 canonical teaching topics / 2463 L1–L3 units**.
 The unchanged 320-topic baseline is protected by per-topic content hashes.
@@ -432,11 +441,11 @@ created. No candidate IDs are promoted to permanent model identities.
 | P1 repository/storage inventory | Static repository verified; P1.3 incomplete | Original computer record backup, actual IDs and record associations; no browser/profile accessed by these tools |
 | P2 formal mapping | Source structure and candidate consistency tooling implemented | Frozen PRD/technical-design originals; target organization, ID/version rules, evidence-backed legacy-to-knowledge mappings and resource semantics |
 | P3 compatibility | Offline immutable legacy view implemented | Approved target contract, production read authority/failure policy, tested integration and rollback; no production switch exists |
-| P4 teaching standard sample | 65 topics / 195 independent layered units with pinned content | Formal target Course/Unit integration skipped while originals are missing |
-| P5 domain pilot | Representative teaching experiments in all sixteen domains | Entire domain curricula and production compatibility are not claimed complete |
-| P6 D01–D16 expansion | Four batches add 64 topics / 192 units, plus the Button pilot; unit links, independent filters and shareable filter URLs | Remaining concepts are not marked authored or accepted merely because their entries exist |
-| P7 D17 | Candidate only | Official scope and knowledge IDs; no D17 formal IDs invented, G10 remains in D14 |
-| P8 full acceptance/release | Foundation checks only | All content, compatibility, personal-record protection, backup, rollback and release gates; current static release is not P1–P8 completion |
+| P4 teaching standard sample | Button pilot with three separately accepted layered units | Formal target Course/Unit integration awaits the source contracts |
+| P5 domain pilot | Runnable samples shipped in all sixteen domains | Formal compatibility and migration gates remain separate |
+| P6 D01–D16 expansion | 821 topics / 2463 units in the released component library | 12 concepts require the inputs listed in the teaching manifest |
+| P7 D17 and legacy component review | 13 D17 candidates and a source-backed review of all 88 legacy components | D17 scope approval and formal legacy mapping review |
+| P8 full acceptance and release | Teaching and workbench releases verified | Formal compatibility, personal-record evidence, backup and rollback gates remain open |
 
 ## Missing inputs skipped by user instruction
 

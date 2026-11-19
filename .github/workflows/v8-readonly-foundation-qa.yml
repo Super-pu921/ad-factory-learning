@@ -5,6 +5,8 @@ on:
     paths:
       - 'scripts/*migration*.mjs'
       - 'scripts/*legacy-catalog*.mjs'
+      - 'scripts/review-v8-legacy-components.mjs'
+      - 'docs/V8-LEGACY-COMPONENT-REVIEW.md'
       - 'scripts/*knowledge-catalog*.mjs'
       - 'scripts/*knowledge-pilot*.mjs'
       - 'scripts/*knowledge-browser*.mjs'
@@ -22,6 +24,8 @@ on:
     paths:
       - 'scripts/*migration*.mjs'
       - 'scripts/*legacy-catalog*.mjs'
+      - 'scripts/review-v8-legacy-components.mjs'
+      - 'docs/V8-LEGACY-COMPONENT-REVIEW.md'
       - 'scripts/*knowledge-catalog*.mjs'
       - 'scripts/*knowledge-pilot*.mjs'
       - 'scripts/*knowledge-browser*.mjs'
@@ -55,6 +59,7 @@ jobs:
           node --check scripts/test-v8-migration.mjs
           node --check scripts/v8-legacy-catalog-view.mjs
           node --check scripts/test-v8-legacy-catalog-view.mjs
+          node --check scripts/review-v8-legacy-components.mjs
           node --check scripts/build-v8-knowledge-catalog.mjs
           node --check scripts/test-v8-knowledge-catalog.mjs
           node --check knowledge-catalog/catalog-app.mjs

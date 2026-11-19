@@ -4,8 +4,9 @@
 V8 学习工作台保留原有课程、组件演示和实训，并提供 D01–D16 可运行组件与分层教学。
 
 - [打开学习工作台](https://super-pu921.github.io/ad-factory-learning/)
-- [浏览可运行教学组件](https://super-pu921.github.io/ad-factory-learning/knowledge-catalog/?teaching=1)
+- [从组件库浏览 D01–D16 分层演示](https://super-pu921.github.io/ad-factory-learning/index.html#/components)
 - [821 个教学主题逐项清单与 L1/L2/L3 链接](docs/V8-COMPONENTS-CURRENT.md)
+- [88 个旧组件的候选知识关联与源码证据](docs/V8-LEGACY-COMPONENT-REVIEW.md)
 
 | 内容 | 数量 |
 | --- | ---: |
